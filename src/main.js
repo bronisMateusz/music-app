@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
-import { evaIcons } from "vue-eva-icons";
+import * as evaIcons from "@stefandesu/eva-icons-vue";
 
 import App from "./App.vue";
 import router from "./router";
