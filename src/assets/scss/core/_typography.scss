@@ -3,7 +3,10 @@
   font-weight: 500;
   font-style: normal;
   font-display: auto;
-  src: local('JosefinSans'), url("/fonts/JosefinSans-Medium.ttf") format("truetype");
+  unicode-range: U+000-5FF;
+  src: local('Josefin Sans'),
+    url("/fonts/JosefinSans-Medium.woff2") format("woff2"),
+    url("/fonts/JosefinSans-Medium.woff") format("woff");
 }
 
 @font-face {
@@ -11,5 +14,8 @@
   font-weight: 700;
   font-style: normal;
   font-display: auto;
-  src: local('JosefinSans'), url("/fonts/JosefinSans-Bold.ttf") format("truetype");
+  unicode-range: U+000-5FF;
+  src: local('Josefin Sans'),
+    url("/fonts/JosefinSans-Bold.woff2") format("woff2"),
+    url("/fonts/JosefinSans-Bold.woff") format("woff");
 }
