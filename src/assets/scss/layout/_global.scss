@@ -1,5 +1,6 @@
 * {
   margin: 0;
+  box-sizing: border-box;
 }
 
 a {
@@ -9,6 +10,10 @@ a {
   &:hover {
     text-decoration: underline;
   }
+}
+
+.hidden {
+  display: none;
 }
 
 body {
@@ -27,7 +32,6 @@ body {
 
       section>h2 {
         margin: 24px 0;
-        font-size: 2rem;
       }
 
       #playlist {
