@@ -18,7 +18,7 @@
             name="more-horizontal-outline"
             height="28"
             width="28"
-          ></eva-icon>
+          />
         </li>
         <li>
           <div class="song-details">
@@ -31,7 +31,7 @@
             name="more-horizontal-outline"
             height="28"
             width="28"
-          ></eva-icon>
+          />
         </li>
         <li>
           <div class="song-details">
@@ -44,7 +44,7 @@
             name="more-horizontal-outline"
             height="28"
             width="28"
-          ></eva-icon>
+          />
         </li>
         <li>
           <div class="song-details">
@@ -57,7 +57,7 @@
             name="more-horizontal-outline"
             height="28"
             width="28"
-          ></eva-icon>
+          />
         </li>
         <li>
           <div class="song-details">
@@ -70,7 +70,7 @@
             name="more-horizontal-outline"
             height="28"
             width="28"
-          ></eva-icon>
+          />
         </li>
       </ul>
       <!-- .. end Playlist -->
