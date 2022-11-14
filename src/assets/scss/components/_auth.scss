@@ -1,3 +1,182 @@
 #auth-modal {
-  display: none;
+  background-color: $color-element;
+  border-radius: 20px 20px 0 0;
+  bottom: 0;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
+
+  left: 0;
+  max-height: calc(100% - 96px);
+  position: absolute;
+  right: 0;
+
+  header {
+    background-color: $color-element;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 24px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    .modal-close {
+      align-self: flex-end;
+      background-color: transparent;
+      border-style: none;
+      cursor: pointer;
+      color: $text-primary;
+      margin: -7px -7px 0 0;
+      padding: 0;
+    }
+
+    .title {
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: $text-secondary;
+      margin-bottom: 48px;
+    }
+  }
+
+  form {
+    column-gap: 8px;
+    display: flex;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    max-height: calc(100vh - 246.5px);
+    overflow-y: auto;
+    padding: 0 24px 48px;
+
+    >div {
+      width: 100%;
+
+      &:not(.form-group) {
+        label {
+          font-size: .875rem;
+          color: transparent;
+          position: relative;
+
+          &:focus-within {
+            color: $text-secondary;
+          }
+
+          input {
+            background-color: transparent;
+            border-color: $text-secondary;
+            border-width: 0 0 1px 0;
+            color: $text-primary;
+            font-size: 1rem;
+            margin-bottom: 34px;
+            padding: 12px 0;
+            color-scheme: dark;
+
+            &:not(#login-remember) {
+              width: 100%;
+
+              &:focus {
+                border-color: $text-primary;
+                outline: 0;
+
+                &::placeholder {
+                  opacity: 0;
+                }
+              }
+
+              &:hover {
+                border-color: $text-primary;
+
+                &::placeholder {
+                  color: $text-primary;
+                }
+              }
+
+              &::placeholder {
+                color: $text-secondary;
+                font-family: 'Josefin Sans', sans-serif;
+                font-weight: 500;
+              }
+            }
+
+          }
+
+          svg {
+            color: $text-secondary;
+            position: absolute !important;
+            right: 0;
+            top: 1.75rem !important;
+          }
+        }
+      }
+
+      &.form-group {
+        column-gap: 8px;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 12px;
+
+        &:last-of-type {
+          justify-content: center;
+
+          p {
+            color: $text-secondary;
+          }
+        }
+
+        label {
+          display: flex;
+
+          input {
+            height: 16px;
+            width: 16px;
+            margin-right: 12px;
+          }
+        }
+
+        #forgot-password:not(:hover) {
+          color: $text-secondary;
+        }
+      }
+    }
+
+    button[type='submit'] {
+      background-color: $color-canvas;
+      border-style: none;
+      border-radius: 50px;
+      color: $text-primary;
+      cursor: pointer;
+      font-weight: 700;
+      padding: 16px;
+      text-align: center;
+      width: 100%;
+      margin: 48px 0 12px;
+
+      &:hover {
+        background-color: darken($color-canvas, 5%);
+      }
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  #auth-modal {
+    bottom: 50%;
+    border-radius: 20px;
+    left: 50%;
+    min-width: 600px;
+    position: fixed;
+    right: unset;
+    transform: translate(-50%, 50%);
+
+    header {
+      top: unset;
+      bottom: 0;
+      padding: 48px 48px 0;
+    }
+
+    form {
+      padding: 0 48px 48px;
+      max-height: 398.5px;
+    }
+  }
 }
