@@ -1,99 +1,135 @@
 <template>
-  <div id="auth-modal">
-    <div>
-      <div>
-        <div></div>
+  <div id="auth-modal" :class="hiddenClass">
+    <header>
+      <!-- Modal Close Button -->
+      <button
+        class="modal-close"
+        value="cancel"
+        @click.prevent="isOpen = false"
+      >
+        <eva-icon name="close-outline" height="28" width="28" />
+      </button>
+      <div v-show="tab === 'login'">
+        <!--Title-->
+        <h2 class="title">Welcome back</h2>
+        <!--Subtitle-->
+        <p class="subtitle">Enter your account details</p>
       </div>
-
-      <!-- This element is to trick the browser into centering the modal contents. -->
-      <span>&#8203;</span>
-
+      <div v-show="tab === 'register'">
+        <!--Title-->
+        <h2 class="title">Create an account</h2>
+        <!--Subtitle-->
+        <p class="subtitle">Enter the fields below to get started for free.</p>
+        <!-- Modal Close Button -->
+      </div>
+    </header>
+    <!-- Login Form -->
+    <form v-show="tab === 'login'">
+      <!-- Email -->
       <div>
+        <label>
+          Email
+          <input type="email" placeholder="Email" />
+        </label>
+      </div>
+      <!-- Password -->
+      <div>
+        <label>
+          Password
+          <input type="password" placeholder="Password" autocomplete="on" />
+          <eva-icon name="eye-outline" height="18" width="18" />
+        </label>
+      </div>
+      <div class="form-group">
+        <!-- Password remember -->
         <div>
-          <!--Title-->
-          <div>
-            <p>Your Account</p>
-            <!-- Modal Close Button -->
-            <div>
-              <!-- <i class="fas fa-times"></i> -->
-            </div>
-          </div>
-
-          <!-- Tabs -->
-          <ul>
-            <li>
-              <a href="#">Login</a>
-            </li>
-            <li>
-              <a href="#">Register</a>
-            </li>
-          </ul>
-
-          <!-- Login Form -->
-          <form>
-            <!-- Email -->
-            <div>
-              <label>Email</label>
-              <input type="email" placeholder="Enter Email" />
-            </div>
-            <!-- Password -->
-            <div>
-              <label>Password</label>
-              <input type="password" placeholder="Password" />
-            </div>
-            <button type="submit">Submit</button>
-          </form>
-          <!-- Registration Form -->
-          <form>
-            <!-- Name -->
-            <div>
-              <label>Name</label>
-              <input type="text" placeholder="Enter Name" />
-            </div>
-            <!-- Email -->
-            <div>
-              <label>Email</label>
-              <input type="email" placeholder="Enter Email" />
-            </div>
-            <!-- Age -->
-            <div class="mb-3">
-              <label>Age</label>
-              <input type="number" />
-            </div>
-            <!-- Password -->
-            <div>
-              <label>Password</label>
-              <input type="password" placeholder="Password" />
-            </div>
-            <!-- Confirm Password -->
-            <div>
-              <label>Confirm Password</label>
-              <input type="password" placeholder="Confirm Password" />
-            </div>
-            <!-- Country -->
-            <div>
-              <label>Country</label>
-              <select>
-                <option value="USA">USA</option>
-                <option value="Mexico">Mexico</option>
-                <option value="Germany">Germany</option>
-              </select>
-            </div>
-            <!-- TOS -->
-            <div>
-              <input type="checkbox" />
-              <label>Accept terms of service</label>
-            </div>
-            <button type="submit">Submit</button>
-          </form>
+          <label>
+            <input type="checkbox" id="login-remember" name="login-remember" />
+            Remember for 30 days
+          </label>
         </div>
+        <!-- Forgot password-->
+        <a href="#" id="forgot-password">Forgot password</a>
       </div>
-    </div>
+      <button type="submit">Log in</button>
+      <div class="form-group">
+        <p>Don't have an account?</p>
+        <a href="#" @click.prevent="tab = 'register'">Sign up for free</a>
+      </div>
+    </form>
+    <!-- Registration Form -->
+    <form v-show="tab === 'register'">
+      <!-- Name -->
+      <div>
+        <label>
+          Name
+          <input type="text" placeholder="Name" />
+        </label>
+      </div>
+      <!-- Email -->
+      <div>
+        <label>
+          Email
+          <input type="email" placeholder="Email" />
+        </label>
+      </div>
+      <!-- Password -->
+      <div>
+        <label>
+          Password
+          <input type="password" placeholder="Password" autocomplete="on" />
+          <eva-icon name="eye-outline" height="18" width="18" />
+        </label>
+      </div>
+      <!-- Confirm password -->
+      <div>
+        <label>
+          Confirm password
+          <input
+            type="password"
+            placeholder="Confirm password"
+            autocomplete="on"
+          />
+          <eva-icon name="eye-outline" height="18" width="18" />
+        </label>
+      </div>
+      <!-- Date of birth -->
+      <div>
+        <label>
+          Date of birth
+          <input type="date" />
+        </label>
+      </div>
+      <!-- TOS -->
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="accept-tos" name="accept-tos" />
+          Accept terms of service
+        </label>
+      </div>
+      <button type="submit">Create account</button>
+      <div class="form-group">
+        <p>Already have an account?</p>
+        <a href="#" @click.prevent="tab = 'login'">Log in</a>
+      </div>
+    </form>
   </div>
 </template>
 
 <script>
+import { mapState, mapWritableState } from "pinia";
+import useModalStore from "@/stores/modal";
+
 export default {
-  name: "AppAuth",
+  name: "Auth",
+  computed: {
+    ...mapState(useModalStore, ["hiddenClass"]),
+    ...mapWritableState(useModalStore, ["isOpen"]),
+  },
+  data() {
+    return {
+      tab: "login",
+    };
+  },
 };
 </script>
