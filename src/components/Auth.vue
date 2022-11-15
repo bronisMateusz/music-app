@@ -58,20 +58,22 @@
       </div>
     </form>
     <!-- Registration Form -->
-    <form v-show="tab === 'register'">
+    <vee-form v-show="tab === 'register'" :validation-schema="schema">
       <!-- Name -->
       <div>
         <label>
           Name
-          <input type="text" placeholder="Name" />
+          <vee-field type="text" name="name" placeholder="Name" />
         </label>
+        <ErrorMessage name="name" />
       </div>
       <!-- Email -->
       <div>
         <label>
           Email
-          <input type="email" placeholder="Email" />
+          <vee-field type="email" name="email" placeholder="Email" />
         </label>
+        <ErrorMessage name="email" />
       </div>
       <!-- Password -->
       <div>
@@ -112,7 +114,7 @@
         <p>Already have an account?</p>
         <a href="#" @click.prevent="tab = 'login'">Log in</a>
       </div>
-    </form>
+    </vee-form>
   </div>
 </template>
 
@@ -122,14 +124,21 @@ import useModalStore from "@/stores/modal";
 
 export default {
   name: "Auth",
-  computed: {
-    ...mapState(useModalStore, ["hiddenClass"]),
-    ...mapWritableState(useModalStore, ["isOpen"]),
-  },
   data() {
     return {
       tab: "login",
+      schema: {
+        name: "required|min:3|max:100|alphaSpaces",
+        email: "required|max:100|email",
+        password: "",
+        confirm_password: "",
+        tos: "",
+      },
     };
+  },
+  computed: {
+    ...mapState(useModalStore, ["hiddenClass"]),
+    ...mapWritableState(useModalStore, ["isOpen"]),
   },
 };
 </script>
