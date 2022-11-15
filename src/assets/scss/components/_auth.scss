@@ -108,12 +108,15 @@
             top: 1.75rem !important;
           }
         }
+
+        span[role='alert'] {
+          position: absolute;
+        }
       }
 
       &.form-group {
         column-gap: 8px;
         display: flex;
-        justify-content: space-between;
         margin-top: 12px;
 
         &:last-of-type {
@@ -134,8 +137,12 @@
           }
         }
 
-        #forgot-password:not(:hover) {
-          color: $text-secondary;
+        #forgot-password {
+          margin-left: auto;
+
+          &:not(:hover) {
+            color: $text-secondary;
+          }
         }
       }
 
@@ -143,7 +150,6 @@
         bottom: 12px;
         color: $color-error;
         left: 0;
-        position: absolute;
       }
     }
 
