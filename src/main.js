@@ -4,7 +4,7 @@ import * as evaIcons from "@stefandesu/eva-icons-vue";
 
 import App from "./App.vue";
 import router from "./router";
-import VeeValidate from './includes/validation'
+import VeeValidate from "./includes/validation";
 
 import "./assets/scss/styles.scss";
 
