@@ -49,6 +49,7 @@
     padding: 0 24px 48px;
 
     >div {
+      position: relative;
       width: 100%;
 
       &:not(.form-group) {
@@ -136,6 +137,13 @@
         #forgot-password:not(:hover) {
           color: $text-secondary;
         }
+      }
+
+      span[role='alert'] {
+        bottom: 12px;
+        color: $color-error;
+        left: 0;
+        position: absolute;
       }
     }
 
