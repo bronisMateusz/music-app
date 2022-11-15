@@ -95,13 +95,6 @@
           <eva-icon name="eye-outline" height="18" width="18" />
         </label>
       </div>
-      <!-- Date of birth -->
-      <div>
-        <label>
-          Date of birth
-          <input type="date" />
-        </label>
-      </div>
       <!-- TOS -->
       <div class="form-group">
         <label>
