@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@stefandesu/eva-icons-vue": "^0.0.2",
+    "@vee-validate/rules": "^4.7.3",
     "pinia": "^2.0.23",
     "sass": "^1.55.0",
     "vee-validate": "^4.7.3",
