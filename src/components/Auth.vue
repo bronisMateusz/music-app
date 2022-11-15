@@ -79,21 +79,29 @@
       <div>
         <label>
           Password
-          <input type="password" placeholder="Password" autocomplete="on" />
+          <vee-field
+            type="password"
+            name="password"
+            placeholder="Password"
+            autocomplete="on"
+          />
           <eva-icon name="eye-outline" height="18" width="18" />
         </label>
+        <ErrorMessage name="password" />
       </div>
       <!-- Confirm password -->
       <div>
         <label>
           Confirm password
-          <input
+          <vee-field
             type="password"
+            name="confirm_password"
             placeholder="Confirm password"
             autocomplete="on"
           />
           <eva-icon name="eye-outline" height="18" width="18" />
         </label>
+        <ErrorMessage name="confirm_password" />
       </div>
       <!-- TOS -->
       <div class="form-group">
@@ -123,8 +131,8 @@ export default {
       schema: {
         name: "required|min:3|max:100|alphaSpaces",
         email: "required|max:100|email",
-        password: "",
-        confirm_password: "",
+        password: "required|min:8|max:100",
+        confirm_password: "confirmed:@password",
         tos: "",
       },
     };
