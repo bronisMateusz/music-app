@@ -106,9 +106,10 @@
       <!-- TOS -->
       <div class="form-group">
         <label>
-          <input type="checkbox" id="accept-tos" name="accept-tos" />
+          <vee-field type="checkbox" name="tos" value="1" />
           Accept terms of service
         </label>
+        <ErrorMessage name="tos" />
       </div>
       <button type="submit">Create account</button>
       <div class="form-group">
@@ -133,7 +134,7 @@ export default {
         email: "required|max:100|email",
         password: "required|min:8|max:100",
         confirm_password: "confirmed:@password",
-        tos: "",
+        tos: "required",
       },
     };
   },
