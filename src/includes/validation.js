@@ -8,9 +8,9 @@ import {
   required,
   min,
   max,
-  alpha_spaces as alphaSpaces,
+  alpha_spaces,
   email,
-  confirmed
+  confirmed,
 } from "@vee-validate/rules";
 
 export default {
@@ -22,7 +22,7 @@ export default {
     defineRule("required", required);
     defineRule("min", min);
     defineRule("max", max);
-    defineRule("alphaSpaces", alphaSpaces);
+    defineRule("alphaSpaces", alpha_spaces);
     defineRule("email", email);
     defineRule("confirmed", confirmed);
   },
