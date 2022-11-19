@@ -35,164 +35,36 @@
       </div>
     </header>
     <!-- Login Form -->
-    <vee-form
-      v-show="tab === 'login'"
-      :validation-schema="loginSchema"
-      @submit="login"
-    >
-      <!-- Email -->
-      <div>
-        <label>
-          Email
-          <vee-field type="email" name="email" placeholder="Email" />
-        </label>
-        <ErrorMessage name="email" />
-      </div>
-      <!-- Password -->
-      <div>
-        <label>
-          Password
-          <vee-field
-            type="password"
-            name="password"
-            placeholder="Password"
-            autocomplete="on"
-          />
-          <eva-icon name="eye-outline" height="18" width="18" />
-        </label>
-        <ErrorMessage name="password" />
-      </div>
-      <div class="form-group">
-        <!-- Password remember -->
-        <div>
-          <label>
-            <input type="checkbox" id="login-remember" name="login-remember" />
-            Remember for 30 days
-          </label>
-        </div>
-        <!-- Forgot password-->
-        <a href="#" id="forgot-password">Forgot password</a>
-      </div>
-      <button type="submit">Log in</button>
-      <div class="form-group">
-        <p>Don't have an account?</p>
-        <a href="#" @click.prevent="tab = 'register'">Sign up for free</a>
-      </div>
-    </vee-form>
+    <login-form
+      v-if="tab === 'login'"
+      :tab="tab"
+      @tab-change="tab = 'register'"
+    />
     <!-- Registration Form -->
-    <vee-form
-      v-if="!reg_in_submission"
-      v-show="tab === 'register'"
-      :validation-schema="registrationSchema"
-      @submit="register"
-    >
-      <!-- Name -->
-      <div>
-        <label>
-          Name
-          <vee-field type="text" name="name" placeholder="Name" />
-        </label>
-        <ErrorMessage name="name" />
-      </div>
-      <!-- Email -->
-      <div>
-        <label>
-          Email
-          <vee-field type="email" name="email" placeholder="Email" />
-        </label>
-        <ErrorMessage name="email" />
-      </div>
-      <!-- Password -->
-      <div>
-        <label>
-          Password
-          <vee-field
-            type="password"
-            name="password"
-            placeholder="Password"
-            autocomplete="on"
-          />
-          <eva-icon name="eye-outline" height="18" width="18" />
-        </label>
-        <ErrorMessage name="password" />
-      </div>
-      <!-- Confirm password -->
-      <div>
-        <label>
-          Confirm password
-          <vee-field
-            type="password"
-            name="confirm_password"
-            placeholder="Confirm password"
-            autocomplete="on"
-          />
-          <eva-icon name="eye-outline" height="18" width="18" />
-        </label>
-        <ErrorMessage name="confirm_password" />
-      </div>
-      <!-- TOS -->
-      <div class="form-group">
-        <label>
-          <vee-field type="checkbox" name="tos" value="1" />
-          Accept terms of service
-        </label>
-        <ErrorMessage name="tos" />
-      </div>
-      <button type="submit">Create account</button>
-      <div class="form-group">
-        <p>Already have an account?</p>
-        <a href="#" @click.prevent="tab = 'login'">Log in</a>
-      </div>
-    </vee-form>
+    <register-form v-else :tab="tab" @tab-change="tab = 'login'" />
   </div>
 </template>
 
 <script>
 import { mapState, mapWritableState } from "pinia";
 import useModalStore from "@/stores/modal";
+import LoginForm from "@/components/LoginForm.vue";
+import RegisterForm from "@/components/RegisterForm.vue";
 
 export default {
   name: "Auth",
+  components: {
+    LoginForm,
+    RegisterForm,
+  },
   data() {
     return {
       tab: "login",
-      loginSchema: {
-        email: "required|max:100|email",
-        password: "required|min:8|max:100",
-      },
-      registrationSchema: {
-        name: "required|min:3|max:100|alphaSpaces",
-        email: "required|max:100|email",
-        password: "required|min:8|max:100",
-        confirm_password: "passwordMismatch:@password",
-        tos: "tos",
-      },
-      reg_in_submission: false,
-      reg_show_alert: false,
-      reg_alert_variant: "",
-      reg_alert_heading: "Please wait",
-      reg_alert_msg: "Your account is being created",
     };
   },
   computed: {
     ...mapState(useModalStore, ["hiddenClass"]),
     ...mapWritableState(useModalStore, ["isOpen"]),
-  },
-  methods: {
-    login(values) {
-      console.log(values);
-    },
-    register(values) {
-      this.reg_show_alert = true;
-      this.reg_in_submission = true;
-      this.reg_alert_variant = "";
-      this.reg_alert_heading = "Please wait";
-      this.reg_alert_msg = "Your account is being created";
-
-      this.reg_alert_heading = "Success";
-      this.reg_alert_msg = "Your account has been created";
-      console.log(values);
-    },
   },
 };
 </script>
