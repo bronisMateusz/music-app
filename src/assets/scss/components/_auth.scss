@@ -49,6 +49,7 @@
     padding: 0 24px 48px;
 
     >div {
+      position: relative;
       width: 100%;
 
       &:not(.form-group) {
@@ -107,12 +108,19 @@
             top: 1.75rem !important;
           }
         }
+
+        span[role='alert'] {
+          position: absolute;
+
+          &::first-letter {
+            text-transform: uppercase;
+          }
+        }
       }
 
       &.form-group {
         column-gap: 8px;
         display: flex;
-        justify-content: space-between;
         margin-top: 12px;
 
         &:last-of-type {
@@ -133,9 +141,19 @@
           }
         }
 
-        #forgot-password:not(:hover) {
-          color: $text-secondary;
+        #forgot-password {
+          margin-left: auto;
+
+          &:not(:hover) {
+            color: $text-secondary;
+          }
         }
+      }
+
+      span[role='alert'] {
+        bottom: 12px;
+        color: $color-error;
+        left: 0;
       }
     }
 
@@ -170,6 +188,7 @@
 
     header {
       top: unset;
+      border-radius: 20px;
       bottom: 0;
       padding: 48px 48px 0;
     }
