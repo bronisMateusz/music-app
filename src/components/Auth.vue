@@ -24,7 +24,7 @@
             Enter the fields below to get started for free.
           </p>
         </div>
-        <div v-else>
+        <div v-else :class="reg_alert_variant">
           <!--Title-->
           <h2 class="title">{{ reg_alert_heading }}</h2>
           <!--Subtitle-->
@@ -41,7 +41,14 @@
       @tab-change="tab = 'register'"
     />
     <!-- Registration Form -->
-    <register-form v-else :tab="tab" @tab-change="tab = 'login'" />
+    <register-form
+      v-else
+      :tab="tab"
+      :reg_show_alert="reg_show_alert"
+      @tab-change="tab = 'login'"
+      @show-alert="reg_show_alert = true"
+      @register-status="showRegisterStatus"
+    />
   </div>
 </template>
 
@@ -60,11 +67,26 @@ export default {
   data() {
     return {
       tab: "login",
+      reg_show_alert: false,
+      reg_alert_variant: "notice",
+      reg_alert_heading: "Notice",
+      reg_alert_msg: "Your account is being created",
     };
   },
   computed: {
     ...mapState(useModalStore, ["hiddenClass"]),
     ...mapWritableState(useModalStore, ["isOpen"]),
+  },
+  methods: {
+    showRegisterStatus({
+      reg_alert_variant,
+      reg_alert_heading,
+      reg_alert_msg,
+    }) {
+      this.reg_alert_variant = reg_alert_variant;
+      this.reg_alert_heading = reg_alert_heading;
+      this.reg_alert_msg = reg_alert_msg;
+    },
   },
 };
 </script>
