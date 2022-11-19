@@ -111,6 +111,10 @@
 
         span[role='alert'] {
           position: absolute;
+
+          &::first-letter {
+            text-transform: uppercase;
+          }
         }
       }
 

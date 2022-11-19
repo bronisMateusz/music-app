@@ -58,7 +58,11 @@
       </div>
     </form>
     <!-- Registration Form -->
-    <vee-form v-show="tab === 'register'" :validation-schema="schema">
+    <vee-form
+      v-show="tab === 'register'"
+      :validation-schema="schema"
+      @submit="register"
+    >
       <!-- Name -->
       <div>
         <label>
@@ -133,14 +137,19 @@ export default {
         name: "required|min:3|max:100|alphaSpaces",
         email: "required|max:100|email",
         password: "required|min:8|max:100",
-        confirm_password: "confirmed:@password",
-        tos: "required",
+        confirm_password: "passwordMismatch:@password",
+        tos: "tos",
       },
     };
   },
   computed: {
     ...mapState(useModalStore, ["hiddenClass"]),
     ...mapWritableState(useModalStore, ["isOpen"]),
+  },
+  methods: {
+    register(values) {
+      // console.log(values);
+    },
   },
 };
 </script>
