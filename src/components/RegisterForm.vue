@@ -65,6 +65,8 @@
 </template>
 
 <script>
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
 export default {
   data() {
     return {
@@ -76,24 +78,38 @@ export default {
         tos: "tos",
       },
       reg_in_submission: false,
-      reg_show_alert: false,
       reg_alert_variant: "",
-      reg_alert_heading: "Please wait",
+      reg_alert_heading: "Notice",
       reg_alert_msg: "Your account is being created",
     };
   },
-  props: ["tab"],
+  props: ["tab", "reg_show_alert"],
   methods: {
-    register(values) {
-      this.reg_show_alert = true;
+    async register(values) {
       this.reg_in_submission = true;
-      this.reg_alert_variant = "";
-      this.reg_alert_heading = "Please wait";
-      this.reg_alert_msg = "Your account is being created";
+      this.$emit("show-alert");
 
-      this.reg_alert_heading = "Success";
-      this.reg_alert_msg = "Your account has been created";
-      console.log(values);
+      try {
+        const auth = getAuth();
+        await createUserWithEmailAndPassword(
+          auth,
+          values.email,
+          values.password
+        );
+      } catch (error) {
+        this.$emit("register-status", {
+          reg_alert_variant: "error",
+          reg_alert_heading: "Error",
+          reg_alert_msg: "An unexpected error occurred. Please try again later",
+        });
+        return;
+      }
+
+      this.$emit("register-status", {
+        reg_alert_variant: "success",
+        reg_alert_heading: "Success",
+        reg_alert_msg: "Your account has been created",
+      });
     },
     tabChange() {
       this.$emit("tab-change");
