@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["rushstack", "stefandesu"]
+  "cSpell.words": ["appspot", "stefandesu"],
+  "cSpell.ignorePaths": ["firebase.js"]
 }
