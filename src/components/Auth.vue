@@ -16,120 +16,55 @@
         <p class="subtitle">Enter your account details</p>
       </div>
       <div v-show="tab === 'register'">
-        <!--Title-->
-        <h2 class="title">Create an account</h2>
-        <!--Subtitle-->
-        <p class="subtitle">Enter the fields below to get started for free.</p>
-        <!-- Modal Close Button -->
+        <div v-if="!reg_show_alert">
+          <!--Title-->
+          <h2 class="title">Create an account</h2>
+          <!--Subtitle-->
+          <p class="subtitle">
+            Enter the fields below to get started for free.
+          </p>
+        </div>
+        <div v-else>
+          <!--Title-->
+          <h2 class="title">{{ reg_alert_heading }}</h2>
+          <!--Subtitle-->
+          <p class="subtitle">
+            {{ reg_alert_msg }}
+          </p>
+        </div>
       </div>
     </header>
     <!-- Login Form -->
-    <form v-show="tab === 'login'">
-      <!-- Email -->
-      <div>
-        <label>
-          Email
-          <input type="email" placeholder="Email" />
-        </label>
-      </div>
-      <!-- Password -->
-      <div>
-        <label>
-          Password
-          <input type="password" placeholder="Password" autocomplete="on" />
-          <eva-icon name="eye-outline" height="18" width="18" />
-        </label>
-      </div>
-      <div class="form-group">
-        <!-- Password remember -->
-        <div>
-          <label>
-            <input type="checkbox" id="login-remember" name="login-remember" />
-            Remember for 30 days
-          </label>
-        </div>
-        <!-- Forgot password-->
-        <a href="#" id="forgot-password">Forgot password</a>
-      </div>
-      <button type="submit">Log in</button>
-      <div class="form-group">
-        <p>Don't have an account?</p>
-        <a href="#" @click.prevent="tab = 'register'">Sign up for free</a>
-      </div>
-    </form>
+    <login-form
+      v-if="tab === 'login'"
+      :tab="tab"
+      @tab-change="tab = 'register'"
+    />
     <!-- Registration Form -->
-    <form v-show="tab === 'register'">
-      <!-- Name -->
-      <div>
-        <label>
-          Name
-          <input type="text" placeholder="Name" />
-        </label>
-      </div>
-      <!-- Email -->
-      <div>
-        <label>
-          Email
-          <input type="email" placeholder="Email" />
-        </label>
-      </div>
-      <!-- Password -->
-      <div>
-        <label>
-          Password
-          <input type="password" placeholder="Password" autocomplete="on" />
-          <eva-icon name="eye-outline" height="18" width="18" />
-        </label>
-      </div>
-      <!-- Confirm password -->
-      <div>
-        <label>
-          Confirm password
-          <input
-            type="password"
-            placeholder="Confirm password"
-            autocomplete="on"
-          />
-          <eva-icon name="eye-outline" height="18" width="18" />
-        </label>
-      </div>
-      <!-- Date of birth -->
-      <div>
-        <label>
-          Date of birth
-          <input type="date" />
-        </label>
-      </div>
-      <!-- TOS -->
-      <div class="form-group">
-        <label>
-          <input type="checkbox" id="accept-tos" name="accept-tos" />
-          Accept terms of service
-        </label>
-      </div>
-      <button type="submit">Create account</button>
-      <div class="form-group">
-        <p>Already have an account?</p>
-        <a href="#" @click.prevent="tab = 'login'">Log in</a>
-      </div>
-    </form>
+    <register-form v-else :tab="tab" @tab-change="tab = 'login'" />
   </div>
 </template>
 
 <script>
 import { mapState, mapWritableState } from "pinia";
 import useModalStore from "@/stores/modal";
+import LoginForm from "@/components/LoginForm.vue";
+import RegisterForm from "@/components/RegisterForm.vue";
 
 export default {
   name: "Auth",
-  computed: {
-    ...mapState(useModalStore, ["hiddenClass"]),
-    ...mapWritableState(useModalStore, ["isOpen"]),
+  components: {
+    LoginForm,
+    RegisterForm,
   },
   data() {
     return {
       tab: "login",
     };
+  },
+  computed: {
+    ...mapState(useModalStore, ["hiddenClass"]),
+    ...mapWritableState(useModalStore, ["isOpen"]),
   },
 };
 </script>
