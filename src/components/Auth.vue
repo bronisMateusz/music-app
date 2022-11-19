@@ -35,21 +35,32 @@
       </div>
     </header>
     <!-- Login Form -->
-    <form v-show="tab === 'login'">
+    <vee-form
+      v-show="tab === 'login'"
+      :validation-schema="loginSchema"
+      @submit="login"
+    >
       <!-- Email -->
       <div>
         <label>
           Email
-          <input type="email" placeholder="Email" />
+          <vee-field type="email" name="email" placeholder="Email" />
         </label>
+        <ErrorMessage name="email" />
       </div>
       <!-- Password -->
       <div>
         <label>
           Password
-          <input type="password" placeholder="Password" autocomplete="on" />
+          <vee-field
+            type="password"
+            name="password"
+            placeholder="Password"
+            autocomplete="on"
+          />
           <eva-icon name="eye-outline" height="18" width="18" />
         </label>
+        <ErrorMessage name="password" />
       </div>
       <div class="form-group">
         <!-- Password remember -->
@@ -67,12 +78,12 @@
         <p>Don't have an account?</p>
         <a href="#" @click.prevent="tab = 'register'">Sign up for free</a>
       </div>
-    </form>
+    </vee-form>
     <!-- Registration Form -->
     <vee-form
       v-if="!reg_in_submission"
       v-show="tab === 'register'"
-      :validation-schema="schema"
+      :validation-schema="registrationSchema"
       @submit="register"
     >
       <!-- Name -->
@@ -145,7 +156,11 @@ export default {
   data() {
     return {
       tab: "login",
-      schema: {
+      loginSchema: {
+        email: "required|max:100|email",
+        password: "required|min:8|max:100",
+      },
+      registrationSchema: {
         name: "required|min:3|max:100|alphaSpaces",
         email: "required|max:100|email",
         password: "required|min:8|max:100",
@@ -164,6 +179,9 @@ export default {
     ...mapWritableState(useModalStore, ["isOpen"]),
   },
   methods: {
+    login(values) {
+      console.log(values);
+    },
     register(values) {
       this.reg_show_alert = true;
       this.reg_in_submission = true;
