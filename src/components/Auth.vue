@@ -16,11 +16,22 @@
         <p class="subtitle">Enter your account details</p>
       </div>
       <div v-show="tab === 'register'">
-        <!--Title-->
-        <h2 class="title">Create an account</h2>
-        <!--Subtitle-->
-        <p class="subtitle">Enter the fields below to get started for free.</p>
-        <!-- Modal Close Button -->
+        <div v-if="!reg_show_alert">
+          <!--Title-->
+          <h2 class="title">Create an account</h2>
+          <!--Subtitle-->
+          <p class="subtitle">
+            Enter the fields below to get started for free.
+          </p>
+        </div>
+        <div v-else>
+          <!--Title-->
+          <h2 class="title">{{ reg_alert_heading }}</h2>
+          <!--Subtitle-->
+          <p class="subtitle">
+            {{ reg_alert_msg }}
+          </p>
+        </div>
       </div>
     </header>
     <!-- Login Form -->
@@ -59,6 +70,7 @@
     </form>
     <!-- Registration Form -->
     <vee-form
+      v-if="!reg_in_submission"
       v-show="tab === 'register'"
       :validation-schema="schema"
       @submit="register"
@@ -140,6 +152,11 @@ export default {
         confirm_password: "passwordMismatch:@password",
         tos: "tos",
       },
+      reg_in_submission: false,
+      reg_show_alert: false,
+      reg_alert_variant: "",
+      reg_alert_heading: "Please wait",
+      reg_alert_msg: "Your account is being created",
     };
   },
   computed: {
@@ -148,7 +165,15 @@ export default {
   },
   methods: {
     register(values) {
-      // console.log(values);
+      this.reg_show_alert = true;
+      this.reg_in_submission = true;
+      this.reg_alert_variant = "";
+      this.reg_alert_heading = "Please wait";
+      this.reg_alert_msg = "Your account is being created";
+
+      this.reg_alert_heading = "Success";
+      this.reg_alert_msg = "Your account has been created";
+      console.log(values);
     },
   },
 };
