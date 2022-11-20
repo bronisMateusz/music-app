@@ -65,8 +65,9 @@
 </template>
 
 <script>
-import { auth } from "@/includes/firebase";
+import { auth, usersCollection } from "@/includes/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { addDoc } from "firebase/firestore";
 
 export default {
   data() {
@@ -97,6 +98,20 @@ export default {
           values.password
         );
       } catch (error) {
+        this.$emit("register-status", {
+          reg_alert_variant: "error",
+          reg_alert_heading: "Error",
+          reg_alert_msg: "An unexpected error occurred. Please try again later",
+        });
+        return;
+      }
+
+      try {
+        await addDoc(usersCollection, {
+          name: values.name,
+          email: values.email,
+        });
+      } catch (e) {
         this.$emit("register-status", {
           reg_alert_variant: "error",
           reg_alert_heading: "Error",
