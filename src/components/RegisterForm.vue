@@ -65,7 +65,8 @@
 </template>
 
 <script>
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/includes/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 export default {
   data() {
@@ -90,7 +91,6 @@ export default {
       this.$emit("show-alert");
 
       try {
-        const auth = getAuth();
         await createUserWithEmailAndPassword(
           auth,
           values.email,
