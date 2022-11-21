@@ -7,12 +7,12 @@
   width: 1px;
 }
 
-@mixin scrollbar-styles($size: 6px) {
+@mixin scrollbar-styles($border-color: $color-canvas) {
 
   // For Chrome & Safari
   &::-webkit-scrollbar {
-    width: $size;
-    height: $size;
+    width: 5px;
+    height: 5px;
   }
 
   &::-webkit-scrollbar-thumb {
@@ -23,6 +23,7 @@
   &::-webkit-scrollbar-track {
     background: $color-scrollbar-track;
     border-radius: 50px;
+    border: 1px solid $border-color;
   }
 
   // Standard version (Firefox only for now)
