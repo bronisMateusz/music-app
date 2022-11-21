@@ -25,12 +25,32 @@
       <label>
         Password
         <vee-field
+          v-if="!isPasswordVisible"
           type="password"
           name="password"
           placeholder="Password"
           autocomplete="on"
         />
-        <eva-icon name="eye-outline" height="18" width="18" />
+        <vee-field
+          v-else
+          type="text"
+          name="password"
+          placeholder="Password"
+          autocomplete="on"
+        />
+        <button
+          type="button"
+          class="btn"
+          @click.prevent="isPasswordVisible = !isPasswordVisible"
+        >
+          <eva-icon
+            v-if="!isPasswordVisible"
+            name="eye-outline"
+            height="18"
+            width="18"
+          />
+          <eva-icon v-else name="eye-off-outline" height="18" width="18" />
+        </button>
       </label>
       <ErrorMessage name="password" />
     </div>
@@ -39,12 +59,32 @@
       <label>
         Confirm password
         <vee-field
+          v-if="!isConfirmPasswordVisible"
           type="password"
           name="confirm_password"
           placeholder="Confirm password"
           autocomplete="on"
         />
-        <eva-icon name="eye-outline" height="18" width="18" />
+        <vee-field
+          v-else
+          type="text"
+          name="confirm_password"
+          placeholder="Confirm password"
+          autocomplete="on"
+        />
+        <button
+          type="button"
+          class="btn"
+          @click.prevent="isConfirmPasswordVisible = !isConfirmPasswordVisible"
+        >
+          <eva-icon
+            v-if="!isConfirmPasswordVisible"
+            name="eye-outline"
+            height="18"
+            width="18"
+          />
+          <eva-icon v-else name="eye-off-outline" height="18" width="18" />
+        </button>
       </label>
       <ErrorMessage name="confirm_password" />
     </div>
@@ -71,6 +111,8 @@ import useUserStore from "@/stores/user";
 export default {
   data() {
     return {
+      isPasswordVisible: false,
+      isConfirmPasswordVisible: false,
       registrationSchema: {
         name: "required|min:3|max:100|alphaSpaces",
         email: "required|max:100|email",
