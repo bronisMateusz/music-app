@@ -44,7 +44,7 @@
     overflow-y: auto;
     padding: 0 24px 48px;
 
-    @include scrollbar-styles;
+    @include scrollbar-styles($color-element);
 
     >div {
       position: relative;
