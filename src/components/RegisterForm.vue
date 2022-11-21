@@ -65,9 +65,8 @@
 </template>
 
 <script>
-import { auth, usersCollection } from "@/includes/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { addDoc } from "firebase/firestore";
+import { mapActions } from "pinia";
+import useUserStore from "@/stores/user";
 
 export default {
   data() {
@@ -87,31 +86,17 @@ export default {
   },
   props: ["tab", "reg_show_alert"],
   methods: {
+    ...mapActions(useUserStore, {
+      createUser: "register",
+    }),
+
     async register(values) {
       this.reg_in_submission = true;
       this.$emit("show-alert");
 
       try {
-        await createUserWithEmailAndPassword(
-          auth,
-          values.email,
-          values.password
-        );
+        await this.createUser(values);
       } catch (error) {
-        this.$emit("register-status", {
-          reg_alert_variant: "error",
-          reg_alert_heading: "Error",
-          reg_alert_msg: "An unexpected error occurred. Please try again later",
-        });
-        return;
-      }
-
-      try {
-        await addDoc(usersCollection, {
-          name: values.name,
-          email: values.email,
-        });
-      } catch (e) {
         this.$emit("register-status", {
           reg_alert_variant: "error",
           reg_alert_heading: "Error",
@@ -126,6 +111,7 @@ export default {
         reg_alert_msg: "Your account has been created",
       });
     },
+
     tabChange() {
       this.$emit("tab-change");
     },
