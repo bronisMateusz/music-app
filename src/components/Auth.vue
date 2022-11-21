@@ -3,8 +3,9 @@
     <header>
       <!-- Modal Close Button -->
       <button
-        class="modal-close"
+        class="btn"
         value="cancel"
+        title="Close"
         @click.prevent="isOpen = false"
       >
         <eva-icon name="close-outline" height="28" width="28" />

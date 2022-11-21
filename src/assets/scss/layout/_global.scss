@@ -16,6 +16,17 @@ a {
   display: none;
 }
 
+.btn {
+  background-color: transparent;
+  border-style: none;
+  cursor: pointer;
+  color: $text-secondary;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
 .notice>* {
   color: $text-notice !important;
 }
