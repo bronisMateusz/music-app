@@ -6,3 +6,25 @@
   white-space: nowrap;
   width: 1px;
 }
+
+@mixin scrollbar-styles($size: 6px) {
+
+  // For Chrome & Safari
+  &::-webkit-scrollbar {
+    width: $size;
+    height: $size;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color-scrollbar-thumb;
+    border-radius: 50px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $color-scrollbar-track;
+    border-radius: 50px;
+  }
+
+  // Standard version (Firefox only for now)
+  scrollbar-color: $color-scrollbar-thumb $color-scrollbar-track;
+}
