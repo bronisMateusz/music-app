@@ -19,12 +19,8 @@
     top: 0;
     z-index: 1;
 
-    .modal-close {
+    .btn {
       align-self: flex-end;
-      background-color: transparent;
-      border-style: none;
-      cursor: pointer;
-      color: $text-primary;
       margin: -7px -7px 0 0;
       padding: 0;
     }
