@@ -16,11 +16,36 @@ a {
   display: none;
 }
 
+.btn {
+  background-color: transparent;
+  border-style: none;
+  cursor: pointer;
+  color: $text-secondary;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+.notice>* {
+  color: $text-notice !important;
+}
+
+.success>* {
+  color: $text-success !important;
+}
+
+.error>* {
+  color: $text-error !important;
+}
+
 body {
   background-color: $color-canvas;
   color: $text-primary;
   font-family: 'Josefin Sans', sans-serif;
   font-weight: 500;
+
+  @include scrollbar-styles;
 
   #app {
     min-height: 100vh;

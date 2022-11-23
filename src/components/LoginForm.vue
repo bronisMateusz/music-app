@@ -13,12 +13,32 @@
       <label>
         Password
         <vee-field
+          v-if="!isPasswordVisible"
           type="password"
           name="password"
           placeholder="Password"
           autocomplete="on"
         />
-        <eva-icon name="eye-outline" height="18" width="18" />
+        <vee-field
+          v-else
+          type="text"
+          name="password"
+          placeholder="Password"
+          autocomplete="on"
+        />
+        <button
+          type="button"
+          class="btn"
+          @click.prevent="isPasswordVisible = !isPasswordVisible"
+        >
+          <eva-icon
+            v-if="!isPasswordVisible"
+            name="eye-outline"
+            height="18"
+            width="18"
+          />
+          <eva-icon v-else name="eye-off-outline" height="18" width="18" />
+        </button>
       </label>
       <ErrorMessage name="password" />
     </div>
@@ -42,10 +62,14 @@
 </template>
 
 <script>
+import { mapActions } from "pinia";
+import useUserStore from "@/stores/user";
+
 export default {
   props: ["tab"],
   data() {
     return {
+      isPasswordVisible: false,
       loginSchema: {
         email: "required|max:100|email",
         password: "required|min:8|max:100",
@@ -53,9 +77,11 @@ export default {
     };
   },
   methods: {
-    login(values) {
-      console.log(values);
+    ...mapActions(useUserStore, { authUser: "login" }),
+    async login(values) {
+      await this.authUser(values);
     },
+
     tabChange() {
       this.$emit("tab-change");
     },

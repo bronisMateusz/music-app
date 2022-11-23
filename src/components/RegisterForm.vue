@@ -25,12 +25,32 @@
       <label>
         Password
         <vee-field
+          v-if="!isPasswordVisible"
           type="password"
           name="password"
           placeholder="Password"
           autocomplete="on"
         />
-        <eva-icon name="eye-outline" height="18" width="18" />
+        <vee-field
+          v-else
+          type="text"
+          name="password"
+          placeholder="Password"
+          autocomplete="on"
+        />
+        <button
+          type="button"
+          class="btn"
+          @click.prevent="isPasswordVisible = !isPasswordVisible"
+        >
+          <eva-icon
+            v-if="!isPasswordVisible"
+            name="eye-outline"
+            height="18"
+            width="18"
+          />
+          <eva-icon v-else name="eye-off-outline" height="18" width="18" />
+        </button>
       </label>
       <ErrorMessage name="password" />
     </div>
@@ -39,12 +59,32 @@
       <label>
         Confirm password
         <vee-field
+          v-if="!isConfirmPasswordVisible"
           type="password"
           name="confirm_password"
           placeholder="Confirm password"
           autocomplete="on"
         />
-        <eva-icon name="eye-outline" height="18" width="18" />
+        <vee-field
+          v-else
+          type="text"
+          name="confirm_password"
+          placeholder="Confirm password"
+          autocomplete="on"
+        />
+        <button
+          type="button"
+          class="btn"
+          @click.prevent="isConfirmPasswordVisible = !isConfirmPasswordVisible"
+        >
+          <eva-icon
+            v-if="!isConfirmPasswordVisible"
+            name="eye-outline"
+            height="18"
+            width="18"
+          />
+          <eva-icon v-else name="eye-off-outline" height="18" width="18" />
+        </button>
       </label>
       <ErrorMessage name="confirm_password" />
     </div>
@@ -65,9 +105,14 @@
 </template>
 
 <script>
+import { mapActions } from "pinia";
+import useUserStore from "@/stores/user";
+
 export default {
   data() {
     return {
+      isPasswordVisible: false,
+      isConfirmPasswordVisible: false,
       registrationSchema: {
         name: "required|min:3|max:100|alphaSpaces",
         email: "required|max:100|email",
@@ -76,25 +121,37 @@ export default {
         tos: "tos",
       },
       reg_in_submission: false,
-      reg_show_alert: false,
       reg_alert_variant: "",
-      reg_alert_heading: "Please wait",
+      reg_alert_heading: "Notice",
       reg_alert_msg: "Your account is being created",
     };
   },
-  props: ["tab"],
+  props: ["tab", "reg_show_alert"],
   methods: {
-    register(values) {
-      this.reg_show_alert = true;
-      this.reg_in_submission = true;
-      this.reg_alert_variant = "";
-      this.reg_alert_heading = "Please wait";
-      this.reg_alert_msg = "Your account is being created";
+    ...mapActions(useUserStore, { createUser: "register" }),
 
-      this.reg_alert_heading = "Success";
-      this.reg_alert_msg = "Your account has been created";
-      console.log(values);
+    async register(values) {
+      this.reg_in_submission = true;
+      this.$emit("show-alert");
+
+      try {
+        await this.createUser(values);
+      } catch (error) {
+        this.$emit("register-status", {
+          reg_alert_variant: "error",
+          reg_alert_heading: "Error",
+          reg_alert_msg: "An unexpected error occurred. Please try again later",
+        });
+        return;
+      }
+
+      this.$emit("register-status", {
+        reg_alert_variant: "success",
+        reg_alert_heading: "Success",
+        reg_alert_msg: "Your account has been created",
+      });
     },
+
     tabChange() {
       this.$emit("tab-change");
     },
