@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 
@@ -30,9 +31,15 @@ export default defineStore("user", {
 
       this.userLoggedIn = true;
     },
+
     async login(values) {
       await signInWithEmailAndPassword(auth, values.email, values.password);
       this.userLoggedIn = true;
+    },
+
+    async logout() {
+      signOut(auth);
+      this.userLoggedIn = false;
     },
   },
 });
