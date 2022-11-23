@@ -1,6 +1,10 @@
 import { defineStore } from "pinia";
 import { auth, db } from "@/includes/firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 
 export default defineStore("user", {
@@ -24,6 +28,10 @@ export default defineStore("user", {
         displayName: values.name,
       });
 
+      this.userLoggedIn = true;
+    },
+    async login(values) {
+      await signInWithEmailAndPassword(auth, values.email, values.password);
       this.userLoggedIn = true;
     },
   },
