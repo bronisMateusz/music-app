@@ -128,9 +128,7 @@ export default {
   },
   props: ["tab", "reg_show_alert"],
   methods: {
-    ...mapActions(useUserStore, {
-      createUser: "register",
-    }),
+    ...mapActions(useUserStore, { createUser: "register" }),
 
     async register(values) {
       this.reg_in_submission = true;

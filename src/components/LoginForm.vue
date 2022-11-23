@@ -62,6 +62,9 @@
 </template>
 
 <script>
+import { mapActions } from "pinia";
+import useUserStore from "@/stores/user";
+
 export default {
   props: ["tab"],
   data() {
@@ -74,8 +77,9 @@ export default {
     };
   },
   methods: {
-    login(values) {
-      console.log(values);
+    ...mapActions(useUserStore, { authUser: "login" }),
+    async login(values) {
+      await this.authUser(values);
     },
 
     tabChange() {
