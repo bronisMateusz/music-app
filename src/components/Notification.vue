@@ -6,18 +6,36 @@
       :class="notificationType"
     >
       <eva-icon
-        v-if="notificationType === 'success'"
+        v-if="notificationType === 'success' && !showCloseButton"
         name="checkmark-circle-2"
         height="48"
         width="48"
+        @mouseover="showCloseButton = true"
       />
       <eva-icon
-        v-else-if="notificationType === 'error'"
+        v-else-if="notificationType === 'error' && !showCloseButton"
         name="close-circle"
         height="48"
         width="48"
+        @mouseover="showCloseButton = true"
       />
-      <eva-icon v-else name="alert-circle" height="48" width="48" />
+      <eva-icon
+        v-else-if="notificationType === 'notice' && !showCloseButton"
+        name="alert-circle"
+        height="48"
+        width="48"
+        @mouseover="showCloseButton = true"
+      />
+      <button
+        v-else
+        type="button"
+        class="btn"
+        title="close"
+        @mouseleave="showCloseButton = false"
+        @click.prevent="hideNotification"
+      >
+        <eva-icon name="close-circle" height="48" width="48" />
+      </button>
       <div class="notification-details">
         <strong>{{ notificationHeading }}</strong>
         <p>{{ notificationMsg }}</p>
@@ -31,16 +49,29 @@ import { mapWritableState, mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
 
 export default {
+  data() {
+    return {
+      showCloseButton: false,
+    };
+  },
   computed: {
     ...mapWritableState(useNotificationsStore, [
       "showNotification",
       "notificationType",
       "notificationHeading",
       "notificationMsg",
+      "timer",
     ]),
   },
   methods: {
     ...mapActions(useNotificationsStore, ["autoHideNotification"]),
+    hideNotification() {
+      this.showNotification = false;
+      this.showCloseButton = false;
+    },
+  },
+  beforeUpdate() {
+    clearTimeout(this.timer);
   },
   updated() {
     this.autoHideNotification();
@@ -61,6 +92,7 @@ export default {
   top: 15px;
   z-index: 2;
   transition: all 1s ease-in-out;
+
   .notification {
     align-items: flex-start;
     backdrop-filter: blur(15px);
@@ -87,6 +119,11 @@ export default {
     svg {
       min-width: 48px;
       top: 0 !important;
+    }
+
+    .btn {
+      height: 48px;
+      padding: 0;
     }
 
     .notification-details {

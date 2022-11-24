@@ -6,11 +6,12 @@ export default defineStore("notifications", {
     notificationType: "",
     notificationHeading: "",
     notificationMsg: "",
+    timer: null,
   }),
 
   actions: {
     autoHideNotification() {
-      setTimeout(() => (this.showNotification = false), 5000);
+      this.timer = setTimeout(() => (this.showNotification = false), 5000);
     },
   },
 });
