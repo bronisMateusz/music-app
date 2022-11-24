@@ -28,6 +28,7 @@
       v-if="tab === 'login'"
       :tab="tab"
       @tab-change="tab = 'register'"
+      @close-modal="isOpen = false"
     />
     <!-- Registration Form -->
     <register-form
@@ -35,6 +36,7 @@
       :tab="tab"
       :reg_show_alert="reg_show_alert"
       @tab-change="tab = 'login'"
+      @close-modal="isOpen = false"
     />
   </div>
 </template>

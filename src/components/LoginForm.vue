@@ -79,6 +79,7 @@ export default {
   methods: {
     ...mapActions(useUserStore, { authUser: "login" }),
     async login(values) {
+      this.$emit("close-modal");
       await this.authUser(values);
     },
 

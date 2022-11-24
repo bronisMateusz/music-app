@@ -132,6 +132,7 @@ export default {
     ...mapActions(useUserStore, { createUser: "register" }),
 
     async register(values) {
+      this.$emit("tab-change");
       this.showNotification = true;
       this.notificationType = "notice";
       this.notificationHeading = "Please wait";
