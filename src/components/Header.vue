@@ -23,16 +23,19 @@
         </ul>
       </div>
     </nav>
+    <notification />
   </header>
 </template>
 
 <script>
+import Notification from "@/components/Notification.vue";
 import { mapStores } from "pinia";
 import useModalStore from "@/stores/modal";
 import useUserStore from "@/stores/user";
 
 export default {
   name: "AppHeader",
+  components: { Notification },
   computed: {
     ...mapStores(useModalStore, useUserStore),
   },
