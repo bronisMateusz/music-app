@@ -48,3 +48,20 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+#header {
+  background-color: $color-element;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 24px;
+
+  nav {
+    display: flex;
+  }
+}
+</style>

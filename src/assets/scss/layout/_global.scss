@@ -40,34 +40,6 @@ body {
     display: flex;
     flex-direction: column;
 
-    >main {
-      padding: 112px 24px 48px;
-
-      section>h2 {
-        margin: 24px 0;
-      }
-
-      #playlist {
-        display: flex;
-        flex-direction: column;
-        list-style: none;
-        padding: 0;
-        row-gap: 18px;
-
-        li {
-          background-color: $color-element;
-          border-radius: 20px;
-          display: flex;
-          justify-content: space-between;
-          padding: 12px;
-
-          .options {
-            align-self: center;
-          }
-        }
-      }
-    }
-
     .song-details {
       display: grid;
       grid-template-columns: 82px 1fr;
@@ -96,5 +68,6 @@ body {
         font-size: 12px;
       }
     }
+
   }
 }

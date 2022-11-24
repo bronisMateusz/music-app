@@ -112,3 +112,33 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+main {
+  padding: 112px 24px 48px;
+
+  section > h2 {
+    margin: 24px 0;
+  }
+
+  #playlist {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    padding: 0;
+    row-gap: 18px;
+
+    li {
+      background-color: $color-element;
+      border-radius: 20px;
+      display: flex;
+      justify-content: space-between;
+      padding: 12px;
+
+      .options {
+        align-self: center;
+      }
+    }
+  }
+}
+</style>
