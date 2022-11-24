@@ -37,6 +37,7 @@
         <button
           type="button"
           class="btn"
+          tabindex="-1"
           @click.prevent="isPasswordVisible = !isPasswordVisible"
         >
           <eva-icon
@@ -71,6 +72,7 @@
         <button
           type="button"
           class="btn"
+          tabindex="-1"
           @click.prevent="isConfirmPasswordVisible = !isConfirmPasswordVisible"
         >
           <eva-icon
