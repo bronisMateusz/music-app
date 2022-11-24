@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import { mapActions, mapWritableState } from "pinia";
+import { mapActions } from "pinia";
 import useUserStore from "@/stores/user";
 import useNotificationsStore from "@/stores/notifications";
 
@@ -120,36 +120,30 @@ export default {
     };
   },
   props: ["tab"],
-  computed: {
-    ...mapWritableState(useNotificationsStore, [
-      "showNotification",
-      "notificationType",
-      "notificationHeading",
-      "notificationMsg",
-    ]),
-  },
   methods: {
     ...mapActions(useUserStore, { createUser: "register" }),
+    ...mapActions(useNotificationsStore, ["setNotification"]),
 
     async register(values) {
-      this.$emit("tab-change");
-      this.showNotification = true;
-      this.notificationType = "notice";
-      this.notificationHeading = "Please wait";
-      this.notificationMsg = "We're creating your account";
+      this.setNotification(
+        "notice",
+        "Please wait",
+        "We're creating your account"
+      );
 
       try {
         await this.createUser(values);
       } catch (error) {
-        this.notificationType = "error";
-        this.notificationHeading = "Sorry";
-        this.notificationMsg = "We could't create your account";
+        this.setNotification(
+          "error",
+          "Sorry",
+          "We could't create your account"
+        );
         return;
       }
 
-      this.notificationType = "success";
-      this.notificationHeading = "Success";
-      this.notificationMsg = "Your account is ready!";
+      this.$emit("close-modal");
+      this.setNotification("success", "Success", "Your account is ready!");
     },
 
     tabChange() {
