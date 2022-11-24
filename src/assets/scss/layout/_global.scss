@@ -27,18 +27,6 @@ a {
   }
 }
 
-.notice>* {
-  color: $text-notice !important;
-}
-
-.success>* {
-  color: $text-success !important;
-}
-
-.error>* {
-  color: $text-error !important;
-}
-
 body {
   background-color: $color-canvas;
   color: $text-primary;
