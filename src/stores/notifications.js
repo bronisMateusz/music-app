@@ -7,4 +7,10 @@ export default defineStore("notifications", {
     notificationHeading: "",
     notificationMsg: "",
   }),
+
+  actions: {
+    autoHideNotification() {
+      setTimeout(() => (this.showNotification = false), 5000);
+    },
+  },
 });
