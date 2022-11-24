@@ -1,9 +1,5 @@
 <template>
-  <vee-form
-    v-if="!reg_in_submission"
-    :validation-schema="registrationSchema"
-    @submit="register"
-  >
+  <vee-form :validation-schema="registrationSchema" @submit="register">
     <!-- Name -->
     <div>
       <label>
@@ -105,8 +101,9 @@
 </template>
 
 <script>
-import { mapActions } from "pinia";
+import { mapActions, mapWritableState } from "pinia";
 import useUserStore from "@/stores/user";
+import useNotificationsStore from "@/stores/notifications";
 
 export default {
   data() {
@@ -120,36 +117,38 @@ export default {
         confirm_password: "passwordMismatch:@password",
         tos: "tos",
       },
-      reg_in_submission: false,
-      reg_alert_variant: "",
-      reg_alert_heading: "Notice",
-      reg_alert_msg: "Your account is being created",
     };
   },
-  props: ["tab", "reg_show_alert"],
+  props: ["tab"],
+  computed: {
+    ...mapWritableState(useNotificationsStore, [
+      "showNotification",
+      "notificationType",
+      "notificationHeading",
+      "notificationMsg",
+    ]),
+  },
   methods: {
     ...mapActions(useUserStore, { createUser: "register" }),
 
     async register(values) {
-      this.reg_in_submission = true;
-      this.$emit("show-alert");
+      this.showNotification = true;
+      this.notificationType = "notice";
+      this.notificationHeading = "Please wait";
+      this.notificationMsg = "We're creating your account";
 
       try {
         await this.createUser(values);
       } catch (error) {
-        this.$emit("register-status", {
-          reg_alert_variant: "error",
-          reg_alert_heading: "Error",
-          reg_alert_msg: "An unexpected error occurred. Please try again later",
-        });
+        this.notificationType = "error";
+        this.notificationHeading = "Sorry";
+        this.notificationMsg = "We could't create your account";
         return;
       }
 
-      this.$emit("register-status", {
-        reg_alert_variant: "success",
-        reg_alert_heading: "Success",
-        reg_alert_msg: "Your account has been created",
-      });
+      this.notificationType = "success";
+      this.notificationHeading = "Success";
+      this.notificationMsg = "Your account is ready!";
     },
 
     tabChange() {
