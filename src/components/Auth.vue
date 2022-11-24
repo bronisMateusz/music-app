@@ -41,7 +41,7 @@
 
 <script>
 import { mapWritableState } from "pinia";
-import useModalStore from "@/stores/modal";
+import useAuthModalStore from "@/stores/auth-modal";
 import LoginForm from "@/components/LoginForm.vue";
 import RegisterForm from "@/components/RegisterForm.vue";
 
@@ -57,7 +57,7 @@ export default {
     };
   },
   computed: {
-    ...mapWritableState(useModalStore, ["isOpen"]),
+    ...mapWritableState(useAuthModalStore, ["isOpen"]),
   },
 };
 </script>
