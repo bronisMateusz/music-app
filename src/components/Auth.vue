@@ -1,5 +1,5 @@
 <template>
-  <div id="auth-modal" v-show="isOpen !== false">
+  <div id="auth-modal" v-if="!!isOpen">
     <header>
       <!-- Modal Close Button -->
       <button
