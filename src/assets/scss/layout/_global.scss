@@ -27,18 +27,6 @@ a {
   }
 }
 
-.notice>* {
-  color: $text-notice !important;
-}
-
-.success>* {
-  color: $text-success !important;
-}
-
-.error>* {
-  color: $text-error !important;
-}
-
 body {
   background-color: $color-canvas;
   color: $text-primary;
@@ -51,34 +39,6 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-
-    >main {
-      padding: 112px 24px 48px;
-
-      section>h2 {
-        margin: 24px 0;
-      }
-
-      #playlist {
-        display: flex;
-        flex-direction: column;
-        list-style: none;
-        padding: 0;
-        row-gap: 18px;
-
-        li {
-          background-color: $color-element;
-          border-radius: 20px;
-          display: flex;
-          justify-content: space-between;
-          padding: 12px;
-
-          .options {
-            align-self: center;
-          }
-        }
-      }
-    }
 
     .song-details {
       display: grid;
@@ -108,5 +68,6 @@ body {
         font-size: 12px;
       }
     }
+
   }
 }

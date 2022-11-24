@@ -18,3 +18,32 @@
     </div>
   </div>
 </template>
+
+<style lang="scss">
+#player {
+  background-color: rgba($color: $color-element, $alpha: 0.5);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  bottom: 24px;
+  left: 24px;
+  position: fixed;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+
+  #player-controls {
+    display: flex;
+
+    button {
+      background-color: transparent;
+      border: none;
+      color: $text-secondary;
+
+      &:hover {
+        color: $text-primary;
+      }
+    }
+  }
+}
+</style>

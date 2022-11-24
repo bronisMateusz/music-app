@@ -29,6 +29,7 @@
         <button
           type="button"
           class="btn"
+          tabindex="-1"
           @click.prevent="isPasswordVisible = !isPasswordVisible"
         >
           <eva-icon
@@ -79,6 +80,7 @@ export default {
   methods: {
     ...mapActions(useUserStore, { authUser: "login" }),
     async login(values) {
+      this.$emit("close-modal");
       await this.authUser(values);
     },
 

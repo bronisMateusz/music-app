@@ -8,14 +8,14 @@
         <!-- Primary Navigation -->
         <ul>
           <!-- Navigation Links -->
-          <li v-if="!userStore.userLoggedIn">
+          <li v-if="!userLoggedIn">
             <button type="button" @click.prevent="toggleAuthModal">
               Login / Register
               <eva-icon name="person-outline" />
             </button>
           </li>
           <li v-else>
-            <button type="button" @click.prevent="userStore.logout">
+            <button type="button" @click.prevent="logout">
               Logout
               <eva-icon name="person-outline" />
             </button>
@@ -23,23 +23,45 @@
         </ul>
       </div>
     </nav>
+    <notification />
   </header>
 </template>
 
 <script>
-import { mapStores } from "pinia";
-import useModalStore from "@/stores/modal";
+import Notification from "@/components/Notification.vue";
+import { mapActions, mapWritableState } from "pinia";
+import useAuthModalStore from "@/stores/auth-modal";
 import useUserStore from "@/stores/user";
 
 export default {
   name: "AppHeader",
+  components: { Notification },
   computed: {
-    ...mapStores(useModalStore, useUserStore),
+    ...mapWritableState(useAuthModalStore, ["isOpen"]),
+    ...mapWritableState(useUserStore, ["userLoggedIn"]),
   },
   methods: {
+    ...mapActions(useUserStore, ["logout"]),
     toggleAuthModal() {
-      this.modalStore.isOpen = !this.modalStore.isOpen;
+      this.isOpen = !this.isOpen;
     },
   },
 };
 </script>
+
+<style lang="scss">
+#header {
+  background-color: $color-element;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 24px;
+
+  nav {
+    display: flex;
+  }
+}
+</style>

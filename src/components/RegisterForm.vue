@@ -1,9 +1,5 @@
 <template>
-  <vee-form
-    v-if="!reg_in_submission"
-    :validation-schema="registrationSchema"
-    @submit="register"
-  >
+  <vee-form :validation-schema="registrationSchema" @submit="register">
     <!-- Name -->
     <div>
       <label>
@@ -41,6 +37,7 @@
         <button
           type="button"
           class="btn"
+          tabindex="-1"
           @click.prevent="isPasswordVisible = !isPasswordVisible"
         >
           <eva-icon
@@ -75,6 +72,7 @@
         <button
           type="button"
           class="btn"
+          tabindex="-1"
           @click.prevent="isConfirmPasswordVisible = !isConfirmPasswordVisible"
         >
           <eva-icon
@@ -107,6 +105,7 @@
 <script>
 import { mapActions } from "pinia";
 import useUserStore from "@/stores/user";
+import useNotificationsStore from "@/stores/notifications";
 
 export default {
   data() {
@@ -120,36 +119,33 @@ export default {
         confirm_password: "passwordMismatch:@password",
         tos: "tos",
       },
-      reg_in_submission: false,
-      reg_alert_variant: "",
-      reg_alert_heading: "Notice",
-      reg_alert_msg: "Your account is being created",
     };
   },
-  props: ["tab", "reg_show_alert"],
+  props: ["tab"],
   methods: {
     ...mapActions(useUserStore, { createUser: "register" }),
+    ...mapActions(useNotificationsStore, ["setNotification"]),
 
     async register(values) {
-      this.reg_in_submission = true;
-      this.$emit("show-alert");
+      this.setNotification(
+        "notice",
+        "Please wait",
+        "We're creating your account"
+      );
 
       try {
         await this.createUser(values);
       } catch (error) {
-        this.$emit("register-status", {
-          reg_alert_variant: "error",
-          reg_alert_heading: "Error",
-          reg_alert_msg: "An unexpected error occurred. Please try again later",
-        });
+        this.setNotification(
+          "error",
+          "Sorry",
+          "We could't create your account"
+        );
         return;
       }
 
-      this.$emit("register-status", {
-        reg_alert_variant: "success",
-        reg_alert_heading: "Success",
-        reg_alert_msg: "Your account has been created",
-      });
+      this.$emit("close-modal");
+      this.setNotification("success", "Success", "Your account is ready!");
     },
 
     tabChange() {

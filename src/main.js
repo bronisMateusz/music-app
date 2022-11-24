@@ -7,8 +7,6 @@ import router from "./router";
 import VeeValidate from "./includes/validation";
 import { auth } from "./includes/firebase";
 
-import "./assets/scss/styles.scss";
-
 let app;
 auth.onAuthStateChanged(() => {
   if (!app) {

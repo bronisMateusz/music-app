@@ -10,3 +10,26 @@
     </ul>
   </footer>
 </template>
+
+<style lang="scss">
+#footer {
+  align-items: flex-start;
+  background-color: rgba($color: $color-element, $alpha: 0.25);
+  display: flex;
+  margin-top: auto;
+  min-height: 164px;
+  padding: 24px 52px;
+
+  ul {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+    padding: 0;
+
+    a {
+      display: block;
+      padding: 15px;
+    }
+  }
+}
+</style>
