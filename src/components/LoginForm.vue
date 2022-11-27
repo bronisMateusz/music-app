@@ -65,9 +65,9 @@
 <script>
 import { mapActions } from "pinia";
 import useUserStore from "@/stores/user";
+import useNotificationsStore from "@/stores/notifications";
 
 export default {
-  props: ["tab"],
   data() {
     return {
       isPasswordVisible: false,
@@ -77,11 +77,20 @@ export default {
       },
     };
   },
+  props: ["tab"],
   methods: {
     ...mapActions(useUserStore, { authUser: "login" }),
+    ...mapActions(useNotificationsStore, ["setNotification"]),
     async login(values) {
+      try {
+        await this.authUser(values);
+      } catch (error) {
+        this.setNotification("error", "Sorry", "We couldn't log you in");
+        return;
+      }
+
       this.$emit("close-modal");
-      await this.authUser(values);
+      this.setNotification("success", "Success", "You are logged in");
     },
 
     tabChange() {
