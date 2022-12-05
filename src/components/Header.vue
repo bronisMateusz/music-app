@@ -1,70 +1,100 @@
 <template>
   <header id="header">
-    <nav>
-      <!-- Page Name -->
-      <h1>Home</h1>
-
-      <div>
-        <!-- Primary Navigation -->
-        <ul>
-          <!-- Navigation Links -->
-          <li v-if="!userLoggedIn">
-            <button title="Login / Register" @click.prevent="toggleAuthModal">
-              <eva-icon name="person-outline" />
-            </button>
-          </li>
-          <li v-else>
-            <button title="Logout" @click.prevent="logout">
-              <eva-icon name="person-outline" />
-            </button>
-          </li>
-        </ul>
-      </div>
-    </nav>
+    <!-- Page Name -->
+    <h1>Home</h1>
+    <!-- Searchbar -->
+    <div id="searchbar">
+      <label for="search">Search</label>
+      <input id="search" type="text" placeholder="Search..." />
+      <eva-icon name="search-outline" height="24" width="24" />
+      <!-- Auth Button -->
+      <auth-button />
+    </div>
+    <!-- Notification -->
     <notification />
   </header>
 </template>
 
 <script>
+import AuthButton from "@/components/AuthButton.vue";
 import Notification from "@/components/Notification.vue";
-import { mapActions, mapWritableState } from "pinia";
-import useAuthModalStore from "@/stores/auth-modal";
-import useUserStore from "@/stores/user";
 
 export default {
-  name: "AppHeader",
-  components: { Notification },
-  computed: {
-    ...mapWritableState(useAuthModalStore, ["isOpen"]),
-    ...mapWritableState(useUserStore, ["userLoggedIn"]),
-  },
-  methods: {
-    ...mapActions(useUserStore, ["logout"]),
-    toggleAuthModal() {
-      this.isOpen = !this.isOpen;
-    },
-  },
+  components: { AuthButton, Notification },
 };
 </script>
 
 <style lang="scss">
 #header {
-  background-color: $color-element;
+  @include blurred-bg;
   display: flex;
-  align-items: center;
-  position: fixed;
-  top: 0;
+  flex-direction: column;
+  gap: 8px;
   left: 0;
+  padding: 24px 24px 12px 24px;
+  position: fixed;
   right: 0;
-  padding: 24px;
+  top: 0;
 
-  nav {
-    display: flex;
+  #searchbar {
+    position: relative;
+
+    label {
+      @include visually-hidden;
+    }
+
+    input {
+      background-color: $color-canvas;
+      border-radius: 50px;
+      border-style: none;
+      color: $text-primary;
+      font-size: 16px;
+      padding: 17px 17px 17px 52px;
+      width: 100%;
+    }
+
+    > svg {
+      position: absolute !important;
+      left: 16px;
+      top: 50% !important;
+      transform: translateY(-50%);
+    }
+
+    .auth-btn {
+      height: 40px;
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+
+      svg {
+        height: 22px;
+        width: 22px;
+      }
+    }
   }
 
   @media (min-width: 992px) {
+    align-items: center;
     background-color: $color-canvas;
+    flex-direction: row;
+    justify-content: space-between;
     margin-left: 100px;
+
+    #searchbar {
+      width: 100%;
+      max-width: 600px;
+
+      input {
+        background-color: $color-element;
+        border: 1px solid rgba($color: $text-primary, $alpha: 0.2);
+      }
+
+      .auth-btn {
+        display: none;
+      }
+    }
   }
 }
 </style>

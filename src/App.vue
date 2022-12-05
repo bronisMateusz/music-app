@@ -118,7 +118,7 @@ export default {
 
 <style lang="scss">
 main {
-  padding: 112px 24px 48px;
+  padding: 138px 24px 48px;
   flex-direction: column;
 
   section > h2 {
@@ -148,6 +148,7 @@ main {
 @media (min-width: 992px) {
   main {
     margin-left: 100px;
+    padding-top: 90px;
   }
 }
 </style>

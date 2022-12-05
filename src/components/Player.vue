@@ -21,7 +21,7 @@
 
 <style lang="scss">
 #player {
-  @include blurred-bg();
+  @include blurred-bg;
   border-radius: 20px;
   bottom: 96px;
   left: 12px;

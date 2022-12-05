@@ -74,6 +74,7 @@ export default {
   overflow: hidden;
   position: absolute;
   right: 0;
+  z-index: 1;
 
   header {
     background-color: $color-element;

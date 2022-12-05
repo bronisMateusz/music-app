@@ -1,7 +1,8 @@
 <template>
   <nav id="main-nav">
+    <!-- Auth Button -->
+    <auth-button />
     <ul>
-      <li></li>
       <li>
         <a class="active" href="/" title="Home">
           <eva-icon name="home-outline" height="32" width="32" />
@@ -26,7 +27,13 @@
   </nav>
 </template>
 
-<script></script>
+<script>
+import AuthButton from "@/components/AuthButton.vue";
+
+export default {
+  components: { AuthButton },
+};
+</script>
 <style lang="scss">
 #main-nav {
   @include blurred-bg;
@@ -36,6 +43,10 @@
   bottom: 0;
   z-index: 1;
   padding: 17px;
+
+  .auth-btn {
+    display: none;
+  }
 
   ul {
     display: flex;
@@ -50,14 +61,19 @@
   }
 
   @media (min-width: 992px) {
+    padding: 36px 20px;
     right: inherit;
     top: 0;
-    width: 100px;
+
+    .auth-btn {
+      display: initial;
+    }
 
     ul {
       align-items: center;
       flex-direction: column;
       height: 100%;
+      padding-bottom: 114px;
     }
   }
 }
