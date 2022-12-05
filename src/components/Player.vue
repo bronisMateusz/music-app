@@ -8,11 +8,11 @@
     </div>
     <div id="player-controls">
       <!-- Play/Pause Button -->
-      <button type="button">
+      <button title="Play">
         <eva-icon name="arrow-right-outline" height="48" width="48" />
       </button>
-      <!-- Rewind Right Button -->
-      <button type="button">
+      <!-- Next Button -->
+      <button title="Next">
         <eva-icon name="rewind-right-outline" height="48" width="48" />
       </button>
     </div>
@@ -34,16 +34,6 @@
 
   #player-controls {
     display: flex;
-
-    button {
-      background-color: transparent;
-      border: none;
-      color: $text-secondary;
-
-      &:hover {
-        color: $text-primary;
-      }
-    }
   }
 }
 </style>

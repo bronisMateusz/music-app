@@ -3,7 +3,7 @@
     <header>
       <!-- Modal Close Button -->
       <button
-        class="btn"
+        class="close-btn"
         value="cancel"
         title="Close"
         @click.prevent="isOpen = false"
@@ -86,7 +86,7 @@ export default {
     top: 0;
     z-index: 1;
 
-    .btn {
+    .close-btn {
       align-self: flex-end;
       margin: -7px -7px 0 0;
       padding: 0;

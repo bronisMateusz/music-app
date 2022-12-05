@@ -9,14 +9,12 @@
         <ul>
           <!-- Navigation Links -->
           <li v-if="!userLoggedIn">
-            <button type="button" @click.prevent="toggleAuthModal">
-              Login / Register
+            <button title="Login / Register" @click.prevent="toggleAuthModal">
               <eva-icon name="person-outline" />
             </button>
           </li>
           <li v-else>
-            <button type="button" @click.prevent="logout">
-              Logout
+            <button title="Logout" @click.prevent="logout">
               <eva-icon name="person-outline" />
             </button>
           </li>
