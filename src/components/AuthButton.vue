@@ -7,7 +7,7 @@
   >
     <eva-icon name="people-outline" height="28" width="28" />
   </button>
-  <button v-else title="Logout" @click.prevent="logout">
+  <button v-else class="auth-btn" title="Logout" @click.prevent="logout">
     <eva-icon name="people-outline" height="28" width="28" />
   </button>
 </template>
