@@ -3,6 +3,7 @@
   <app-header />
   <!-- Main Content -->
   <main>
+    <navigation />
     <section>
       <h2>Songs</h2>
       <!-- Playlist -->
@@ -81,7 +82,7 @@
   <player />
 
   <!-- Auth Modal -->
-  <auth />
+  <auth-modal />
 
   <!-- Footer -->
   <app-footer />
@@ -89,8 +90,9 @@
 
 <script>
 import AppHeader from "@/components/Header.vue";
+import Navigation from "@/components/Navigation.vue";
 import Player from "@/components/Player.vue";
-import Auth from "@/components/Auth.vue";
+import AuthModal from "@/components/AuthModal.vue";
 import AppFooter from "@/components/Footer.vue";
 import { mapWritableState } from "pinia";
 import useUserStore from "@/stores/user";
@@ -100,8 +102,9 @@ export default {
   name: "App",
   components: {
     AppHeader,
+    Navigation,
     Player,
-    Auth,
+    AuthModal,
     AppFooter,
   },
   computed: {
@@ -115,7 +118,8 @@ export default {
 
 <style lang="scss">
 main {
-  padding: 112px 24px 48px;
+  padding: 138px 24px 48px;
+  flex-direction: column;
 
   section > h2 {
     margin: 24px 0;
@@ -139,6 +143,12 @@ main {
         align-self: center;
       }
     }
+  }
+}
+@media (min-width: 992px) {
+  main {
+    margin-left: 100px;
+    padding-top: 90px;
   }
 }
 </style>

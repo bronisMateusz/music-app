@@ -27,18 +27,20 @@
           autocomplete="on"
         />
         <button
-          type="button"
-          class="btn"
+          v-if="!isPasswordVisible"
           tabindex="-1"
-          @click.prevent="isPasswordVisible = !isPasswordVisible"
+          title="Show password"
+          @click.prevent="togglePasswordVisibility"
         >
-          <eva-icon
-            v-if="!isPasswordVisible"
-            name="eye-outline"
-            height="18"
-            width="18"
-          />
-          <eva-icon v-else name="eye-off-outline" height="18" width="18" />
+          <eva-icon name="eye-outline" height="18" width="18" />
+        </button>
+        <button
+          v-else
+          tabindex="-1"
+          title="Hide password"
+          @click.prevent="togglePasswordVisibility"
+        >
+          <eva-icon name="eye-off-outline" height="18" width="18" />
         </button>
       </label>
       <ErrorMessage name="password" />
@@ -54,7 +56,7 @@
       <!-- Forgot password-->
       <a href="#" id="forgot-password">Forgot password</a>
     </div>
-    <button type="submit">Log in</button>
+    <button type="submit" title="Log in">Log in</button>
     <div class="form-group">
       <p>Don't have an account?</p>
       <a href="#" @click.prevent="tabChange">Sign up for free</a>
@@ -95,6 +97,10 @@ export default {
 
     tabChange() {
       this.$emit("tab-change");
+    },
+
+    togglePasswordVisibility() {
+      this.isPasswordVisible = !this.isPasswordVisible;
     },
   },
 };

@@ -29,3 +29,8 @@
   // Standard version (Firefox only for now)
   scrollbar-color: $color-scrollbar-thumb $color-scrollbar-track;
 }
+
+@mixin blurred-bg {
+  background-color: rgba($color: $color-element, $alpha: 0.5);
+  backdrop-filter: blur(15px);
+}

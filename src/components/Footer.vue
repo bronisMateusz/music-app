@@ -17,7 +17,7 @@
   background-color: rgba($color: $color-element, $alpha: 0.25);
   display: flex;
   margin-top: auto;
-  min-height: 164px;
+  min-height: 273px;
   padding: 24px 52px;
 
   ul {
@@ -30,6 +30,11 @@
       display: block;
       padding: 15px;
     }
+  }
+
+  @media (min-width: 992px) {
+    margin-left: 100px;
+    min-height: 214px;
   }
 }
 </style>

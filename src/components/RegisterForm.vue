@@ -35,18 +35,20 @@
           autocomplete="on"
         />
         <button
-          type="button"
-          class="btn"
+          v-if="!isPasswordVisible"
           tabindex="-1"
+          title="Show password"
           @click.prevent="isPasswordVisible = !isPasswordVisible"
         >
-          <eva-icon
-            v-if="!isPasswordVisible"
-            name="eye-outline"
-            height="18"
-            width="18"
-          />
-          <eva-icon v-else name="eye-off-outline" height="18" width="18" />
+          <eva-icon name="eye-outline" height="18" width="18" />
+        </button>
+        <button
+          v-else
+          tabindex="-1"
+          title="Hide password"
+          @click.prevent="isPasswordVisible = !isPasswordVisible"
+        >
+          <eva-icon name="eye-off-outline" height="18" width="18" />
         </button>
       </label>
       <ErrorMessage name="password" />
@@ -70,18 +72,20 @@
           autocomplete="on"
         />
         <button
-          type="button"
-          class="btn"
+          v-if="!isConfirmPasswordVisible"
           tabindex="-1"
+          title="Show password"
           @click.prevent="isConfirmPasswordVisible = !isConfirmPasswordVisible"
         >
-          <eva-icon
-            v-if="!isConfirmPasswordVisible"
-            name="eye-outline"
-            height="18"
-            width="18"
-          />
-          <eva-icon v-else name="eye-off-outline" height="18" width="18" />
+          <eva-icon name="eye-outline" height="18" width="18" />
+        </button>
+        <button
+          v-else
+          tabindex="-1"
+          title="Hide password"
+          @click.prevent="isConfirmPasswordVisible = !isConfirmPasswordVisible"
+        >
+          <eva-icon name="eye-off-outline" height="18" width="18" />
         </button>
       </label>
       <ErrorMessage name="confirm_password" />
@@ -94,7 +98,7 @@
       </label>
       <ErrorMessage name="tos" />
     </div>
-    <button type="submit">Create account</button>
+    <button type="submit" title="Create account">Create account</button>
     <div class="form-group">
       <p>Already have an account?</p>
       <a href="#" @click.prevent="tabChange">Log in</a>

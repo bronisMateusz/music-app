@@ -3,7 +3,7 @@
     <header>
       <!-- Modal Close Button -->
       <button
-        class="btn"
+        class="close-btn"
         value="cancel"
         title="Close"
         @click.prevent="isOpen = false"
@@ -48,7 +48,6 @@ import LoginForm from "@/components/LoginForm.vue";
 import RegisterForm from "@/components/RegisterForm.vue";
 
 export default {
-  name: "Auth",
   components: {
     LoginForm,
     RegisterForm,
@@ -75,6 +74,7 @@ export default {
   overflow: hidden;
   position: absolute;
   right: 0;
+  z-index: 1;
 
   header {
     background-color: $color-element;
@@ -86,7 +86,7 @@ export default {
     top: 0;
     z-index: 1;
 
-    .btn {
+    .close-btn {
       align-self: flex-end;
       margin: -7px -7px 0 0;
       padding: 0;
@@ -237,10 +237,8 @@ export default {
       }
     }
   }
-}
 
-@media (min-width: 992px) {
-  #auth-modal {
+  @media (min-width: 992px) {
     bottom: 50%;
     border-radius: 20px;
     left: 50%;

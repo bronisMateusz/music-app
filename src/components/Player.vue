@@ -8,11 +8,11 @@
     </div>
     <div id="player-controls">
       <!-- Play/Pause Button -->
-      <button type="button">
+      <button title="Play">
         <eva-icon name="arrow-right-outline" height="48" width="48" />
       </button>
-      <!-- Rewind Right Button -->
-      <button type="button">
+      <!-- Next Button -->
+      <button title="Next">
         <eva-icon name="rewind-right-outline" height="48" width="48" />
       </button>
     </div>
@@ -21,29 +21,25 @@
 
 <style lang="scss">
 #player {
-  background-color: rgba($color: $color-element, $alpha: 0.5);
-  backdrop-filter: blur(15px);
+  @include blurred-bg;
   border-radius: 20px;
-  bottom: 24px;
-  left: 24px;
+  bottom: 96px;
+  left: 12px;
   position: fixed;
-  right: 24px;
+  right: 12px;
   display: flex;
   align-items: center;
   padding: 12px;
 
   #player-controls {
     display: flex;
+  }
 
-    button {
-      background-color: transparent;
-      border: none;
-      color: $text-secondary;
-
-      &:hover {
-        color: $text-primary;
-      }
-    }
+  @media (min-width: 992px) {
+    bottom: 24px;
+    left: 24px;
+    margin-left: 100px;
+    right: 24px;
   }
 }
 </style>

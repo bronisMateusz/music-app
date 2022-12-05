@@ -28,9 +28,8 @@
       />
       <button
         v-else
-        type="button"
-        class="btn"
-        title="close"
+        class="close-btn"
+        title="Close"
         @mouseleave="showCloseButton = false"
         @click.prevent="hideNotification"
       >
@@ -121,7 +120,7 @@ export default {
       top: 0 !important;
     }
 
-    .btn {
+    .close-btn {
       height: 48px;
       padding: 0;
     }
