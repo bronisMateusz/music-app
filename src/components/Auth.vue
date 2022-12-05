@@ -237,10 +237,8 @@ export default {
       }
     }
   }
-}
 
-@media (min-width: 992px) {
-  #auth-modal {
+  @media (min-width: 992px) {
     bottom: 50%;
     border-radius: 20px;
     left: 50%;

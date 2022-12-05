@@ -31,5 +31,10 @@
       padding: 15px;
     }
   }
+
+  @media (min-width: 992px) {
+    margin-left: 100px;
+    min-height: 214px;
+  }
 }
 </style>

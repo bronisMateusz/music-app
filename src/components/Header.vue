@@ -61,5 +61,10 @@ export default {
   nav {
     display: flex;
   }
+
+  @media (min-width: 992px) {
+    background-color: $color-canvas;
+    margin-left: 100px;
+  }
 }
 </style>

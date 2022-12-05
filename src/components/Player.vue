@@ -21,19 +21,25 @@
 
 <style lang="scss">
 #player {
-  background-color: rgba($color: $color-element, $alpha: 0.5);
-  backdrop-filter: blur(15px);
+  @include blurred-bg();
   border-radius: 20px;
-  bottom: 24px;
-  left: 24px;
+  bottom: 96px;
+  left: 12px;
   position: fixed;
-  right: 24px;
+  right: 12px;
   display: flex;
   align-items: center;
   padding: 12px;
 
   #player-controls {
     display: flex;
+  }
+
+  @media (min-width: 992px) {
+    bottom: 24px;
+    left: 24px;
+    margin-left: 100px;
+    right: 24px;
   }
 }
 </style>
