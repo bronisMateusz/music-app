@@ -82,7 +82,7 @@
   <player />
 
   <!-- Auth Modal -->
-  <auth />
+  <auth-modal />
 
   <!-- Footer -->
   <app-footer />
@@ -92,7 +92,7 @@
 import AppHeader from "@/components/Header.vue";
 import Navigation from "@/components/Navigation.vue";
 import Player from "@/components/Player.vue";
-import Auth from "@/components/Auth.vue";
+import AuthModal from "@/components/AuthModal.vue";
 import AppFooter from "@/components/Footer.vue";
 import { mapWritableState } from "pinia";
 import useUserStore from "@/stores/user";
@@ -104,7 +104,7 @@ export default {
     AppHeader,
     Navigation,
     Player,
-    Auth,
+    AuthModal,
     AppFooter,
   },
   computed: {
