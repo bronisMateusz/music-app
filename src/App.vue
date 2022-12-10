@@ -1,81 +1,11 @@
 <template>
   <!-- Header -->
   <app-header />
+
   <!-- Main Content -->
   <main>
     <navigation />
-    <section>
-      <h2>Songs</h2>
-      <!-- Playlist -->
-      <ul id="playlist">
-        <li>
-          <div class="song-details">
-            <span class="song-cover" />
-            <a href="#" class="song-title">Song Title</a>
-            <span class="song-artist">Artist Name</span>
-          </div>
-          <eva-icon
-            class="options"
-            name="more-horizontal-outline"
-            height="28"
-            width="28"
-          />
-        </li>
-        <li>
-          <div class="song-details">
-            <span class="song-cover" />
-            <a href="#" class="song-title">Song Title</a>
-            <span class="song-artist">Artist Name</span>
-          </div>
-          <eva-icon
-            class="options"
-            name="more-horizontal-outline"
-            height="28"
-            width="28"
-          />
-        </li>
-        <li>
-          <div class="song-details">
-            <span class="song-cover" />
-            <a href="#" class="song-title">Song Title</a>
-            <span class="song-artist">Artist Name</span>
-          </div>
-          <eva-icon
-            class="options"
-            name="more-horizontal-outline"
-            height="28"
-            width="28"
-          />
-        </li>
-        <li>
-          <div class="song-details">
-            <span class="song-cover" />
-            <a href="#" class="song-title">Song Title</a>
-            <span class="song-artist">Artist Name</span>
-          </div>
-          <eva-icon
-            class="options"
-            name="more-horizontal-outline"
-            height="28"
-            width="28"
-          />
-        </li>
-        <li>
-          <div class="song-details">
-            <span class="song-cover" />
-            <a href="#" class="song-title">Song Title</a>
-            <span class="song-artist">Artist Name</span>
-          </div>
-          <eva-icon
-            class="options"
-            name="more-horizontal-outline"
-            height="28"
-            width="28"
-          />
-        </li>
-      </ul>
-      <!-- .. end Playlist -->
-    </section>
+    <router-view />
   </main>
 
   <!-- Player -->

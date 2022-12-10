@@ -4,24 +4,24 @@
     <auth-button />
     <ul>
       <li>
-        <a class="active" href="/" title="Home">
+        <router-link to="/" title="Home">
           <eva-icon name="home-outline" height="32" width="32" />
-        </a>
+        </router-link>
       </li>
       <li>
-        <a href="/favorites" title="Favorites">
+        <router-link to="/favorites" title="Favorites">
           <eva-icon name="heart-outline" height="32" width="32" />
-        </a>
+        </router-link>
       </li>
       <li>
-        <a href="/library" title="Library">
+        <router-link to="/library" title="Library">
           <eva-icon name="folder-outline" height="32" width="32" />
-        </a>
+        </router-link>
       </li>
       <li>
-        <a href="/discover" title="Discover">
+        <router-link to="/discover" title="Discover">
           <eva-icon name="compass-outline" height="32" width="32" />
-        </a>
+        </router-link>
       </li>
     </ul>
   </nav>
@@ -55,8 +55,12 @@ export default {
     list-style: none;
     padding: 0;
 
-    a:not(.active) {
+    a:not(.router-link-active) {
       color: $text-secondary;
+
+      &:hover {
+        color: $text-primary;
+      }
     }
   }
 
