@@ -4,22 +4,22 @@
     <auth-button />
     <ul>
       <li>
-        <router-link to="/" title="Home">
+        <router-link :to="{ name: 'home' }" title="Home">
           <eva-icon name="home-outline" height="32" width="32" />
         </router-link>
       </li>
       <li>
-        <router-link to="/favorites" title="Favorites">
+        <router-link :to="{ name: 'favorites' }" title="Favorites">
           <eva-icon name="heart-outline" height="32" width="32" />
         </router-link>
       </li>
       <li>
-        <router-link to="/library" title="Library">
+        <router-link :to="{ name: 'library' }" title="Library">
           <eva-icon name="folder-outline" height="32" width="32" />
         </router-link>
       </li>
       <li>
-        <router-link to="/discover" title="Discover">
+        <router-link :to="{ name: 'discover' }" title="Discover">
           <eva-icon name="compass-outline" height="32" width="32" />
         </router-link>
       </li>

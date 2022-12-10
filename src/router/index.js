@@ -6,18 +6,22 @@ import Discover from "@/views/Favorites.vue";
 
 const routes = [
   {
+    name: "home",
     path: "/",
     component: Home,
   },
   {
+    name: "favorites",
     path: "/favorites",
     component: Favorites,
   },
   {
+    name: "library",
     path: "/library",
     component: Library,
   },
   {
+    name: "discover",
     path: "/discover",
     component: Discover,
   },
