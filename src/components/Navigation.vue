@@ -23,6 +23,11 @@
           <eva-icon name="compass-outline" height="32" width="32" />
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'upload' }" title="Upload">
+          <eva-icon name="cloud-upload-outline" height="32" width="32" />
+        </router-link>
+      </li>
     </ul>
   </nav>
 </template>
