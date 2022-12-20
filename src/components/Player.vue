@@ -31,6 +31,10 @@
   align-items: center;
   padding: 12px;
 
+  .song-details {
+    @include song-details(2);
+  }
+
   #player-controls {
     display: flex;
   }

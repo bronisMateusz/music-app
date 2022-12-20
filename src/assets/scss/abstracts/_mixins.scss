@@ -11,8 +11,8 @@
 
   // For Chrome & Safari
   &::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
   }
 
   &::-webkit-scrollbar-thumb {
@@ -33,4 +33,85 @@
 @mixin blurred-bg {
   background-color: rgba($color: $color-element, $alpha: 0.5);
   backdrop-filter: blur(15px);
+}
+
+@mixin songs-list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0;
+  row-gap: 18px;
+
+  li {
+    background-color: $color-element;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+
+    .options {
+      align-self: center;
+    }
+  }
+}
+
+@mixin song-details($rows-quantity) {
+  $cover-column-height: calc($rows-quantity + 1);
+
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  grid-template-rows: repeat($rows-quantity, 1fr);
+  width: 100%;
+  row-gap: 8px;
+
+  .song-cover {
+    background: conic-gradient(from 180deg at 50% 50%,
+        #616db9 0deg,
+        #bfc5fc 360deg);
+    border-radius: 15px;
+    height: 70px;
+    grid-template-columns: 1/2;
+    grid-row-start: 1;
+    grid-row-end: $cover-column-height;
+    width: 70px;
+  }
+
+  .song-title {
+    align-self: end;
+    font-weight: 700;
+    grid-area: 1 / 2 / 2 / 3;
+  }
+
+  .song-artist {
+    align-self: start;
+    color: $text-secondary;
+    grid-area: 2 / 2 / 3 / 3;
+    font-size: 12px;
+  }
+}
+
+@mixin progress-bar {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  width: 100%;
+
+  .bar {
+    background-color: $text-secondary;
+    border-radius: 50px;
+    height: 4px;
+    width: 100%;
+
+    .inner-bar {
+      width: 60%;
+      height: 6px;
+      background-color: $text-primary;
+      border-radius: 50px;
+      margin-top: -1px;
+    }
+  }
+
+  span {
+    white-space: nowrap;
+  }
 }
