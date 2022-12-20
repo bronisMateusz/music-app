@@ -25,6 +25,26 @@
   <!-- Upload progress -->
   <section>
     <h2>Upload progress</h2>
+    <ul id="upload-progress">
+      <li v-for="upload in uploads" :key="upload.name">
+        <div class="song-details">
+          <span class="song-cover" />
+          <a href="#" class="song-title">{{ upload.name }}</a>
+          <span class="song-artist">Artist Name</span>
+          <!-- Progress bar -->
+          <div class="progress-bar">
+            <div class="bar">
+              <div
+                class="inner-bar"
+                :style="{ width: upload.current_progress + '%' }"
+              />
+            </div>
+            <span class="progress-value">{{ upload.current_progress }} %</span>
+          </div>
+        </div>
+        <eva-icon class="options" name="close-outline" height="28" width="28" />
+      </li>
+    </ul>
   </section>
   <!-- Uploaded albums -->
   <section>
@@ -33,7 +53,7 @@
   <!-- Uploaded songs -->
   <section>
     <h2>Uploaded songs</h2>
-    <ul id="playlist">
+    <ul id="uploaded-songs">
       <li>
         <div class="song-details">
           <span class="song-cover" />
@@ -65,12 +85,13 @@
 </template>
 <script>
 import { storage } from "@/includes/firebase";
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytesResumable } from "firebase/storage";
 
 export default {
   data() {
     return {
       is_dragover: false,
+      uploads: [],
     };
   },
   methods: {
@@ -82,7 +103,21 @@ export default {
         if (file.type !== "audio/mpeg") return;
 
         const songsRef = ref(storage, `songs/${file.name}`);
-        uploadBytes(songsRef, file);
+        const task = uploadBytesResumable(songsRef, file);
+
+        const uploadIndex =
+          this.uploads.push({
+            task,
+            current_progress: 0,
+            name: file.name,
+          }) - 1;
+
+        task.on("state_changed", (snapshot) => {
+          const progress = Math.ceil(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          this.uploads[uploadIndex].current_progress = progress;
+        });
       });
     },
   },
@@ -114,6 +149,33 @@ export default {
     p {
       font-size: 1.375rem;
       margin-bottom: 12px;
+    }
+  }
+}
+
+#upload-progress,
+#uploaded-songs {
+  @include songs-list;
+
+  .song-details {
+    @include song-details(2);
+  }
+}
+
+#upload-progress {
+  .song-details {
+    @include song-details(3);
+
+    .progress-bar {
+      @include progress-bar;
+      grid-area: 3 / 2 / 4 / 3;
+      margin-right: 30px;
+      width: calc(100% - 24px);
+
+      .progress-value {
+        min-width: 2.75rem;
+        text-align: right;
+      }
     }
   }
 }
