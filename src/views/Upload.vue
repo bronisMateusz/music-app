@@ -89,8 +89,9 @@
   </section>
 </template>
 <script>
-import { storage } from "@/includes/firebase";
-import { ref, uploadBytesResumable } from "firebase/storage";
+import { auth, db, storage } from "@/includes/firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { addDoc, collection } from "firebase/firestore";
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
 
@@ -137,7 +138,17 @@ export default {
               "We couldn't upload your files"
             );
           },
-          () => {
+          async () => {
+            const song = {
+              display_name: auth.currentUser.displayName,
+              genre: "",
+              modified_name: task.snapshot.ref.name,
+              original_name: task.snapshot.ref.name,
+              uid: auth.currentUser.uid,
+              url: await getDownloadURL(task.snapshot.ref),
+            };
+            await addDoc(collection(db, "songs"), song);
+
             this.setNotification(
               "success",
               "Success!",
