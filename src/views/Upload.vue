@@ -8,7 +8,7 @@
       @dragover.prevent.stop="is_dragover = true"
       @dragenter.prevent.stop="is_dragover = true"
       @dragleave.prevent.stop="is_dragover = false"
-      @drop.prevent.stop="upload($event)"
+      @drop.prevent.stop="getMetadata(file)"
     >
       <div v-if="!is_dragover">
         <eva-icon name="cloud-upload-outline" height="72" width="72" />
@@ -119,6 +119,10 @@ export default {
           this.uploads[uploadIndex].current_progress = progress;
         });
       });
+    },
+    async getMetadata(file) {
+      const metadata = await this.$getMetadata(file);
+      console.log(metadata);
     },
   },
 };
