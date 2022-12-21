@@ -140,8 +140,6 @@ export default {
     justify-content: center;
     align-items: center;
     height: 100%;
-    padding: 36px;
-    text-align: center;
 
     svg,
     span {
@@ -175,7 +173,6 @@ export default {
     .progress-bar {
       @include progress-bar;
       grid-area: 3 / 2 / 4 / 3;
-      height: fit-content;
       margin-right: 30px;
       width: calc(100% - 24px);
 

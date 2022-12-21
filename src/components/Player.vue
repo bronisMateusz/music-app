@@ -23,7 +23,7 @@
 #player {
   @include blurred-bg;
   border-radius: 20px;
-  bottom: 82px;
+  bottom: 96px;
   left: 12px;
   position: fixed;
   right: 12px;

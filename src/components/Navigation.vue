@@ -55,7 +55,8 @@ export default {
 
   ul {
     display: flex;
-    justify-content: space-around;
+    gap: 52px;
+    justify-content: center;
     list-style: none;
     padding: 0;
 
@@ -80,9 +81,7 @@ export default {
     ul {
       align-items: center;
       flex-direction: column;
-      gap: 52px;
       height: 100%;
-      justify-content: center;
       padding-bottom: 114px;
     }
   }
