@@ -6,7 +6,6 @@ import App from "./App.vue";
 import router from "./router";
 import VeeValidate from "./includes/validation";
 import { auth } from "./includes/firebase";
-import MusicMetadata from "./includes/music-metadata";
 
 let app;
 auth.onAuthStateChanged(() => {
@@ -17,7 +16,6 @@ auth.onAuthStateChanged(() => {
     app.use(router);
     app.use(evaIcons);
     app.use(VeeValidate);
-    app.use(MusicMetadata);
 
     app.mount("#app");
   }
