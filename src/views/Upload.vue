@@ -27,7 +27,7 @@
     <h2>Upload progress</h2>
     <ul id="upload-progress">
       <li v-for="upload in uploads" :key="upload.name">
-        <div class="song-details">
+        <div class="song-details" :class="upload.variant">
           <span class="song-cover" />
           <a href="#" class="song-title">{{ upload.name }}</a>
           <span class="song-artist">Artist Name</span>
@@ -39,7 +39,12 @@
                 :style="{ width: upload.current_progress + '%' }"
               />
             </div>
-            <span class="progress-value">{{ upload.current_progress }} %</span>
+            <span v-if="upload.variant === 'error'" class="progress-value">
+              error
+            </span>
+            <span v-else class="progress-value">
+              {{ upload.current_progress }}&nbsp;%
+            </span>
           </div>
         </div>
         <eva-icon class="options" name="close-outline" height="28" width="28" />
@@ -86,6 +91,8 @@
 <script>
 import { storage } from "@/includes/firebase";
 import { ref, uploadBytesResumable } from "firebase/storage";
+import { mapActions } from "pinia";
+import useNotificationsStore from "@/stores/notifications";
 
 export default {
   data() {
@@ -95,6 +102,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(useNotificationsStore, ["setNotification"]),
     upload($event) {
       this.is_dragover = false;
 
@@ -110,14 +118,33 @@ export default {
             task,
             current_progress: 0,
             name: file.name,
+            variant: "",
           }) - 1;
 
-        task.on("state_changed", (snapshot) => {
-          const progress = Math.ceil(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          this.uploads[uploadIndex].current_progress = progress;
-        });
+        task.on(
+          "state_changed",
+          (snapshot) => {
+            const progress = Math.ceil(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            this.uploads[uploadIndex].current_progress = progress;
+          },
+          () => {
+            this.uploads[uploadIndex].variant = "error";
+            this.setNotification(
+              "error",
+              "Something went wrong",
+              "We couldn't upload your files"
+            );
+          },
+          () => {
+            this.setNotification(
+              "success",
+              "Success!",
+              "Your files just landed on the server"
+            );
+          }
+        );
       });
     },
   },
@@ -136,6 +163,8 @@ export default {
     justify-content: center;
     align-items: center;
     height: 100%;
+    padding: 36px;
+    text-align: center;
 
     svg,
     span {
@@ -166,9 +195,22 @@ export default {
   .song-details {
     @include song-details(3);
 
+    &.error {
+      .song-title,
+      .song-artist,
+      .progress-bar {
+        color: $text-error;
+      }
+
+      .progress-bar .bar .inner-bar {
+        background-color: $text-error;
+      }
+    }
+
     .progress-bar {
       @include progress-bar;
       grid-area: 3 / 2 / 4 / 3;
+      height: fit-content;
       margin-right: 30px;
       width: calc(100% - 24px);
 

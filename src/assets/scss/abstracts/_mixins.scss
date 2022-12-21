@@ -58,11 +58,11 @@
 @mixin song-details($rows-quantity) {
   $cover-column-height: calc($rows-quantity + 1);
 
+  align-items: center;
   display: grid;
   grid-template-columns: 82px 1fr;
   grid-template-rows: repeat($rows-quantity, 1fr);
   width: 100%;
-  row-gap: 8px;
 
   .song-cover {
     background: conic-gradient(from 180deg at 50% 50%,
@@ -83,10 +83,19 @@
   }
 
   .song-artist {
-    align-self: start;
     color: $text-secondary;
     grid-area: 2 / 2 / 3 / 3;
     font-size: 12px;
+  }
+
+  @media (min-width: 992px) {
+    .song-title {
+      font-size: 1.25rem;
+    }
+
+    .song-artist {
+      font-size: 1rem;
+    }
   }
 }
 
