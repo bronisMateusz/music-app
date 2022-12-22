@@ -32,7 +32,7 @@
     </div>
   </section>
   <!-- Upload progress -->
-  <section>
+  <section v-show="uploads.length > 0">
     <h2>Upload progress</h2>
     <ul id="upload-progress">
       <li v-for="upload in uploads" :key="upload.name">
@@ -56,50 +56,35 @@
             </span>
           </div>
         </div>
+        <button>
+          <eva-icon name="more-horizontal-outline" height="28" width="28" />
+        </button>
         <button title="Cancel upload" @click.prevent="cancelUpload">
-          <eva-icon
-            class="options"
-            name="close-outline"
-            height="28"
-            width="28"
-          />
+          <eva-icon name="close-outline" height="28" width="28" />
         </button>
       </li>
     </ul>
   </section>
   <!-- Uploaded albums -->
-  <section>
+  <section class="hidden">
     <h2>Uploaded albums</h2>
   </section>
   <!-- Uploaded songs -->
-  <section>
+  <section v-show="songs.length > 0">
     <h2>Uploaded songs</h2>
     <ul id="uploaded-songs">
-      <li>
+      <li v-for="song in songs" :key="song.docId">
         <div class="song-details">
           <span class="song-cover" />
           <a href="#" class="song-title">Song Title</a>
           <span class="song-artist">Artist Name</span>
         </div>
-        <eva-icon
-          class="options"
-          name="more-horizontal-outline"
-          height="28"
-          width="28"
-        />
-      </li>
-      <li>
-        <div class="song-details">
-          <span class="song-cover" />
-          <a href="#" class="song-title">Song Title</a>
-          <span class="song-artist">Artist Name</span>
-        </div>
-        <eva-icon
-          class="options"
-          name="more-horizontal-outline"
-          height="28"
-          width="28"
-        />
+        <button>
+          <eva-icon name="more-horizontal-outline" height="28" width="28" />
+        </button>
+        <button>
+          <eva-icon name="close-outline" height="28" width="28" />
+        </button>
       </li>
     </ul>
   </section>
@@ -107,7 +92,7 @@
 <script>
 import { auth, db, storage } from "@/includes/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
 
@@ -116,7 +101,24 @@ export default {
     return {
       is_dragover: false,
       uploads: [],
+      songs: [],
     };
+  },
+  async created() {
+    // Storing list of user songs
+    const q = query(
+      collection(db, "songs"),
+      where("uid", "==", auth.currentUser.uid)
+    );
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      const song = {
+        ...doc.data(),
+        docId: document.id,
+      };
+      this.songs.push(song);
+    });
   },
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),
