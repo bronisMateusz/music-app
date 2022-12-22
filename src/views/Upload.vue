@@ -12,7 +12,17 @@
     >
       <div v-if="!is_dragover">
         <eva-icon name="cloud-upload-outline" height="72" width="72" />
-        <p>Drop your file(s) here or browse</p>
+        <p>
+          Drop your file(s) here or
+          <label for="files-input">browse</label>
+          <input
+            id="files-input"
+            class="hidden"
+            type="file"
+            multiple
+            @change="upload($event)"
+          />
+        </p>
         <span>Maximum file size is 25 MB</span>
       </div>
       <div v-else>
@@ -20,7 +30,6 @@
         <p>Drop your file(s) to upload</p>
       </div>
     </div>
-    <input type="file" />
   </section>
   <!-- Upload progress -->
   <section>
@@ -107,7 +116,10 @@ export default {
     upload($event) {
       this.is_dragover = false;
 
-      const files = [...$event.dataTransfer.files];
+      const files = $event.dataTransfer
+        ? [...$event.dataTransfer.files]
+        : [...$event.target.files];
+
       files.forEach((file) => {
         if (file.type !== "audio/mpeg") return;
 
@@ -189,6 +201,15 @@ export default {
     p {
       font-size: 1.375rem;
       margin-bottom: 12px;
+
+      label {
+        color: $text-success;
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
   }
 }
