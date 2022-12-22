@@ -56,7 +56,14 @@
             </span>
           </div>
         </div>
-        <eva-icon class="options" name="close-outline" height="28" width="28" />
+        <button title="Cancel upload" @click.prevent="cancelUpload">
+          <eva-icon
+            class="options"
+            name="close-outline"
+            height="28"
+            width="28"
+          />
+        </button>
       </li>
     </ul>
   </section>
@@ -170,6 +177,14 @@ export default {
         );
       });
     },
+    cancelUpload() {
+      this.uploads.forEach((upload) => {
+        upload.task.cancel();
+      });
+    },
+  },
+  beforeUnmount() {
+    this.cancelUpload();
   },
 };
 </script>
