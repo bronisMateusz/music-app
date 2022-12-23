@@ -32,7 +32,7 @@
     </div>
   </section>
   <!-- Upload progress -->
-  <section v-show="uploads.length > 0">
+  <section v-show="uploads.length">
     <h2>Upload progress</h2>
     <ul id="upload-progress">
       <li v-for="upload in uploads" :key="upload.name">
@@ -70,22 +70,10 @@
     <h2>Uploaded albums</h2>
   </section>
   <!-- Uploaded songs -->
-  <section v-show="songs.length > 0">
+  <section v-show="songs.length">
     <h2>Uploaded songs</h2>
     <ul id="uploaded-songs">
-      <li v-for="song in songs" :key="song.docId">
-        <div class="song-details">
-          <span class="song-cover" />
-          <a href="#" class="song-title">Song Title</a>
-          <span class="song-artist">Artist Name</span>
-        </div>
-        <button>
-          <eva-icon name="more-horizontal-outline" height="28" width="28" />
-        </button>
-        <button>
-          <eva-icon name="close-outline" height="28" width="28" />
-        </button>
-      </li>
+      <uploaded-song v-for="song in songs" :key="song.docId" :song="song" />
     </ul>
   </section>
 </template>
@@ -95,8 +83,10 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
+import UploadedSong from "@/components/UploadedSong.vue";
 
 export default {
+  components: { UploadedSong },
   data() {
     return {
       is_dragover: false,
