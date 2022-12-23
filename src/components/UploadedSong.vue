@@ -5,7 +5,7 @@
       <a href="#" class="song-title">Song Title</a>
       <span class="song-artist">Artist Name</span>
     </div>
-    <button @click.prevent="showForm = !showForm">
+    <button @click.prevent="toggleFormVisibility">
       <eva-icon name="more-horizontal-outline" height="28" width="28" />
     </button>
     <button>
@@ -25,7 +25,7 @@
         <ErrorMessage name="genre" />
       </label>
       <button type="submit">Submit</button>
-      <button>Cancel</button>
+      <button @click.prevent="toggleFormVisibility">Cancel</button>
     </vee-form>
   </li>
 </template>
@@ -50,6 +50,9 @@ export default {
   methods: {
     edit() {
       console.log("edited");
+    },
+    toggleFormVisibility() {
+      this.showForm = !this.showForm;
     },
   },
 };
