@@ -2,7 +2,7 @@
   <li v-show="!showForm">
     <div class="song-details">
       <span class="song-cover" />
-      <a href="#" class="song-title">Song Title</a>
+      <a href="#" class="song-title">{{ song.modified_name }}</a>
       <span class="song-artist">Artist Name</span>
     </div>
     <button @click.prevent="toggleFormVisibility">
@@ -16,8 +16,8 @@
     <vee-form :validation-schema="schema" :initial-values="song" @submit="edit">
       <label>
         Song title
-        <vee-field type="text" name="title" placeholder="Title" />
-        <ErrorMessage name="title" />
+        <vee-field type="text" name="modified_name" placeholder="Title" />
+        <ErrorMessage name="modified_name" />
       </label>
       <label>
         Genre
@@ -31,10 +31,23 @@
 </template>
 
 <script>
+import { db } from "@/includes/firebase";
+import { doc, updateDoc } from "firebase/firestore";
+import { mapActions } from "pinia";
+import useNotificationsStore from "@/stores/notifications";
+
 export default {
   props: {
     song: {
       type: Object,
+      required: true,
+    },
+    updateSongDetails: {
+      type: Function,
+      required: true,
+    },
+    index: {
+      type: Number,
       required: true,
     },
   },
@@ -42,14 +55,30 @@ export default {
     return {
       showForm: false,
       schema: {
-        title: "required",
+        modified_name: "required",
         genre: "alphaSpaces",
       },
     };
   },
   methods: {
-    edit() {
-      console.log("edited");
+    ...mapActions(useNotificationsStore, ["setNotification"]),
+    async edit(values) {
+      const songsRef = doc(db, "songs", this.song.docId);
+      try {
+        await updateDoc(songsRef, values);
+      } catch (error) {
+        this.setNotification(
+          "error",
+          "Something went wrong",
+          "We couldn't update song details"
+        );
+        return;
+      }
+
+      this.updateSongDetails(this.index, values);
+
+      this.setNotification("success", "Success!", "Song details updated,");
+      this.toggleFormVisibility();
     },
     toggleFormVisibility() {
       this.showForm = !this.showForm;

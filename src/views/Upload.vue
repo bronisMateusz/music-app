@@ -73,7 +73,13 @@
   <section v-show="songs.length">
     <h2>Uploaded songs</h2>
     <ul id="uploaded-songs">
-      <uploaded-song v-for="song in songs" :key="song.docId" :song="song" />
+      <uploaded-song
+        v-for="(song, index) in songs"
+        :key="song.docId"
+        :song="song"
+        :updateSongDetails="updateSongDetails"
+        :index="index"
+      />
     </ul>
   </section>
 </template>
@@ -105,7 +111,7 @@ export default {
     querySnapshot.forEach((doc) => {
       const song = {
         ...doc.data(),
-        docId: document.id,
+        docId: doc.id,
       };
       this.songs.push(song);
     });
@@ -173,6 +179,10 @@ export default {
       this.uploads.forEach((upload) => {
         upload.task.cancel();
       });
+    },
+    updateSongDetails(index, values) {
+      this.songs[index].modified_name = values.modified_name;
+      this.songs[index].genre = values.genre;
     },
   },
   beforeUnmount() {
