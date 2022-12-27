@@ -48,17 +48,11 @@ export default {
   position: relative;
   width: 100%;
 
-  &::after {
-    backdrop-filter: blur(40px);
-    content: "";
-    inset: 0;
-    position: absolute;
-  }
-
   div {
-    position: absolute;
-    border-radius: 50%;
     animation: gradient-move 4s infinite;
+    border-radius: 50%;
+    filter: blur(40px);
+    position: absolute;
 
     &:nth-child(1) {
       height: 85%;
