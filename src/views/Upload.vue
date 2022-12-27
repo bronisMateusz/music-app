@@ -79,7 +79,7 @@
         :song="song"
         :updateSongDetails="updateSongDetails"
         :index="index"
-        :deleteSong="deleteSong"
+        :removeSong="removeSong"
       />
     </ul>
   </section>
@@ -87,7 +87,14 @@
 <script>
 import { auth, db, storage } from "@/includes/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+  getDoc,
+} from "firebase/firestore";
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
 import UploadedSong from "@/components/UploadedSong.vue";
@@ -108,14 +115,7 @@ export default {
       where("uid", "==", auth.currentUser.uid)
     );
     const querySnapshot = await getDocs(q);
-
-    querySnapshot.forEach((doc) => {
-      const song = {
-        ...doc.data(),
-        docId: doc.id,
-      };
-      this.songs.push(song);
-    });
+    querySnapshot.forEach(this.addSong);
   },
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),
@@ -165,7 +165,9 @@ export default {
               uid: auth.currentUser.uid,
               url: await getDownloadURL(task.snapshot.ref),
             };
-            await addDoc(collection(db, "songs"), song);
+            const songRef = await addDoc(collection(db, "songs"), song);
+            const songSnapshot = await getDoc(songRef);
+            this.addSong(songSnapshot);
 
             this.setNotification(
               "success",
@@ -185,8 +187,15 @@ export default {
       this.songs[index].modified_name = values.modified_name;
       this.songs[index].genre = values.genre;
     },
-    deleteSong(index) {
+    removeSong(index) {
       this.songs.splice(index, 1);
+    },
+    addSong(doc) {
+      const song = {
+        ...doc.data(),
+        docId: doc.id,
+      };
+      this.songs.push(song);
     },
   },
   beforeUnmount() {
