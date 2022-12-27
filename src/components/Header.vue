@@ -82,6 +82,7 @@ export default {
     flex-direction: row;
     justify-content: space-between;
     margin-left: 100px;
+    padding: 24px;
 
     #searchbar {
       width: 100%;

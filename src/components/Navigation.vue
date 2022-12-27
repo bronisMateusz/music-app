@@ -54,10 +54,9 @@ export default {
   }
 
   ul {
+    @include hidden-list-marks;
     display: flex;
     justify-content: space-around;
-    list-style: none;
-    padding: 0;
 
     a:not(.router-link-active) {
       color: $text-secondary;

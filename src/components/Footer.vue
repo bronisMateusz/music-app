@@ -21,10 +21,9 @@
   padding: 24px 52px;
 
   ul {
+    @include hidden-list-marks;
     display: flex;
     gap: 24px;
-    list-style: none;
-    padding: 0;
 
     a {
       display: block;

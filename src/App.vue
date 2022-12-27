@@ -48,8 +48,8 @@ export default {
 
 <style lang="scss">
 main {
-  padding: 138px 24px 48px;
   flex-direction: column;
+  padding: 164px 24px 48px;
 
   section > h2 {
     margin: 24px 0;
@@ -58,7 +58,7 @@ main {
 @media (min-width: 992px) {
   main {
     margin-left: 100px;
-    padding-top: 90px;
+    padding-top: 108px;
   }
 }
 </style>
