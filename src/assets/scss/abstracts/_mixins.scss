@@ -36,10 +36,9 @@
 }
 
 @mixin songs-list {
+  @include hidden-list-marks;
   display: flex;
   flex-direction: column;
-  list-style: none;
-  padding: 0;
   row-gap: 18px;
 
   li {
@@ -131,4 +130,9 @@
   display: block;
   padding: 18px 36px;
   text-align: center;
+}
+
+@mixin hidden-list-marks {
+  list-style: none;
+  padding: 0;
 }
