@@ -3,7 +3,7 @@
     <div class="song-details">
       <span class="song-cover" />
       <a href="#" class="song-title">{{ song.modified_name }}</a>
-      <span class="song-artist">Artist Name</span>
+      <span class="song-artist">{{ song.display_name }}</span>
     </div>
     <button @click.prevent="toggleFormVisibility">
       <eva-icon name="more-horizontal-outline" height="28" width="28" />
