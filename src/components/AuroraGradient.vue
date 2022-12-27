@@ -52,7 +52,7 @@ export default {
   div {
     animation: gradient-move 4s infinite;
     border-radius: 50%;
-    filter: blur(40px);
+    filter: blur(20px) brightness(0.8);
     position: absolute;
 
     &:nth-child(1) {
