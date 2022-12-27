@@ -47,14 +47,12 @@ export default {
   overflow: hidden;
   position: relative;
   width: 100%;
-  z-index: -1;
 
   &::after {
     backdrop-filter: blur(40px);
     content: "";
-    height: 100%;
+    inset: 0;
     position: absolute;
-    width: 100%;
   }
 
   div {
@@ -63,34 +61,34 @@ export default {
     animation: gradient-move 4s infinite;
 
     &:nth-child(1) {
-      height: 90%;
-      width: 80%;
+      height: 85%;
+      width: 110%;
       background-color: var(--color-first);
-      left: -20%;
+      left: -30%;
       top: -10%;
     }
     &:nth-child(2) {
       height: 80%;
-      width: 70%;
+      width: 80%;
       background-color: var(--color-second);
-      top: -12%;
-      right: -12%;
+      top: -15%;
+      right: -10%;
       animation-delay: 2s;
     }
     &:nth-child(3) {
       height: 65%;
-      width: 80%;
+      width: 95%;
       background-color: var(--color-third);
       bottom: -15%;
       right: -20%;
       animation-delay: 0.3s;
     }
     &:nth-child(4) {
-      height: 50%;
-      width: 75%;
+      height: 55%;
+      width: 90%;
       background-color: var(--color-fourth);
       bottom: -10%;
-      left: -18%;
+      left: -30%;
       animation-delay: 1.2s;
     }
   }

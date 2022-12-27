@@ -5,7 +5,9 @@
   <!-- Main Content -->
   <main>
     <navigation />
-    <router-view />
+    <div id="content">
+      <router-view />
+    </div>
   </main>
 
   <!-- Player -->
@@ -48,17 +50,34 @@ export default {
 
 <style lang="scss">
 main {
-  padding: 164px 24px 48px;
   flex-direction: column;
 
-  section > h2 {
-    margin: 24px 0;
+  #content {
+    padding: 164px 24px 48px;
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 100%;
+
+    section > h2 {
+      margin: 24px 0;
+    }
   }
 }
 @media (min-width: 992px) {
   main {
     margin-left: 100px;
-    padding-top: 108px;
+
+    #content {
+      display: grid;
+      grid-template-columns: 412px auto;
+      padding-top: 108px;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  main #content {
+    grid-template-columns: 552px auto;
   }
 }
 </style>

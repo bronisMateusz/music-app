@@ -1,12 +1,12 @@
 <template>
   <!-- Latest albums -->
-  <section>
-    <ul id="latest-albums">
+  <section id="latest-albums">
+    <ul>
       <li>
         <article class="album">
           <aurora-gradient />
           <section>
-            <h2>₪₪₪ MadeHewraGreatForever ₪₪₪</h2>
+            <h3>₪₪₪ MadeHewraGreatForever ₪₪₪</h3>
             <p>New Album by <strong>HEWRA</strong></p>
           </section>
         </article>
@@ -20,7 +20,7 @@
             colorFourth="#FF2528"
           />
           <section>
-            <h2>Cock.0z Mixtape</h2>
+            <h3>Cock.0z Mixtape</h3>
             <p>New Album by <strong>Kaz Bałagane</strong></p>
           </section>
         </article>
@@ -34,7 +34,7 @@
             colorFourth="#327DF6"
           />
           <section>
-            <h2>Mobbyn</h2>
+            <h3>Mobbyn</h3>
             <p>New Album by <strong>Mobbyn</strong></p>
           </section>
         </article>
@@ -66,11 +66,35 @@
     </ul>
     <a href="/all-genres">All genres</a>
   </section>
+  <!-- Your playlists -->
+  <section id="your-playlists">
+    <h2>Your playlists</h2>
+    <ul>
+      <li>
+        <a href="#">
+          <aurora-gradient />
+          <p>Top 100 Europa</p>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <aurora-gradient
+            colorFirst="#FF6A37"
+            colorSecond="#FFD31F"
+            colorThird="#FF3969"
+            colorFourth="#FF2528"
+          />
+          <p>Diho - essentials</p></a
+        >
+      </li>
+    </ul>
+    <a href="/all-genres">All playlists</a>
+  </section>
   <!-- Songs -->
-  <section>
+  <section id="playlist">
     <h2>Songs</h2>
     <!-- Playlist -->
-    <ul id="playlist">
+    <ul>
       <li>
         <div class="song-details">
           <span class="song-cover" />
@@ -193,36 +217,38 @@ body {
 
     #latest-albums {
       overflow-x: hidden;
-      display: flex;
-      gap: 24px;
-      list-style: none;
-      padding: 0;
       width: calc(100% + 24px);
 
-      .album {
-        height: 186px;
-        width: 275px;
-        position: relative;
+      ul {
+        @include hidden-list-marks;
+        display: flex;
+        gap: 24px;
 
-        section {
-          border-radius: 20px;
-          color: $text-primary-inverted;
-          display: flex;
-          flex-direction: column-reverse;
-          gap: 12px;
-          inset: 0;
-          padding: 12px;
-          position: absolute;
+        .album {
+          height: 186px;
+          width: 275px;
+          position: relative;
 
-          h2 {
-            font-size: 1.375rem;
-            line-height: 1.375rem;
-            margin: 0;
-            overflow-wrap: break-word;
-          }
+          section {
+            border-radius: 20px;
+            color: $text-primary-inverted;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 12px;
+            inset: 0;
+            padding: 12px;
+            position: absolute;
 
-          p {
-            font-size: 0.75rem;
+            h3 {
+              font-size: 1.375rem;
+              line-height: 1.375rem;
+              margin: 0;
+              overflow-wrap: break-word;
+            }
+
+            p {
+              font-size: 0.75rem;
+            }
           }
         }
       }
@@ -230,12 +256,11 @@ body {
 
     #genres {
       ul {
+        @include hidden-list-marks;
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
-        list-style: none;
         margin-bottom: 24px;
-        padding: 0;
 
         li {
           flex: 1 1 auto;
@@ -255,7 +280,33 @@ body {
       }
     }
 
-    #playlist {
+    #your-playlists {
+      width: calc(100% + 24px);
+
+      ul {
+        @include hidden-list-marks;
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+        overflow: hidden;
+
+        a {
+          display: block;
+          .aurora-gradient {
+            height: 200px;
+            margin-bottom: 8px;
+            width: 200px;
+          }
+        }
+      }
+
+      > a {
+        @include btn-secondary;
+        text-transform: capitalize;
+      }
+    }
+
+    #playlist ul {
       @include songs-list;
 
       .song-details {
@@ -265,22 +316,48 @@ body {
   }
 
   @media (min-width: 992px) {
-    #app #latest-albums .album {
-      height: 372px;
-      width: 550px;
+    #app {
+      #latest-albums {
+        grid-column: 1/3;
+        ul .album {
+          height: 372px;
+          width: 550px;
 
-      section {
-        gap: 24px;
-        padding: 24px;
+          section {
+            gap: 24px;
+            padding: 24px;
 
-        h2 {
-          font-size: 3rem;
-          line-height: 3rem;
-        }
-        p {
-          font-size: 1rem;
+            h3 {
+              font-size: 3rem;
+              line-height: 3rem;
+            }
+            p {
+              font-size: 1rem;
+            }
+          }
         }
       }
+
+      #genres,
+      #your-playlists {
+        grid-column: 1;
+      }
+
+      #your-playlists {
+        width: 100%;
+      }
+
+      #playlist {
+        grid-column: 2;
+        grid-row: 2/4;
+      }
+    }
+  }
+
+  @media (min-width: 1200px) {
+    #app #your-playlists ul a .aurora-gradient {
+      width: 270px;
+      height: 270px;
     }
   }
 }
