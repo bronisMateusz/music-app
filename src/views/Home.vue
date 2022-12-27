@@ -187,8 +187,8 @@ body {
           position: absolute;
 
           h2 {
-            font-size: 22px;
-            line-height: 1.5rem;
+            font-size: 1.375rem;
+            line-height: 1.375rem;
             margin: 0;
             overflow-wrap: break-word;
           }
@@ -205,6 +205,26 @@ body {
 
       .song-details {
         @include song-details(2);
+      }
+    }
+  }
+
+  @media (min-width: 992px) {
+    #app #latest-albums .album {
+      height: 372px;
+      width: 550px;
+
+      section {
+        gap: 24px;
+        padding: 24px;
+        
+        h2 {
+          font-size: 3rem;
+          line-height: 3rem;
+        }
+        p {
+          font-size: 1rem;
+        }
       }
     }
   }

@@ -58,7 +58,7 @@ main {
 @media (min-width: 992px) {
   main {
     margin-left: 100px;
-    padding-top: 102px;
+    padding-top: 108px;
   }
 }
 </style>
