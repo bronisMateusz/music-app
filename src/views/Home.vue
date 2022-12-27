@@ -96,71 +96,7 @@
       <h2>Songs</h2>
       <!-- Playlist -->
       <ul>
-        <li>
-          <div class="song-details">
-            <span class="song-cover" />
-            <a href="#" class="song-title">Song Title</a>
-            <span class="song-artist">Artist Name</span>
-          </div>
-          <eva-icon
-            class="options"
-            name="more-horizontal-outline"
-            height="28"
-            width="28"
-          />
-        </li>
-        <li>
-          <div class="song-details">
-            <span class="song-cover" />
-            <a href="#" class="song-title">Song Title</a>
-            <span class="song-artist">Artist Name</span>
-          </div>
-          <eva-icon
-            class="options"
-            name="more-horizontal-outline"
-            height="28"
-            width="28"
-          />
-        </li>
-        <li>
-          <div class="song-details">
-            <span class="song-cover" />
-            <a href="#" class="song-title">Song Title</a>
-            <span class="song-artist">Artist Name</span>
-          </div>
-          <eva-icon
-            class="options"
-            name="more-horizontal-outline"
-            height="28"
-            width="28"
-          />
-        </li>
-        <li>
-          <div class="song-details">
-            <span class="song-cover" />
-            <a href="#" class="song-title">Song Title</a>
-            <span class="song-artist">Artist Name</span>
-          </div>
-          <eva-icon
-            class="options"
-            name="more-horizontal-outline"
-            height="28"
-            width="28"
-          />
-        </li>
-        <li>
-          <div class="song-details">
-            <span class="song-cover" />
-            <a href="#" class="song-title">Song Title</a>
-            <span class="song-artist">Artist Name</span>
-          </div>
-          <eva-icon
-            class="options"
-            name="more-horizontal-outline"
-            height="28"
-            width="28"
-          />
-        </li>
+        <song v-for="song in songs" :key="song.docId" :song="song" />
       </ul>
       <!-- .. end Playlist -->
     </section>
@@ -169,8 +105,26 @@
 
 <script>
 import AuroraGradient from "@/components/AuroraGradient.vue";
+import Song from "@/components/Song.vue";
+import { db } from "@/includes/firebase";
+import { collection, query, getDocs, limit } from "firebase/firestore";
 export default {
-  components: { AuroraGradient },
+  data() {
+    return {
+      songs: [],
+    };
+  },
+  components: { AuroraGradient, Song },
+  async created() {
+    const q = query(collection(db, "songs"), limit(7));
+    const songsSnapshot = await getDocs(q);
+    songsSnapshot.forEach((doc) => {
+      this.songs.push({
+        docId: doc.id,
+        ...doc.data(),
+      });
+    });
+  },
 };
 </script>
 
@@ -310,6 +264,7 @@ body {
 
       > a {
         @include btn-secondary;
+        margin-right: 24px;
         text-transform: capitalize;
       }
     }
@@ -358,6 +313,10 @@ body {
 
       #your-playlists {
         width: 100%;
+
+        > a {
+          margin-right: 0;
+        }
       }
 
       #playlist {
