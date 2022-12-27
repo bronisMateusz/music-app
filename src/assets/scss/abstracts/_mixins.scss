@@ -124,3 +124,11 @@
     white-space: nowrap;
   }
 }
+
+@mixin btn-secondary {
+  background-color: $color-element;
+  border-radius: 50px;
+  display: block;
+  padding: 18px 36px;
+  text-align: center;
+}
