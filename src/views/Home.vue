@@ -1,4 +1,5 @@
 <template>
+  <!-- Latest albums -->
   <section>
     <ul id="latest-albums">
       <li>
@@ -40,6 +41,32 @@
       </li>
     </ul>
   </section>
+  <!-- Genres -->
+  <section id="genres">
+    <h2>Genres</h2>
+    <ul>
+      <li>
+        <button>Hip-hop</button>
+      </li>
+      <li>
+        <button>Rock</button>
+      </li>
+      <li>
+        <button>Alternative</button>
+      </li>
+      <li>
+        <button>Electronica</button>
+      </li>
+      <li>
+        <button>Hard Rock</button>
+      </li>
+      <li>
+        <button>Lo-Fi</button>
+      </li>
+    </ul>
+    <a href="/all-genres">All genres</a>
+  </section>
+  <!-- Songs -->
   <section>
     <h2>Songs</h2>
     <!-- Playlist -->
@@ -170,6 +197,7 @@ body {
       gap: 24px;
       list-style: none;
       padding: 0;
+      width: calc(100% + 24px);
 
       .album {
         height: 186px;
@@ -200,6 +228,33 @@ body {
       }
     }
 
+    #genres {
+      ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        list-style: none;
+        margin-bottom: 24px;
+        padding: 0;
+
+        li {
+          flex: 1 1 auto;
+          @include blurred-bg;
+          border: 1px solid $color-border-primary;
+          border-radius: 20px;
+        }
+
+        button {
+          padding: 16px 32px;
+          width: 100%;
+        }
+      }
+      a {
+        @include btn-secondary;
+        text-transform: capitalize;
+      }
+    }
+
     #playlist {
       @include songs-list;
 
@@ -217,7 +272,7 @@ body {
       section {
         gap: 24px;
         padding: 24px;
-        
+
         h2 {
           font-size: 3rem;
           line-height: 3rem;
