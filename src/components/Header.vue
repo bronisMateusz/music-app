@@ -35,6 +35,7 @@ export default {
   position: fixed;
   right: 0;
   top: 0;
+  z-index: 1;
 
   #searchbar {
     position: relative;
@@ -87,8 +88,8 @@ export default {
       max-width: 600px;
 
       input {
-        background-color: $color-element;
-        border: 1px solid rgba($color: $text-primary, $alpha: 0.2);
+        @include blurred-bg;
+        border: 1px solid $color-border-primary;
       }
 
       .auth-btn {

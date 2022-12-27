@@ -23,13 +23,17 @@
 #player {
   @include blurred-bg;
   border-radius: 20px;
-  bottom: 96px;
+  bottom: 82px;
   left: 12px;
   position: fixed;
   right: 12px;
   display: flex;
   align-items: center;
   padding: 12px;
+
+  .song-details {
+    @include song-details(2);
+  }
 
   #player-controls {
     display: flex;

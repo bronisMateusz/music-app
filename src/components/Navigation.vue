@@ -23,6 +23,11 @@
           <eva-icon name="compass-outline" height="32" width="32" />
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'upload' }" title="Upload">
+          <eva-icon name="cloud-upload-outline" height="32" width="32" />
+        </router-link>
+      </li>
     </ul>
   </nav>
 </template>
@@ -50,8 +55,7 @@ export default {
 
   ul {
     display: flex;
-    gap: 52px;
-    justify-content: center;
+    justify-content: space-around;
     list-style: none;
     padding: 0;
 
@@ -76,7 +80,9 @@ export default {
     ul {
       align-items: center;
       flex-direction: column;
+      gap: 52px;
       height: 100%;
+      justify-content: center;
       padding-bottom: 114px;
     }
   }
