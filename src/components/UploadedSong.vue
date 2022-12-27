@@ -16,12 +16,22 @@
     <vee-form :validation-schema="schema" :initial-values="song" @submit="edit">
       <label>
         Song title
-        <vee-field type="text" name="modified_name" placeholder="Title" />
+        <vee-field
+          type="text"
+          name="modified_name"
+          placeholder="Title"
+          @input="updateUnsavedFlag(true)"
+        />
         <ErrorMessage name="modified_name" />
       </label>
       <label>
         Genre
-        <vee-field type="text" name="genre" placeholder="Genre" />
+        <vee-field
+          type="text"
+          name="genre"
+          placeholder="Genre"
+          @input="updateUnsavedFlag(true)"
+        />
         <ErrorMessage name="genre" />
       </label>
       <button type="submit">Submit</button>
@@ -55,6 +65,9 @@ export default {
       type: Function,
       required: true,
     },
+    updateUnsavedFlag: {
+      type: Function,
+    },
   },
   data() {
     return {
@@ -87,6 +100,7 @@ export default {
     },
     toggleFormVisibility() {
       this.showForm = !this.showForm;
+      this.updateUnsavedFlag(false);
     },
     async deleteSong() {
       const songRef = ref(storage, `songs/${this.song.original_name}`);

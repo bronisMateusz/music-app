@@ -80,6 +80,7 @@
         :updateSongDetails="updateSongDetails"
         :index="index"
         :removeSong="removeSong"
+        :updateUnsavedFlag="updateUnsavedFlag"
       />
     </ul>
   </section>
@@ -106,6 +107,7 @@ export default {
       is_dragover: false,
       uploads: [],
       songs: [],
+      unsavedFlag: false,
     };
   },
   async created() {
@@ -197,9 +199,23 @@ export default {
       };
       this.songs.push(song);
     },
+    updateUnsavedFlag(value) {
+      this.unsavedFlag = value;
+    },
   },
   beforeUnmount() {
     this.cancelUpload();
+  },
+  beforeRouteLeave(to, from, next) {
+    if (!this.unsavedFlag) {
+      next();
+    } else {
+      this.setNotification(
+        "notice",
+        "Unsaved changes",
+        "Save or discard changes to song details"
+      );
+    }
   },
 };
 </script>
