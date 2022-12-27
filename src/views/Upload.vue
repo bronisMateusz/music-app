@@ -79,6 +79,7 @@
         :song="song"
         :updateSongDetails="updateSongDetails"
         :index="index"
+        :deleteSong="deleteSong"
       />
     </ul>
   </section>
@@ -183,6 +184,9 @@ export default {
     updateSongDetails(index, values) {
       this.songs[index].modified_name = values.modified_name;
       this.songs[index].genre = values.genre;
+    },
+    deleteSong(index) {
+      this.songs.splice(index, 1);
     },
   },
   beforeUnmount() {

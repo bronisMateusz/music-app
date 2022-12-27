@@ -8,7 +8,7 @@
     <button @click.prevent="toggleFormVisibility">
       <eva-icon name="more-horizontal-outline" height="28" width="28" />
     </button>
-    <button>
+    <button @click.prevent="deleteSong">
       <eva-icon name="close-outline" height="28" width="28" />
     </button>
   </li>
@@ -31,8 +31,9 @@
 </template>
 
 <script>
-import { db } from "@/includes/firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import { db, storage } from "@/includes/firebase";
+import { ref, deleteObject } from "firebase/storage";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
 
@@ -48,6 +49,10 @@ export default {
     },
     index: {
       type: Number,
+      required: true,
+    },
+    removeSong: {
+      type: Function,
       required: true,
     },
   },
@@ -77,11 +82,28 @@ export default {
 
       this.updateSongDetails(this.index, values);
 
-      this.setNotification("success", "Success!", "Song details updated,");
+      this.setNotification("success", "Success!", "Song details updated");
       this.toggleFormVisibility();
     },
     toggleFormVisibility() {
       this.showForm = !this.showForm;
+    },
+    async deleteSong() {
+      const songRef = ref(storage, `songs/${this.song.original_name}`);
+      await deleteObject(songRef)
+        .then(() => {
+          this.setNotification("success", "Success!", "Song has been removed");
+        })
+        .catch(() => {
+          this.setNotification(
+            "error",
+            "Something went wrong",
+            "We couldn't update song details"
+          );
+          return;
+        });
+      await deleteDoc(doc(db, "songs", this.song.docId));
+      this.removeSong(this.index);
     },
   },
 };
