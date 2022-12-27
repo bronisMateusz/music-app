@@ -91,9 +91,9 @@
       </ul>
       <a href="/all-genres">All playlists</a>
     </section>
-    <!-- Songs -->
-    <section id="playlist">
-      <h2>Songs</h2>
+    <!-- Newest songs -->
+    <section id="newest-songs">
+      <h2>Newest songs</h2>
       <!-- Playlist -->
       <ul>
         <song v-for="song in songs" :key="song.docId" :song="song" />
@@ -269,7 +269,7 @@ body {
       }
     }
 
-    #playlist ul {
+    #newest-songs ul {
       @include songs-list;
 
       .song-details {
@@ -319,7 +319,7 @@ body {
         }
       }
 
-      #playlist {
+      #newest-songs {
         grid-column: 2;
         grid-row: 2/4;
       }
