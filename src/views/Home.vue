@@ -1,168 +1,170 @@
 <template>
-  <!-- Latest albums -->
-  <section id="latest-albums">
-    <ul>
-      <li>
-        <article class="album">
-          <aurora-gradient />
-          <section>
-            <h3>₪₪₪ MadeHewraGreatForever ₪₪₪</h3>
-            <p>New Album by <strong>HEWRA</strong></p>
-          </section>
-        </article>
-      </li>
-      <li>
-        <article class="album">
-          <aurora-gradient
-            colorFirst="#FF6A37"
-            colorSecond="#FFD31F"
-            colorThird="#FF3969"
-            colorFourth="#FF2528"
+  <div id="content">
+    <!-- Latest albums -->
+    <section id="latest-albums">
+      <ul>
+        <li>
+          <article class="album">
+            <aurora-gradient />
+            <section>
+              <h3>₪₪₪ MadeHewraGreatForever ₪₪₪</h3>
+              <p>New Album by <strong>HEWRA</strong></p>
+            </section>
+          </article>
+        </li>
+        <li>
+          <article class="album">
+            <aurora-gradient
+              colorFirst="#FF6A37"
+              colorSecond="#FFD31F"
+              colorThird="#FF3969"
+              colorFourth="#FF2528"
+            />
+            <section>
+              <h3>Cock.0z Mixtape</h3>
+              <p>New Album by <strong>Kaz Bałagane</strong></p>
+            </section>
+          </article>
+        </li>
+        <li>
+          <article class="album">
+            <aurora-gradient
+              colorFirst="#BBC0FF"
+              colorSecond="#00DDFF"
+              colorThird="#79E9FF"
+              colorFourth="#327DF6"
+            />
+            <section>
+              <h3>Mobbyn</h3>
+              <p>New Album by <strong>Mobbyn</strong></p>
+            </section>
+          </article>
+        </li>
+      </ul>
+    </section>
+    <!-- Genres -->
+    <section id="genres">
+      <h2>Genres</h2>
+      <ul>
+        <li>
+          <button>Hip-hop</button>
+        </li>
+        <li>
+          <button>Rock</button>
+        </li>
+        <li>
+          <button>Alternative</button>
+        </li>
+        <li>
+          <button>Electronica</button>
+        </li>
+        <li>
+          <button>Hard Rock</button>
+        </li>
+        <li>
+          <button>Lo-Fi</button>
+        </li>
+      </ul>
+      <a href="/all-genres">All genres</a>
+    </section>
+    <!-- Your playlists -->
+    <section id="your-playlists">
+      <h2>Your playlists</h2>
+      <ul>
+        <li>
+          <a href="#">
+            <aurora-gradient />
+            <p>Top 100 Europa</p>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <aurora-gradient
+              colorFirst="#FF6A37"
+              colorSecond="#FFD31F"
+              colorThird="#FF3969"
+              colorFourth="#FF2528"
+            />
+            <p>Diho - essentials</p></a
+          >
+        </li>
+      </ul>
+      <a href="/all-genres">All playlists</a>
+    </section>
+    <!-- Songs -->
+    <section id="playlist">
+      <h2>Songs</h2>
+      <!-- Playlist -->
+      <ul>
+        <li>
+          <div class="song-details">
+            <span class="song-cover" />
+            <a href="#" class="song-title">Song Title</a>
+            <span class="song-artist">Artist Name</span>
+          </div>
+          <eva-icon
+            class="options"
+            name="more-horizontal-outline"
+            height="28"
+            width="28"
           />
-          <section>
-            <h3>Cock.0z Mixtape</h3>
-            <p>New Album by <strong>Kaz Bałagane</strong></p>
-          </section>
-        </article>
-      </li>
-      <li>
-        <article class="album">
-          <aurora-gradient
-            colorFirst="#BBC0FF"
-            colorSecond="#00DDFF"
-            colorThird="#79E9FF"
-            colorFourth="#327DF6"
+        </li>
+        <li>
+          <div class="song-details">
+            <span class="song-cover" />
+            <a href="#" class="song-title">Song Title</a>
+            <span class="song-artist">Artist Name</span>
+          </div>
+          <eva-icon
+            class="options"
+            name="more-horizontal-outline"
+            height="28"
+            width="28"
           />
-          <section>
-            <h3>Mobbyn</h3>
-            <p>New Album by <strong>Mobbyn</strong></p>
-          </section>
-        </article>
-      </li>
-    </ul>
-  </section>
-  <!-- Genres -->
-  <section id="genres">
-    <h2>Genres</h2>
-    <ul>
-      <li>
-        <button>Hip-hop</button>
-      </li>
-      <li>
-        <button>Rock</button>
-      </li>
-      <li>
-        <button>Alternative</button>
-      </li>
-      <li>
-        <button>Electronica</button>
-      </li>
-      <li>
-        <button>Hard Rock</button>
-      </li>
-      <li>
-        <button>Lo-Fi</button>
-      </li>
-    </ul>
-    <a href="/all-genres">All genres</a>
-  </section>
-  <!-- Your playlists -->
-  <section id="your-playlists">
-    <h2>Your playlists</h2>
-    <ul>
-      <li>
-        <a href="#">
-          <aurora-gradient />
-          <p>Top 100 Europa</p>
-        </a>
-      </li>
-      <li>
-        <a href="#">
-          <aurora-gradient
-            colorFirst="#FF6A37"
-            colorSecond="#FFD31F"
-            colorThird="#FF3969"
-            colorFourth="#FF2528"
+        </li>
+        <li>
+          <div class="song-details">
+            <span class="song-cover" />
+            <a href="#" class="song-title">Song Title</a>
+            <span class="song-artist">Artist Name</span>
+          </div>
+          <eva-icon
+            class="options"
+            name="more-horizontal-outline"
+            height="28"
+            width="28"
           />
-          <p>Diho - essentials</p></a
-        >
-      </li>
-    </ul>
-    <a href="/all-genres">All playlists</a>
-  </section>
-  <!-- Songs -->
-  <section id="playlist">
-    <h2>Songs</h2>
-    <!-- Playlist -->
-    <ul>
-      <li>
-        <div class="song-details">
-          <span class="song-cover" />
-          <a href="#" class="song-title">Song Title</a>
-          <span class="song-artist">Artist Name</span>
-        </div>
-        <eva-icon
-          class="options"
-          name="more-horizontal-outline"
-          height="28"
-          width="28"
-        />
-      </li>
-      <li>
-        <div class="song-details">
-          <span class="song-cover" />
-          <a href="#" class="song-title">Song Title</a>
-          <span class="song-artist">Artist Name</span>
-        </div>
-        <eva-icon
-          class="options"
-          name="more-horizontal-outline"
-          height="28"
-          width="28"
-        />
-      </li>
-      <li>
-        <div class="song-details">
-          <span class="song-cover" />
-          <a href="#" class="song-title">Song Title</a>
-          <span class="song-artist">Artist Name</span>
-        </div>
-        <eva-icon
-          class="options"
-          name="more-horizontal-outline"
-          height="28"
-          width="28"
-        />
-      </li>
-      <li>
-        <div class="song-details">
-          <span class="song-cover" />
-          <a href="#" class="song-title">Song Title</a>
-          <span class="song-artist">Artist Name</span>
-        </div>
-        <eva-icon
-          class="options"
-          name="more-horizontal-outline"
-          height="28"
-          width="28"
-        />
-      </li>
-      <li>
-        <div class="song-details">
-          <span class="song-cover" />
-          <a href="#" class="song-title">Song Title</a>
-          <span class="song-artist">Artist Name</span>
-        </div>
-        <eva-icon
-          class="options"
-          name="more-horizontal-outline"
-          height="28"
-          width="28"
-        />
-      </li>
-    </ul>
-    <!-- .. end Playlist -->
-  </section>
+        </li>
+        <li>
+          <div class="song-details">
+            <span class="song-cover" />
+            <a href="#" class="song-title">Song Title</a>
+            <span class="song-artist">Artist Name</span>
+          </div>
+          <eva-icon
+            class="options"
+            name="more-horizontal-outline"
+            height="28"
+            width="28"
+          />
+        </li>
+        <li>
+          <div class="song-details">
+            <span class="song-cover" />
+            <a href="#" class="song-title">Song Title</a>
+            <span class="song-artist">Artist Name</span>
+          </div>
+          <eva-icon
+            class="options"
+            name="more-horizontal-outline"
+            height="28"
+            width="28"
+          />
+        </li>
+      </ul>
+      <!-- .. end Playlist -->
+    </section>
+  </div>
 </template>
 
 <script>
@@ -214,6 +216,12 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+
+    #content {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: 100%;
+    }
 
     #latest-albums {
       overflow-x: hidden;
@@ -317,6 +325,11 @@ body {
 
   @media (min-width: 992px) {
     #app {
+      #content {
+        display: grid;
+        grid-template-columns: 412px auto;
+      }
+
       #latest-albums {
         grid-column: 1/3;
         ul .album {
@@ -355,9 +368,15 @@ body {
   }
 
   @media (min-width: 1200px) {
-    #app #your-playlists ul a .aurora-gradient {
-      width: 270px;
-      height: 270px;
+    #app {
+      #content {
+        grid-template-columns: 552px auto;
+      }
+
+      #your-playlists ul a .aurora-gradient {
+        width: 270px;
+        height: 270px;
+      }
     }
   }
 }
