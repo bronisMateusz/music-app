@@ -44,6 +44,7 @@ export default {
 .aurora-gradient {
   border-radius: 20px;
   height: 100%;
+  isolation: isolate;
   overflow: hidden;
   position: relative;
   width: 100%;
