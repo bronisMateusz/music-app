@@ -44,21 +44,16 @@ export default {
 .aurora-gradient {
   border-radius: 20px;
   height: 100%;
+  isolation: isolate;
   overflow: hidden;
   position: relative;
   width: 100%;
 
-  &::after {
-    backdrop-filter: blur(40px);
-    content: "";
-    inset: 0;
-    position: absolute;
-  }
-
   div {
-    position: absolute;
-    border-radius: 50%;
     animation: gradient-move 4s infinite;
+    border-radius: 50%;
+    filter: blur(20px) brightness(0.8);
+    position: absolute;
 
     &:nth-child(1) {
       height: 85%;

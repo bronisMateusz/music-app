@@ -95,6 +95,7 @@ export default {
   .notification {
     align-items: flex-start;
     backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     background-color: rgba($color: $color-element, $alpha: 0.5);
     border-radius: 30px;
     box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.25);
