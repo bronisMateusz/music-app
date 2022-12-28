@@ -73,7 +73,7 @@
   <section v-show="songs.length">
     <h2>Uploaded songs</h2>
     <ul id="uploaded-songs">
-      <uploaded-song
+      <song-uploaded
         v-for="(song, index) in songs"
         :key="song.docId"
         :song="song"
@@ -98,10 +98,10 @@ import {
 } from "firebase/firestore";
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
-import UploadedSong from "@/components/UploadedSong.vue";
+import SongUploaded from "@/components/SongUploaded.vue";
 
 export default {
-  components: { UploadedSong },
+  components: { SongUploaded },
   data() {
     return {
       is_dragover: false,
