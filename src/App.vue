@@ -1,43 +1,26 @@
 <template>
-  <!-- Header -->
-  <app-header />
-
-  <!-- Main Content -->
-  <main>
-    <navigation />
-    <router-view />
-  </main>
-
-  <!-- Player -->
-  <player />
-
-  <!-- Auth Modal -->
-  <auth-modal />
-
-  <!-- Footer -->
-  <app-footer />
+  <component :is="currentTemplate">
+    <app-template />
+  </component>
 </template>
 
 <script>
-import AppHeader from "@/components/Header.vue";
-import Navigation from "@/components/Navigation.vue";
-import Player from "@/components/Player.vue";
-import AuthModal from "@/components/AuthModal.vue";
-import AppFooter from "@/components/Footer.vue";
-import { mapWritableState } from "pinia";
+import AppTemplate from "@/templates/AppTemplate.vue";
+import SongTemplate from "@/templates/SongTemplate.vue";
 import useUserStore from "@/stores/user";
 import { auth } from "@/includes/firebase";
+import { mapWritableState } from "pinia";
 
 export default {
   name: "App",
   components: {
-    AppHeader,
-    Navigation,
-    Player,
-    AuthModal,
-    AppFooter,
+    AppTemplate,
+    SongTemplate,
   },
   computed: {
+    currentTemplate() {
+      return this.$route.meta.template;
+    },
     ...mapWritableState(useUserStore, ["userLoggedIn"]),
   },
   created() {
@@ -45,20 +28,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-main {
-  flex-direction: column;
-  padding: 164px 24px 48px;
-
-  section > h2 {
-    margin: 24px 0;
-  }
-}
-@media (min-width: 992px) {
-  main {
-    margin-left: 100px;
-    padding-top: 108px;
-  }
-}
-</style>
