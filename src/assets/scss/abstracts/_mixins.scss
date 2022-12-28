@@ -55,6 +55,10 @@
   }
 }
 
+@mixin song-cover {
+  background: conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg);
+}
+
 @mixin song-details($rows-quantity) {
   $cover-column-height: calc($rows-quantity + 1);
 
@@ -65,9 +69,7 @@
   width: 100%;
 
   .song-cover {
-    background: conic-gradient(from 180deg at 50% 50%,
-        #616db9 0deg,
-        #bfc5fc 360deg);
+    @include song-cover;
     border-radius: 15px;
     height: 70px;
     grid-template-columns: 1/2;

@@ -96,7 +96,7 @@
       <h2>Newest songs</h2>
       <!-- Playlist -->
       <ul>
-        <song v-for="song in songs" :key="song.docId" :song="song" />
+        <song-newest v-for="song in songs" :key="song.docId" :song="song" />
       </ul>
       <!-- .. end Playlist -->
     </section>
@@ -105,7 +105,7 @@
 
 <script>
 import AuroraGradient from "@/components/AuroraGradient.vue";
-import Song from "@/components/Song.vue";
+import SongNewest from "@/components/SongNewest.vue";
 import { db } from "@/includes/firebase";
 import { collection, query, getDocs, limit } from "firebase/firestore";
 export default {
@@ -114,11 +114,11 @@ export default {
       songs: [],
     };
   },
-  components: { AuroraGradient, Song },
+  components: { AuroraGradient, SongNewest },
   async created() {
     const q = query(collection(db, "songs"), limit(7));
-    const songsSnapshot = await getDocs(q);
-    songsSnapshot.forEach((doc) => {
+    const songsSnap = await getDocs(q);
+    songsSnap.forEach((doc) => {
       this.songs.push({
         docId: doc.id,
         ...doc.data(),

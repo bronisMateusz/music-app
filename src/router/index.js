@@ -4,6 +4,7 @@ import Favorites from "@/views/Favorites.vue";
 import Library from "@/views/Library.vue";
 import Discover from "@/views/Discover.vue";
 import Upload from "@/views/Upload.vue";
+import Song from "@/views/Song.vue";
 import NotFound from "@/views/NotFound.vue";
 
 const routes = [
@@ -11,34 +12,63 @@ const routes = [
     name: "home",
     path: "/",
     component: Home,
+    meta: {
+      template: "AppTemplate",
+    },
   },
   {
     name: "favorites",
     path: "/favorites",
     component: Favorites,
+    meta: {
+      template: "AppTemplate",
+    },
   },
   {
     name: "library",
     path: "/library",
     component: Library,
+    meta: {
+      template: "AppTemplate",
+    },
   },
   {
     name: "discover",
     path: "/discover",
     component: Discover,
+    meta: {
+      template: "AppTemplate",
+    },
   },
   {
     name: "upload",
     path: "/upload",
     component: Upload,
+    meta: {
+      template: "AppTemplate",
+    },
+  },
+  {
+    name: "song",
+    path: "/song/:id",
+    component: Song,
+    meta: {
+      template: "SongTemplate",
+    },
   },
   {
     path: "/:catchAll(.*)*",
     redirect: "/404",
+    meta: {
+      template: "AppTemplate",
+    },
   },
   {
     path: "/404",
     component: NotFound,
+    meta: {
+      template: "AppTemplate",
+    },
   },
 ];
 
