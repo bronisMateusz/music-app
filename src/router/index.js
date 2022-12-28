@@ -4,6 +4,7 @@ import Favorites from "@/views/Favorites.vue";
 import Library from "@/views/Library.vue";
 import Discover from "@/views/Discover.vue";
 import Upload from "@/views/Upload.vue";
+import Song from "@/views/Song.vue";
 import NotFound from "@/views/NotFound.vue";
 
 const routes = [
@@ -31,6 +32,11 @@ const routes = [
     name: "upload",
     path: "/upload",
     component: Upload,
+  },
+  {
+    name: "song",
+    path: "/song/:id",
+    component: Song,
   },
   {
     path: "/:catchAll(.*)*",
