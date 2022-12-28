@@ -52,7 +52,7 @@
           <eva-icon name="rewind-left-outline" height="48" width="48" />
         </button>
         <!-- Play/Pause Button -->
-        <button title="Play">
+        <button title="Play" @click.prevent="newSong(song)">
           <eva-icon name="arrow-right-outline" height="48" width="48" />
         </button>
         <!-- Next Button -->
@@ -87,6 +87,8 @@
 <script>
 import { db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { mapActions } from "pinia";
+import usePlayerStore from "@/stores/player";
 
 export default {
   data() {
@@ -104,6 +106,9 @@ export default {
     }
 
     this.song = docSnap.data();
+  },
+  methods: {
+    ...mapActions(usePlayerStore, ["newSong"]),
   },
 };
 </script>
