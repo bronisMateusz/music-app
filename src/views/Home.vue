@@ -117,8 +117,8 @@ export default {
   components: { AuroraGradient, SongNewest },
   async created() {
     const q = query(collection(db, "songs"), limit(7));
-    const songsSnapshot = await getDocs(q);
-    songsSnapshot.forEach((doc) => {
+    const songsSnap = await getDocs(q);
+    songsSnap.forEach((doc) => {
       this.songs.push({
         docId: doc.id,
         ...doc.data(),

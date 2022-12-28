@@ -2,9 +2,9 @@
   <div id="song">
     <div class="song-bg" />
     <div class="options">
-      <a href="/">
+      <router-link :to="{ name: 'home' }" title="Home">
         <eva-icon name="arrow-back-outline" height="28" width="28" />
-      </a>
+      </router-link>
       <div class="options-group">
         <button>
           <eva-icon name="heart-outline" height="28" width="28" />
@@ -31,8 +31,8 @@
     <div class="player-controls">
       <!-- Song details -->
       <div class="song-details">
-        <a href="#" class="song-title">Song Title</a>
-        <span class="song-artist">Artist Name</span>
+        <a href="#" class="song-title">{{ song.modified_name }}</a>
+        <span class="song-artist">{{ song.display_name }}</span>
       </div>
       <!-- Progress bar -->
       <div class="progress-bar">
@@ -85,7 +85,27 @@
 </template>
 
 <script>
-export default {};
+import { db } from "@/includes/firebase";
+import { doc, getDoc } from "firebase/firestore";
+
+export default {
+  data() {
+    return {
+      song: {},
+    };
+  },
+  async created() {
+    const docRef = doc(db, "songs", this.$route.params.id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      this.$router.push({ name: "home" });
+      return;
+    }
+
+    this.song = docSnap.data();
+  },
+};
 </script>
 
 <style lang="scss">
