@@ -65,12 +65,7 @@ export default {
   props: {
     song: {
       type: Object,
-      default() {
-        return {
-          modified_name: "Song title",
-          display_name: "Song artist",
-        };
-      },
+      required: true,
     },
     showCover: {
       type: Boolean,

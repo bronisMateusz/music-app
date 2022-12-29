@@ -1,6 +1,6 @@
 <template>
   <div id="player">
-    <player-details :showCover="true" />
+    <player-details :song="this.currentSong" :showCover="true" />
   </div>
 </template>
 
@@ -15,7 +15,7 @@ export default {
     ...mapActions(usePlayerStore, ["toggleAudio"]),
   },
   computed: {
-    ...mapState(usePlayerStore, ["playing"]),
+    ...mapState(usePlayerStore, ["playing", "currentSong"]),
   },
 };
 </script>
