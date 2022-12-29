@@ -1,22 +1,14 @@
 <template>
   <div id="player">
-    <player-details :song="currentSong" :showCover="true" />
+    <player-details :showCover="true" />
   </div>
 </template>
 
 <script>
 import PlayerDetails from "@/components/PlayerDetails.vue";
-import { mapActions, mapState } from "pinia";
-import usePlayerStore from "@/stores/player";
 
 export default {
   components: { PlayerDetails },
-  methods: {
-    ...mapActions(usePlayerStore, ["toggleAudio"]),
-  },
-  computed: {
-    ...mapState(usePlayerStore, ["playing", "currentSong"]),
-  },
 };
 </script>
 

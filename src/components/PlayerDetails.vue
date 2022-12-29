@@ -2,14 +2,14 @@
   <!-- Song details -->
   <div v-show="showCover" class="song-cover" />
   <div class="song-details">
-    <a href="#" class="song-title">{{ song.modified_name }}</a>
-    <span class="song-artist">{{ song.display_name }}</span>
+    <a href="#" class="song-title">{{ currentSong.modified_name }}</a>
+    <span class="song-artist">{{ currentSong.display_name }}</span>
   </div>
   <!-- Progress bar -->
   <div class="progress-bar">
     <span class="time-remaining">{{ seek }}</span>
     <div class="bar">
-      <div class="inner-bar" />
+      <div class="inner-bar" :style="{ width: playerProgress }" />
     </div>
     <span class="time-total">{{ duration }}</span>
   </div>
@@ -63,10 +63,6 @@ import usePlayerStore from "@/stores/player";
 
 export default {
   props: {
-    song: {
-      type: Object,
-      required: true,
-    },
     showCover: {
       type: Boolean,
       default: false,
@@ -76,7 +72,13 @@ export default {
     ...mapActions(usePlayerStore, ["newSong", "toggleAudio"]),
   },
   computed: {
-    ...mapState(usePlayerStore, ["playing", "seek", "duration"]),
+    ...mapState(usePlayerStore, [
+      "playing",
+      "seek",
+      "duration",
+      "playerProgress",
+      "currentSong",
+    ]),
   },
 };
 </script>

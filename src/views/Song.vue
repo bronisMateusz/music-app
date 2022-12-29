@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="player-controls">
-      <player-details :song="song" />
+      <player-details />
     </div>
   </div>
 </template>
@@ -42,11 +42,6 @@ import usePlayerStore from "@/stores/player";
 import PlayerDetails from "@/components/PlayerDetails.vue";
 
 export default {
-  data() {
-    return {
-      song: {},
-    };
-  },
   components: { PlayerDetails },
   async created() {
     const docRef = doc(db, "songs", this.$route.params.id);
@@ -57,8 +52,8 @@ export default {
       return;
     }
 
-    this.song = docSnap.data();
-    this.newSong(this.song);
+    const song = docSnap.data();
+    this.newSong(song);
   },
   methods: {
     ...mapActions(usePlayerStore, ["newSong"]),
