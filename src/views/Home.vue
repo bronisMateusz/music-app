@@ -273,7 +273,7 @@ body {
       @include songs-list;
 
       .song-details {
-        @include song-details(2);
+        @include song-details;
       }
     }
   }

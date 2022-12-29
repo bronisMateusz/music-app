@@ -29,64 +29,7 @@
       </div>
     </div>
     <div class="player-controls">
-      <!-- Song details -->
-      <div class="song-details">
-        <a href="#" class="song-title">{{ song.modified_name }}</a>
-        <span class="song-artist">{{ song.display_name }}</span>
-      </div>
-      <!-- Progress bar -->
-      <div class="progress-bar">
-        <span class="time-remaining">2:28</span>
-        <div class="bar">
-          <div class="inner-bar" />
-        </div>
-        <span class="time-total">4:12</span>
-      </div>
-      <div class="control-buttons">
-        <!-- Shuffle Button -->
-        <button title="Shuffle">
-          <eva-icon name="shuffle-2-outline" height="24" width="24" />
-        </button>
-        <!-- Previous Button -->
-        <button title="Previous">
-          <eva-icon name="rewind-left-outline" height="48" width="48" />
-        </button>
-        <!-- Play/Pause Button -->
-        <button
-          :title="!playing ? 'Play' : 'Pause'"
-          @click.prevent="toggleAudio"
-        >
-          <eva-icon
-            :name="!playing ? 'arrow-right-outline' : 'pause-circle-outline'"
-            height="48"
-            width="48"
-          />
-        </button>
-        <!-- Next Button -->
-        <button title="Next">
-          <eva-icon name="rewind-right-outline" height="48" width="48" />
-        </button>
-        <!-- Repeat Button -->
-        <button title="Repeat">
-          <eva-icon name="repeat-outline" height="24" width="24" />
-        </button>
-      </div>
-      <div class="volume-controls">
-        <!-- Decrease Volume Button -->
-        <button title="Decrease volume">
-          <eva-icon name="volume-mute-outline" height="24" width="24" />
-        </button>
-        <!-- Progress bar -->
-        <div class="progress-bar">
-          <div class="bar">
-            <div class="inner-bar" />
-          </div>
-        </div>
-        <!-- Increase Volume Button -->
-        <button title="Increase volume">
-          <eva-icon name="volume-up-outline" height="24" width="24" />
-        </button>
-      </div>
+      <player-details :song="song" />
     </div>
   </div>
 </template>
@@ -94,8 +37,9 @@
 <script>
 import { db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { mapActions, mapState } from "pinia";
+import { mapActions } from "pinia";
 import usePlayerStore from "@/stores/player";
+import PlayerDetails from "@/components/PlayerDetails.vue";
 
 export default {
   data() {
@@ -103,6 +47,7 @@ export default {
       song: {},
     };
   },
+  components: { PlayerDetails },
   async created() {
     const docRef = doc(db, "songs", this.$route.params.id);
     const docSnap = await getDoc(docRef);
@@ -116,10 +61,7 @@ export default {
     this.newSong(this.song);
   },
   methods: {
-    ...mapActions(usePlayerStore, ["newSong", "toggleAudio"]),
-  },
-  computed: {
-    ...mapState(usePlayerStore, ["playing"]),
+    ...mapActions(usePlayerStore, ["newSong"]),
   },
 };
 </script>
@@ -133,7 +75,7 @@ export default {
   width: 100vw;
 
   .song-bg {
-    @include song-cover;
+    @include conic-bg;
     filter: blur(150px);
     inset: 0;
     opacity: 0.7;
@@ -159,7 +101,7 @@ export default {
     }
 
     > .song-cover {
-      @include song-cover;
+      @include conic-bg;
       border-radius: 20px;
       box-shadow: 0px 20px 25px rgba(0, 0, 0, 0.45);
       height: 220px;
@@ -193,7 +135,6 @@ export default {
     }
 
     .progress-bar {
-      @include progress-bar;
       margin-bottom: 24px;
     }
 
@@ -208,10 +149,6 @@ export default {
         height: 48px;
         width: 48px;
       }
-    }
-
-    .volume-controls {
-      display: none;
     }
   }
 
@@ -228,7 +165,7 @@ export default {
         z-index: -1;
 
         .song-cover {
-          @include song-cover;
+          @include conic-bg;
           border-radius: 20px;
           position: absolute;
           top: 50%;
