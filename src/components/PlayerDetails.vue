@@ -7,11 +7,11 @@
   </div>
   <!-- Progress bar -->
   <div class="progress-bar">
-    <span class="time-remaining">2:28</span>
+    <span class="time-remaining">{{ seek }}</span>
     <div class="bar">
       <div class="inner-bar" />
     </div>
-    <span class="time-total">4:12</span>
+    <span class="time-total">{{ duration }}</span>
   </div>
   <div class="control-buttons">
     <!-- Shuffle Button -->
@@ -76,7 +76,7 @@ export default {
     ...mapActions(usePlayerStore, ["newSong", "toggleAudio"]),
   },
   computed: {
-    ...mapState(usePlayerStore, ["playing"]),
+    ...mapState(usePlayerStore, ["playing", "seek", "duration"]),
   },
 };
 </script>

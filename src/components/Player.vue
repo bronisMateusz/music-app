@@ -1,6 +1,6 @@
 <template>
   <div id="player">
-    <player-details :song="this.currentSong" :showCover="true" />
+    <player-details :song="currentSong" :showCover="true" />
   </div>
 </template>
 
