@@ -1,6 +1,5 @@
 <template>
   <div id="player">
-    <!-- Scrub -->
     <div class="song-details">
       <span class="song-cover" />
       <a href="#" class="song-title">Song Title</a>
@@ -8,8 +7,12 @@
     </div>
     <div id="player-controls">
       <!-- Play/Pause Button -->
-      <button title="Play">
-        <eva-icon name="arrow-right-outline" height="48" width="48" />
+      <button :title="!playing ? 'Play' : 'Pause'" @click.prevent="toggleAudio">
+        <eva-icon
+          :name="!playing ? 'arrow-right-outline' : 'pause-circle-outline'"
+          height="48"
+          width="48"
+        />
       </button>
       <!-- Next Button -->
       <button title="Next">
@@ -18,6 +21,20 @@
     </div>
   </div>
 </template>
+
+<script>
+import { mapActions, mapState } from "pinia";
+import usePlayerStore from "@/stores/player";
+
+export default {
+  methods: {
+    ...mapActions(usePlayerStore, ["toggleAudio"]),
+  },
+  computed: {
+    ...mapState(usePlayerStore, ["playing"]),
+  },
+};
+</script>
 
 <style lang="scss">
 #player {
