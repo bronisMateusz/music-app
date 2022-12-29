@@ -12,6 +12,9 @@ export default defineStore("player", {
   }),
   actions: {
     async newSong(song) {
+      if (this.currentSong.url === song.url) return;
+      if (this.sound instanceof Howl) this.sound.unload();
+
       this.currentSong = song;
 
       this.sound = new Howl({
