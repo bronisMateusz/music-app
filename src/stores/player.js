@@ -5,44 +5,52 @@ import helper from "@/includes/helper";
 export default defineStore("player", {
   state: () => ({
     currentSong: {},
-    sound: {},
+    sound: {}, //song
+    seekPosition: "0",
     seek: "0:00",
     duration: "0:00",
-    playerProgress: "0%",
+    isPlaying: false,
   }),
   actions: {
     async newSong(song) {
       if (this.currentSong.url === song.url) return;
       if (this.sound instanceof Howl) this.sound.unload();
 
+      // Store details from Firebase
       this.currentSong = song;
 
+      // Initialize the song with the Howler library
       this.sound = new Howl({
         src: [song.url],
         html5: true,
+        onplay: () => {
+          // Start the interval to update the current time and seek position
+          this.interval = setInterval(() => {
+            this.seek = helper.formatTime(this.sound.seek());
+            this.seekPosition =
+              (this.sound.seek() / this.sound.duration()) * 100;
+          }, 1000);
+        },
+        onend: () => {
+          // Clear the interval when the song ends
+          clearInterval(this.interval);
+        },
       });
-
+      this.duration = helper.formatTime(this.sound.duration());
       this.sound.play();
-      this.sound.on("play", () => requestAnimationFrame(this.progress));
     },
     async toggleAudio() {
       if (!this.sound.playing) return;
-
-      if (this.sound.playing()) {
-        this.sound.pause();
-      } else {
-        this.sound.play();
-      }
+      this.sound.playing() ? this.sound.pause() : this.sound.play();
     },
-    progress() {
-      this.seek = helper.formatTime(this.sound.seek());
-      this.duration = helper.formatTime(this.sound.duration());
-
-      this.playerProgress = `${
-        (this.sound.seek() / this.sound.duration()) * 100
-      }%`;
-
-      if (this.sound.playing()) requestAnimationFrame(this.progress);
+    updateSeek(event) {
+      this.seekPosition = event.target.value;
+      this.seek = helper.formatTime(
+        (this.seekPosition / 100) * this.sound.duration()
+      );
+    },
+    changeSeek() {
+      this.sound.seek((this.seekPosition / 100) * this.sound.duration());
     },
   },
   getters: {
