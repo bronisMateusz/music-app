@@ -45,7 +45,7 @@ export default {
   }
 
   @media (min-width: 768px) {
-    grid-template-columns: 70px auto 288px;
+    grid-template-columns: 70px auto 240px;
     grid-template-rows: repeat(2, 1fr);
 
     .song-cover,
@@ -63,6 +63,7 @@ export default {
 
     .control-buttons {
       grid-column: 3;
+      gap: 0;
 
       button {
         &:first-of-type,
@@ -76,6 +77,7 @@ export default {
 
   @media (min-width: 992px) {
     bottom: 24px;
+    grid-template-columns: 240px 70px auto 200px;
     left: 24px;
     margin-left: 100px;
     right: 24px;
@@ -88,6 +90,20 @@ export default {
       .song-artist {
         font-size: 0.75rem;
       }
+    }
+
+    .progress-bar {
+      grid-column: 3;
+    }
+
+    .volume-controls {
+      display: flex;
+      grid-column: 4;
+      grid-row: 1/3;
+    }
+
+    .control-buttons {
+      grid-column: 1;
     }
   }
 }
