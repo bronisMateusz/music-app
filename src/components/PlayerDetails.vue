@@ -42,8 +42,12 @@
     <button title="Next">
       <eva-icon name="rewind-right-outline" height="48" width="48" />
     </button>
-    <!-- Repeat Button -->
-    <button title="Repeat">
+    <!-- Loop Button -->
+    <button
+      title="Loop"
+      @click.prevent="toggleLoop"
+      :class="loop ? 'active' : ''"
+    >
       <eva-icon name="repeat-outline" height="24" width="24" />
     </button>
   </div>
@@ -84,17 +88,19 @@ export default {
   },
   methods: {
     ...mapActions(usePlayerStore, [
-      "toggleAudio",
-      "updateSeek",
       "changeSeek",
       "changeVolume",
+      "toggleAudio",
+      "toggleLoop",
+      "updateSeek",
       "updateVolume",
     ]),
   },
   computed: {
     ...mapState(usePlayerStore, [
-      "duration",
       "currentSong",
+      "duration",
+      "loop",
       "playing",
       "seek",
       "seekPosition",
