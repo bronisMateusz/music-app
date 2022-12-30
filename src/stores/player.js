@@ -7,6 +7,7 @@ export default defineStore("player", {
     currentSong: {
       modified_name: "Song title",
       display_name: "Artist",
+      docId: "",
     },
     sound: {},
     seekPosition: 0,

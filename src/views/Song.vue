@@ -52,7 +52,10 @@ export default {
       return;
     }
 
-    const song = docSnap.data();
+    const song = {
+      docId: docSnap.id,
+      ...docSnap.data(),
+    };
     this.newSong(song);
   },
   methods: {

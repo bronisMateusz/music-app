@@ -2,7 +2,15 @@
   <!-- Song details -->
   <div v-show="showCover" class="song-cover" />
   <div class="song-details">
-    <a href="#" class="song-title">{{ currentSong.modified_name }}</a>
+    <router-link
+      :to="
+        currentSong.docId
+          ? { name: 'song', params: { id: currentSong.docId } }
+          : {}
+      "
+      class="song-title"
+      >{{ currentSong.modified_name }}</router-link
+    >
     <span class="song-artist">{{ currentSong.display_name }}</span>
   </div>
   <!-- Progress bar -->
