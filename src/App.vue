@@ -1,7 +1,5 @@
 <template>
-  <component :is="currentTemplate">
-    <app-template />
-  </component>
+  <component :is="currentTemplate" />
 </template>
 
 <script>
