@@ -8,8 +8,16 @@
   <!-- Progress bar -->
   <div class="progress-bar">
     <span class="time-remaining">{{ seek }}</span>
+    <label class="hidden">Playback progress</label>
     <div class="bar">
-      <div class="inner-bar" :style="{ width: playerProgress }" />
+      <input
+        v-model="seekPosition"
+        type="range"
+        @input="updateSeek"
+        @change="changeSeek"
+        :style="{ 'background-size': `${seekPosition}% 100%` }"
+      />
+      <div class="bar-bg"></div>
     </div>
     <span class="time-total">{{ duration }}</span>
   </div>
@@ -41,17 +49,23 @@
   </div>
   <div class="volume-controls">
     <!-- Decrease Volume Button -->
-    <button title="Decrease volume">
+    <button title="Decrease volume" @click.prevent="updateVolume('down')">
       <eva-icon name="volume-mute-outline" height="24" width="24" />
     </button>
     <!-- Progress bar -->
     <div class="progress-bar">
       <div class="bar">
-        <div class="inner-bar" />
+        <input
+          v-model="volume"
+          type="range"
+          @input="changeVolume"
+          :style="{ 'background-size': `${volume}% 100%` }"
+        />
+        <div class="bar-bg"></div>
       </div>
     </div>
     <!-- Increase Volume Button -->
-    <button title="Increase volume">
+    <button title="Increase volume" @click.prevent="updateVolume('up')">
       <eva-icon name="volume-up-outline" height="24" width="24" />
     </button>
   </div>
@@ -69,15 +83,22 @@ export default {
     },
   },
   methods: {
-    ...mapActions(usePlayerStore, ["newSong", "toggleAudio"]),
+    ...mapActions(usePlayerStore, [
+      "toggleAudio",
+      "updateSeek",
+      "changeSeek",
+      "changeVolume",
+      "updateVolume",
+    ]),
   },
   computed: {
     ...mapState(usePlayerStore, [
+      "duration",
+      "currentSong",
       "playing",
       "seek",
-      "duration",
-      "playerProgress",
-      "currentSong",
+      "seekPosition",
+      "volume",
     ]),
   },
 };
