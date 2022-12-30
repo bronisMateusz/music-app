@@ -4,7 +4,10 @@ import helper from "@/includes/helper";
 
 export default defineStore("player", {
   state: () => ({
-    currentSong: {},
+    currentSong: {
+      modified_name: "Song title",
+      display_name: "Artist",
+    },
     sound: {},
     seekPosition: 0,
     seek: "0:00",
@@ -12,6 +15,7 @@ export default defineStore("player", {
     volume: 100,
     interval: null,
     loop: false,
+    playing: false,
   }),
   actions: {
     async newSong(song) {
@@ -34,15 +38,20 @@ export default defineStore("player", {
 
       this.sound.on("play", () => {
         // Start the interval to update the seek
+        this.playing = true;
         this.interval = setInterval(() => {
           this.seek = helper.formatTime(this.sound.seek());
           this.seekPosition = (this.sound.seek() / this.sound.duration()) * 100;
         }, 1000);
       });
 
-      this.sound.on("pause", () => clearInterval(this.interval));
+      this.sound.on("pause", () => {
+        this.playing = false;
+        clearInterval(this.interval);
+      });
 
       this.sound.on("end", () => {
+        this.playing = false;
         // Reset seek and clear the interval when the song ends
         this.seek = "0:00";
         this.seekPosition = 0;
@@ -79,20 +88,13 @@ export default defineStore("player", {
     },
     async toggleAudio() {
       if (!this.sound.playing) return;
-      this.sound.playing() ? this.sound.pause() : this.sound.play();
+      this.playing ? this.sound.pause() : this.sound.play();
     },
     toggleLoop() {
       this.loop = !this.loop;
 
       if (!this.sound.playing) return;
       this.sound.loop(this.loop);
-    },
-  },
-  getters: {
-    playing: (state) => {
-      if (state.sound.playing) return state.sound.playing();
-
-      return false;
     },
   },
 });
