@@ -1,8 +1,7 @@
 export default {
   formatTime(time) {
-    const minutes = Math.floor(time / 60) || 0;
-    const seconds = Math.round(time - minutes * 60 || 0);
-
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   },
 };

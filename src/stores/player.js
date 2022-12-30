@@ -11,6 +11,7 @@ export default defineStore("player", {
     duration: "0:00",
     volume: 100,
     interval: null,
+    loop: false,
   }),
   actions: {
     async newSong(song) {
@@ -39,6 +40,8 @@ export default defineStore("player", {
         }, 1000);
       });
 
+      this.sound.on("pause", () => clearInterval(this.interval));
+
       this.sound.on("end", () => {
         // Reset seek and clear the interval when the song ends
         this.seek = "0:00";
@@ -50,14 +53,20 @@ export default defineStore("player", {
       this.sound.play();
     },
     changeSeek() {
+      if (!this.sound.playing) return;
+
       this.sound.seek((this.seekPosition / 100) * this.sound.duration());
     },
     changeVolume(event) {
       this.volume = event.target.value;
+
+      if (!this.sound.playing) return;
       this.sound.volume(this.volume / 100);
     },
     updateSeek(event) {
-      this.seekPosition = event.target.value;
+      if (!this.sound.playing) return;
+
+      this.seekPosition = parseInt(event.target.value);
       this.seek = helper.formatTime(
         (this.seekPosition / 100) * this.sound.duration()
       );
@@ -71,6 +80,12 @@ export default defineStore("player", {
     async toggleAudio() {
       if (!this.sound.playing) return;
       this.sound.playing() ? this.sound.pause() : this.sound.play();
+    },
+    toggleLoop() {
+      this.loop = !this.loop;
+
+      if (!this.sound.playing) return;
+      this.sound.loop(this.loop);
     },
   },
   getters: {
