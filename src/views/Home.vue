@@ -153,7 +153,8 @@ button {
   cursor: pointer;
   color: $text-secondary;
 
-  &:hover {
+  &:hover,
+  &.active {
     color: $text-primary;
   }
 }

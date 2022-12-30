@@ -22,7 +22,7 @@
         <div class="song-cover"></div>
         <div class="song-cover"></div>
       </div>
-      <div class="song-cover"></div>
+      <div class="song-cover" :class="playing ? 'playing' : ''"></div>
       <div class="next-songs">
         <div class="song-cover"></div>
         <div class="song-cover"></div>
@@ -35,11 +35,11 @@
 </template>
 
 <script>
+import PlayerDetails from "@/components/PlayerDetails.vue";
 import { db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 import usePlayerStore from "@/stores/player";
-import PlayerDetails from "@/components/PlayerDetails.vue";
 
 export default {
   components: { PlayerDetails },
@@ -57,6 +57,9 @@ export default {
   },
   methods: {
     ...mapActions(usePlayerStore, ["newSong"]),
+  },
+  computed: {
+    ...mapState(usePlayerStore, ["playing"]),
   },
 };
 </script>
@@ -81,7 +84,7 @@ export default {
   .options {
     display: flex;
     justify-content: space-between;
-    padding: 36px;
+    padding: 24px;
   }
 
   .song-switcher {
@@ -97,20 +100,25 @@ export default {
 
     > .song-cover {
       @include conic-bg;
+      animation: zoom-out 0.3s ease-in-out;
       border-radius: 20px;
-      box-shadow: 0px 20px 25px rgba(0, 0, 0, 0.45);
-      height: 220px;
-      width: 220px;
+      box-shadow: rgba(0, 0, 0, 0.15) 0px 10px 15px -3px,
+        rgba(0, 0, 0, 0.175) 0px 4px 6px -2px;
+      height: 275px;
+      width: 275px;
+      scale: 0.8;
 
-      .playing {
-        height: 280px;
-        width: 280px;
+      &.playing {
+        animation: zoom-in 0.5s ease-in-out;
+        box-shadow: rgba(50, 50, 93, 0.4) 0px 13px 27px -5px,
+          rgba(0, 0, 0, 0.5) 0px 8px 16px -8px;
+        scale: 1;
       }
     }
   }
 
   .player-controls {
-    margin: 36px 24px 48px;
+    margin: 36px 24px 36px;
 
     .song-details {
       align-items: center;
@@ -158,6 +166,7 @@ export default {
         height: 240px;
         width: 240px;
         z-index: -1;
+        transform: translateY(-10%);
 
         .song-cover {
           @include conic-bg;
@@ -196,12 +205,12 @@ export default {
       }
 
       .song-cover {
-        height: 280px;
-        width: 280px;
+        height: 325px;
+        width: 325px;
+        scale: 0.8;
 
-        .playing {
-          height: 340px;
-          width: 340px;
+        &.playing {
+          scale: 1;
         }
       }
     }
@@ -246,6 +255,34 @@ export default {
           height: 48px;
         }
       }
+    }
+  }
+  @keyframes zoom-in {
+    0% {
+      box-shadow: rgba(0, 0, 0, 0.15) 0px 10px 15px -3px,
+        rgba(0, 0, 0, 0.175) 0px 4px 6px -2px;
+      scale: 0.8;
+    }
+    50% {
+      scale: 1.1;
+    }
+    100% {
+      box-shadow: rgba(50, 50, 93, 0.4) 0px 13px 27px -5px,
+        rgba(0, 0, 0, 0.5) 0px 8px 16px -8px;
+      scale: 1;
+    }
+  }
+
+  @keyframes zoom-out {
+    0% {
+      box-shadow: rgba(50, 50, 93, 0.4) 0px 13px 27px -5px,
+        rgba(0, 0, 0, 0.5) 0px 8px 16px -8px;
+      scale: 1;
+    }
+    100% {
+      box-shadow: rgba(0, 0, 0, 0.15) 0px 10px 15px -3px,
+        rgba(0, 0, 0, 0.175) 0px 4px 6px -2px;
+      scale: 0.8;
     }
   }
 }
