@@ -5,7 +5,7 @@ import helper from "@/includes/helper";
 export default defineStore("player", {
   state: () => ({
     currentSong: {},
-    sound: {}, //song
+    sound: {},
     seekPosition: "0",
     seek: "0:00",
     duration: "0:00",
@@ -23,6 +23,9 @@ export default defineStore("player", {
       this.sound = new Howl({
         src: [song.url],
         html5: true,
+        onload: () => {
+          this.duration = helper.formatTime(this.sound.duration());
+        },
         onplay: () => {
           // Start the interval to update the current time and seek position
           this.interval = setInterval(() => {
@@ -33,10 +36,11 @@ export default defineStore("player", {
         },
         onend: () => {
           // Clear the interval when the song ends
+          this.seek = "0:00";
+          this.seekPosition = 0;
           clearInterval(this.interval);
         },
       });
-      this.duration = helper.formatTime(this.sound.duration());
       this.sound.play();
     },
     async toggleAudio() {
