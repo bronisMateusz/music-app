@@ -9,8 +9,9 @@
           : {}
       "
       class="song-title"
-      >{{ currentSong.modified_name }}</router-link
     >
+      {{ currentSong.modified_name }}
+    </router-link>
     <span class="song-artist">{{ currentSong.display_name }}</span>
   </div>
   <!-- Progress bar -->
@@ -62,7 +63,11 @@
   <div class="volume-controls">
     <!-- Decrease Volume Button -->
     <button title="Decrease volume" @click.prevent="updateVolume('down')">
-      <eva-icon name="volume-mute-outline" height="24" width="24" />
+      <eva-icon
+        :name="volume ? 'volume-down-outline' : 'volume-mute-outline'"
+        height="24"
+        width="24"
+      />
     </button>
     <!-- Progress bar -->
     <div class="progress-bar">
@@ -146,8 +151,5 @@ export default {
 
 .volume-controls {
   display: none;
-}
-
-@media (min-width: 768px) {
 }
 </style>

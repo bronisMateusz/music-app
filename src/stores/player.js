@@ -68,7 +68,7 @@ export default defineStore("player", {
       this.sound.seek((this.seekPosition / 100) * this.sound.duration());
     },
     changeVolume(event) {
-      this.volume = event.target.value;
+      this.volume = parseInt(event.target.value);
 
       if (!this.sound.playing) return;
       this.sound.volume(this.volume / 100);
@@ -84,6 +84,7 @@ export default defineStore("player", {
     updateVolume(direction) {
       if (direction === "up") this.volume = Math.min(100, this.volume + 5);
       if (direction === "down") this.volume = Math.max(0, this.volume - 5);
+      if (!this.sound.playing) return;
 
       this.sound.volume(this.volume / 100);
     },
