@@ -82,8 +82,8 @@ export default defineStore("player", {
       );
     },
     updateVolume(direction) {
-      if (direction === "up") this.volume = Math.min(100, this.volume + 10);
-      if (direction === "down") this.volume = Math.max(0, this.volume - 10);
+      if (direction === "up") this.volume = Math.min(100, this.volume + 5);
+      if (direction === "down") this.volume = Math.max(0, this.volume - 5);
 
       this.sound.volume(this.volume / 100);
     },
