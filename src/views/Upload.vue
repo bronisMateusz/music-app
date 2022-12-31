@@ -36,8 +36,8 @@
     <h2>Upload progress</h2>
     <ul id="upload-progress">
       <li v-for="upload in uploads" :key="upload.name">
+        <div class="song-cover" />
         <div class="song-details" :class="upload.variant">
-          <span class="song-cover" />
           <a href="#" class="song-title">{{ upload.name }}</a>
           <span class="song-artist">Artist Name</span>
           <!-- Progress bar -->
@@ -265,13 +265,13 @@ export default {
   @include songs-list;
 
   .song-details {
-    @include song-details(2);
+    @include song-details;
   }
 }
 
 #upload-progress {
   .song-details {
-    @include song-details(3);
+    @include song-details;
 
     &.error {
       .song-title,

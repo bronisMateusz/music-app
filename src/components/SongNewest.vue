@@ -1,7 +1,7 @@
 <template>
   <li>
+    <div class="song-cover" />
     <div class="song-details">
-      <span class="song-cover" />
       <router-link
         :to="{ name: 'song', params: { id: song.docId } }"
         class="song-title"

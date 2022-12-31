@@ -22,78 +22,27 @@
         <div class="song-cover"></div>
         <div class="song-cover"></div>
       </div>
-      <div class="song-cover"></div>
+      <div class="song-cover" :class="playing ? 'playing' : ''"></div>
       <div class="next-songs">
         <div class="song-cover"></div>
         <div class="song-cover"></div>
       </div>
     </div>
     <div class="player-controls">
-      <!-- Song details -->
-      <div class="song-details">
-        <a href="#" class="song-title">{{ song.modified_name }}</a>
-        <span class="song-artist">{{ song.display_name }}</span>
-      </div>
-      <!-- Progress bar -->
-      <div class="progress-bar">
-        <span class="time-remaining">2:28</span>
-        <div class="bar">
-          <div class="inner-bar" />
-        </div>
-        <span class="time-total">4:12</span>
-      </div>
-      <div class="control-buttons">
-        <!-- Shuffle Button -->
-        <button title="Shuffle">
-          <eva-icon name="shuffle-2-outline" height="24" width="24" />
-        </button>
-        <!-- Previous Button -->
-        <button title="Previous">
-          <eva-icon name="rewind-left-outline" height="48" width="48" />
-        </button>
-        <!-- Play/Pause Button -->
-        <button title="Play">
-          <eva-icon name="arrow-right-outline" height="48" width="48" />
-        </button>
-        <!-- Next Button -->
-        <button title="Next">
-          <eva-icon name="rewind-right-outline" height="48" width="48" />
-        </button>
-        <!-- Repeat Button -->
-        <button title="Repeat">
-          <eva-icon name="repeat-outline" height="24" width="24" />
-        </button>
-      </div>
-      <div class="volume-controls">
-        <!-- Decrease Volume Button -->
-        <button title="Decrease volume">
-          <eva-icon name="volume-mute-outline" height="24" width="24" />
-        </button>
-        <!-- Progress bar -->
-        <div class="progress-bar">
-          <div class="bar">
-            <div class="inner-bar" />
-          </div>
-        </div>
-        <!-- Increase Volume Button -->
-        <button title="Increase volume">
-          <eva-icon name="volume-up-outline" height="24" width="24" />
-        </button>
-      </div>
+      <player-details />
     </div>
   </div>
 </template>
 
 <script>
+import PlayerDetails from "@/components/PlayerDetails.vue";
 import { db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { mapActions, mapState } from "pinia";
+import usePlayerStore from "@/stores/player";
 
 export default {
-  data() {
-    return {
-      song: {},
-    };
-  },
+  components: { PlayerDetails },
   async created() {
     const docRef = doc(db, "songs", this.$route.params.id);
     const docSnap = await getDoc(docRef);
@@ -103,7 +52,17 @@ export default {
       return;
     }
 
-    this.song = docSnap.data();
+    const song = {
+      docId: docSnap.id,
+      ...docSnap.data(),
+    };
+    this.newSong(song);
+  },
+  methods: {
+    ...mapActions(usePlayerStore, ["newSong"]),
+  },
+  computed: {
+    ...mapState(usePlayerStore, ["playing"]),
   },
 };
 </script>
@@ -117,7 +76,7 @@ export default {
   width: 100vw;
 
   .song-bg {
-    @include song-cover;
+    @include conic-bg;
     filter: blur(150px);
     inset: 0;
     opacity: 0.7;
@@ -128,7 +87,7 @@ export default {
   .options {
     display: flex;
     justify-content: space-between;
-    padding: 36px;
+    padding: 24px;
   }
 
   .song-switcher {
@@ -143,21 +102,26 @@ export default {
     }
 
     > .song-cover {
-      @include song-cover;
+      @include conic-bg;
+      animation: zoom-out 0.3s ease-in-out;
       border-radius: 20px;
-      box-shadow: 0px 20px 25px rgba(0, 0, 0, 0.45);
-      height: 220px;
-      width: 220px;
+      box-shadow: rgba(0, 0, 0, 0.15) 0px 10px 15px -3px,
+        rgba(0, 0, 0, 0.175) 0px 4px 6px -2px;
+      height: 275px;
+      width: 275px;
+      scale: 0.8;
 
-      .playing {
-        height: 280px;
-        width: 280px;
+      &.playing {
+        animation: zoom-in 0.5s ease-in-out;
+        box-shadow: rgba(50, 50, 93, 0.4) 0px 13px 27px -5px,
+          rgba(0, 0, 0, 0.5) 0px 8px 16px -8px;
+        scale: 1;
       }
     }
   }
 
   .player-controls {
-    margin: 36px 24px 48px;
+    margin: 36px 24px 36px;
 
     .song-details {
       align-items: center;
@@ -177,7 +141,6 @@ export default {
     }
 
     .progress-bar {
-      @include progress-bar;
       margin-bottom: 24px;
     }
 
@@ -193,10 +156,6 @@ export default {
         width: 48px;
       }
     }
-
-    .volume-controls {
-      display: none;
-    }
   }
 
   @media (min-width: 768px) {
@@ -210,9 +169,10 @@ export default {
         height: 240px;
         width: 240px;
         z-index: -1;
+        transform: translateY(-10%);
 
         .song-cover {
-          @include song-cover;
+          @include conic-bg;
           border-radius: 20px;
           position: absolute;
           top: 50%;
@@ -248,12 +208,12 @@ export default {
       }
 
       .song-cover {
-        height: 280px;
-        width: 280px;
+        height: 325px;
+        width: 325px;
+        scale: 0.8;
 
-        .playing {
-          height: 340px;
-          width: 340px;
+        &.playing {
+          scale: 1;
         }
       }
     }
@@ -298,6 +258,34 @@ export default {
           height: 48px;
         }
       }
+    }
+  }
+  @keyframes zoom-in {
+    0% {
+      box-shadow: rgba(0, 0, 0, 0.15) 0px 10px 15px -3px,
+        rgba(0, 0, 0, 0.175) 0px 4px 6px -2px;
+      scale: 0.8;
+    }
+    50% {
+      scale: 1.1;
+    }
+    100% {
+      box-shadow: rgba(50, 50, 93, 0.4) 0px 13px 27px -5px,
+        rgba(0, 0, 0, 0.5) 0px 8px 16px -8px;
+      scale: 1;
+    }
+  }
+
+  @keyframes zoom-out {
+    0% {
+      box-shadow: rgba(50, 50, 93, 0.4) 0px 13px 27px -5px,
+        rgba(0, 0, 0, 0.5) 0px 8px 16px -8px;
+      scale: 1;
+    }
+    100% {
+      box-shadow: rgba(0, 0, 0, 0.15) 0px 10px 15px -3px,
+        rgba(0, 0, 0, 0.175) 0px 4px 6px -2px;
+      scale: 0.8;
     }
   }
 }

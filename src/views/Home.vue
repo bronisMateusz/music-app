@@ -153,7 +153,8 @@ button {
   cursor: pointer;
   color: $text-secondary;
 
-  &:hover {
+  &:hover,
+  &.active {
     color: $text-primary;
   }
 }
@@ -273,7 +274,7 @@ body {
       @include songs-list;
 
       .song-details {
-        @include song-details(2);
+        @include song-details;
       }
     }
   }

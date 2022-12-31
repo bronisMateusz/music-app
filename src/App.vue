@@ -1,7 +1,5 @@
 <template>
-  <component :is="currentTemplate">
-    <app-template />
-  </component>
+  <component :is="currentTemplate" />
 </template>
 
 <script>
@@ -28,3 +26,18 @@ export default {
   },
 };
 </script>
+<style lang="scss">
+// Override Eva icons pause-circle styles
+svg {
+  g[data-name="pause-circle"] {
+    path:first-of-type {
+      display: none;
+    }
+
+    path:not(:first-of-type) {
+      scale: 1 1.5;
+      transform: translateY(-4px);
+    }
+  }
+}
+</style>

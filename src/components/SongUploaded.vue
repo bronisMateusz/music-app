@@ -1,7 +1,7 @@
 <template>
   <li v-show="!showForm">
+    <div class="song-cover" />
     <div class="song-details">
-      <span class="song-cover" />
       <a href="#" class="song-title">{{ song.modified_name }}</a>
       <span class="song-artist">{{ song.display_name }}</span>
     </div>
