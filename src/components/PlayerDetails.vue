@@ -17,11 +17,12 @@
   <!-- Progress bar -->
   <div class="progress-bar">
     <span class="time-remaining">{{ seek }}</span>
-    <label class="hidden">Playback progress</label>
     <div class="bar">
+      <label for="seek" class="hidden">Playback progress</label>
       <input
-        v-model="seekPosition"
+        id="seek"
         type="range"
+        v-model="seekPosition"
         @input="updateSeek"
         @change="changeSeek"
         :style="{ 'background-size': `${seekPosition}% 100%` }"
@@ -72,9 +73,11 @@
     <!-- Progress bar -->
     <div class="progress-bar">
       <div class="bar">
+        <label for="volume" class="hidden">Volume level</label>
         <input
-          v-model="volume"
+          id="volume"
           type="range"
+          v-model="volume"
           @input="changeVolume"
           :style="{ 'background-size': `${volume}% 100%` }"
         />

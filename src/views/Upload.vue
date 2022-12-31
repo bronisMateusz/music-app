@@ -43,10 +43,19 @@
           <!-- Progress bar -->
           <div class="progress-bar">
             <div class="bar">
-              <div
-                class="inner-bar"
-                :style="{ width: upload.current_progress + '%' }"
+              <label for="upload-progress" class="hidden">
+                Upload progress
+              </label>
+              <input
+                id="upload-progress"
+                v-model="upload.current_progress"
+                type="range"
+                :style="{
+                  'background-size': `${upload.current_progress}% 100%`,
+                }"
+                disabled
               />
+              <div class="bar-bg"></div>
             </div>
             <span v-if="upload.variant === 'error'" class="progress-value">
               error
@@ -56,9 +65,6 @@
             </span>
           </div>
         </div>
-        <button>
-          <eva-icon name="more-horizontal-outline" height="28" width="28" />
-        </button>
         <button title="Cancel upload" @click.prevent="cancelUpload">
           <eva-icon name="close-outline" height="28" width="28" />
         </button>
@@ -181,9 +187,7 @@ export default {
       });
     },
     cancelUpload() {
-      this.uploads.forEach((upload) => {
-        upload.task.cancel();
-      });
+      this.uploads.forEach((upload) => upload.task.cancel());
     },
     updateSongDetails(index, values) {
       this.songs[index].modified_name = values.modified_name;
@@ -207,18 +211,17 @@ export default {
     this.cancelUpload();
   },
   beforeRouteLeave(to, from, next) {
-    if (!this.unsavedFlag) {
-      next();
-    } else {
-      this.setNotification(
-        "notice",
-        "Unsaved changes",
-        "Save or discard changes to song details"
-      );
-    }
+    !this.unsavedFlag
+      ? next()
+      : this.setNotification(
+          "notice",
+          "Unsaved changes",
+          "Save or discard changes to song details"
+        );
   },
 };
 </script>
+
 <style lang="scss">
 #drop-zone {
   @include blurred-bg;
@@ -271,8 +274,6 @@ export default {
 
 #upload-progress {
   .song-details {
-    @include song-details;
-
     &.error {
       .song-title,
       .song-artist,
@@ -280,20 +281,19 @@ export default {
         color: $text-error;
       }
 
-      .progress-bar .bar .inner-bar {
-        background-color: $text-error;
+      .progress-bar .bar input {
+        background-image: linear-gradient($text-error, $text-error);
       }
     }
 
     .progress-bar {
       @include progress-bar;
-      grid-area: 3 / 2 / 4 / 3;
-      height: fit-content;
-      margin-right: 30px;
-      width: calc(100% - 24px);
+
+      .bar input {
+        cursor: default;
+      }
 
       .progress-value {
-        min-width: 2.75rem;
         text-align: right;
       }
     }
