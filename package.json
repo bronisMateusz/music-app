@@ -8,7 +8,8 @@
     "test:unit": "vitest --environment jsdom --root src/",
     "test:e2e": "start-server-and-test preview :4173 'cypress run --e2e'",
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' :4173 'cypress open --e2e'",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@stefandesu/eva-icons-vue": "^0.0.2",
@@ -16,6 +17,7 @@
     "firebase": "^9.14.0",
     "howler": "^2.2.3",
     "jsmediatags": "^3.9.7",
+    "patch-package": "^6.5.0",
     "pinia": "^2.0.23",
     "sass": "^1.55.0",
     "vee-validate": "^4.7.3",
