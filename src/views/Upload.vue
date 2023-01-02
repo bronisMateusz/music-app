@@ -35,11 +35,18 @@
   <section v-show="uploads.length">
     <h2>Upload progress</h2>
     <ul id="upload-progress">
-      <li v-for="upload in uploads" :key="upload.name">
-        <div class="song-cover" />
+      <li v-for="upload in uploads" :key="upload.title">
+        <div
+          class="song-cover"
+          :style="{
+            'background-image': upload.picture
+              ? `url(${upload.picture})`
+              : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+          }"
+        />
         <div class="song-details" :class="upload.variant">
-          <a href="#" class="song-title">{{ upload.name }}</a>
-          <span class="song-artist">Artist Name</span>
+          <p class="song-title">{{ upload.title }}</p>
+          <span class="song-artist">{{ upload.artist }}</span>
           <!-- Progress bar -->
           <div class="progress-bar">
             <div class="bar">
@@ -105,19 +112,20 @@ import {
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
 import SongUploaded from "@/components/SongUploaded.vue";
+import jsmediatags from "jsmediatags";
 
 export default {
   components: { SongUploaded },
   data() {
     return {
       is_dragover: false,
-      uploads: [],
       songs: [],
       unsavedFlag: false,
+      uploads: [],
     };
   },
   async created() {
-    // Storing list of user songs
+    // Get list of user songs
     const q = query(
       collection(db, "songs"),
       where("uid", "==", auth.currentUser.uid)
@@ -127,24 +135,33 @@ export default {
   },
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),
-    upload($event) {
+    async upload($event) {
       this.is_dragover = false;
 
       const files = $event.dataTransfer
         ? [...$event.dataTransfer.files]
         : [...$event.target.files];
 
-      files.forEach((file) => {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
         if (file.type !== "audio/mpeg") return;
 
-        const songsRef = ref(storage, `songs/${file.name}`);
-        const task = uploadBytesResumable(songsRef, file);
+        // Get file metadata
+        const metadata = await this.getMetadata(file);
+
+        // Create song ref
+        const songRef = ref(storage, `songs/${file.name}`);
+
+        //Upload song to Firestore Database
+        const task = uploadBytesResumable(songRef, file, metadata);
 
         const uploadIndex =
           this.uploads.push({
-            task,
+            artist: metadata.artist,
             current_progress: 0,
-            name: file.name,
+            picture: metadata.picture,
+            task,
+            title: metadata.title,
             variant: "",
           }) - 1;
 
@@ -166,10 +183,7 @@ export default {
           },
           async () => {
             const song = {
-              display_name: auth.currentUser.displayName,
-              genre: "",
-              modified_name: task.snapshot.ref.name,
-              original_name: task.snapshot.ref.name,
+              ...metadata,
               uid: auth.currentUser.uid,
               url: await getDownloadURL(task.snapshot.ref),
             };
@@ -184,6 +198,52 @@ export default {
             );
           }
         );
+      }
+    },
+    async getMetadata(file) {
+      return new Promise((resolve, reject) => {
+        jsmediatags.read(file, {
+          onSuccess: (tag) => {
+            const metadata = tag.tags;
+
+            // Convert image data to JPEG file
+            const pictureBase64 = metadata.picture.data
+              .map((charCode) => String.fromCharCode(charCode))
+              .join("");
+            const pictureData = `data:${
+              metadata.picture.format
+            };base64,${window.btoa(pictureBase64)}`;
+
+            // Convert TPOS to disc info
+            const tposData = metadata.TPOS.data.split("/");
+
+            // Convert track to track info
+            const trackData = metadata.track.split("/");
+
+            // Convert TDC to year
+            const TDRC = metadata.TDRC.data;
+            const yearData = TDRC.slice(0, 4);
+
+            resolve({
+              album: metadata.album,
+              artist: metadata.artist,
+              author: metadata.TCOM.data,
+              disc: tposData[0],
+              discTotal: tposData[1],
+              format: metadata.picture.format,
+              genre: metadata.genre,
+              lyrics: "",
+              picture: pictureData,
+              title: metadata.title,
+              track: trackData[0],
+              trackTotal: trackData[1],
+              year: yearData,
+            });
+          },
+          onError: (error) => {
+            reject(error);
+          },
+        });
       });
     },
     cancelUpload() {
@@ -264,6 +324,8 @@ export default {
 }
 
 #upload-progress {
+  @include songs-list;
+
   .song-details {
     @include song-details;
   }

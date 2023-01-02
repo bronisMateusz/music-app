@@ -1,9 +1,21 @@
 <template>
   <li v-show="!showForm">
-    <div class="song-cover" />
+    <div
+      class="song-cover"
+      :style="{
+        'background-image': song.picture
+          ? `url(${song.picture})`
+          : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+      }"
+    />
     <div class="song-details">
-      <a href="#" class="song-title">{{ song.modified_name }}</a>
-      <span class="song-artist">{{ song.display_name }}</span>
+      <router-link
+        :to="{ name: 'song', params: { id: song.docId } }"
+        class="song-title"
+      >
+        {{ song.title }}
+      </router-link>
+      <span class="song-artist">{{ song.artist }}</span>
     </div>
     <button @click.prevent="toggleFormVisibility">
       <eva-icon name="more-horizontal-outline" height="28" width="28" />
@@ -15,7 +27,14 @@
   <li v-show="showForm">
     <vee-form :validation-schema="schema" :initial-values="song" @submit="edit">
       <div class="song-cover-wrapper">
-        <div class="song-cover" />
+        <div
+          class="song-cover"
+          :style="{
+            'background-image': song.picture
+              ? `url(${song.picture})`
+              : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+          }"
+        />
         <div class="song-cover-info">
           <p>Image guidelines</p>
           <ul>
@@ -85,7 +104,7 @@
       <div>
         <label>
           Year
-          <input
+          <vee-field
             type="number"
             name="year"
             placeholder="Enter year"
@@ -109,7 +128,7 @@
           From
           <vee-field
             type="number"
-            name="track-total"
+            name="trackTotal"
             placeholder="0"
             @input="updateUnsavedFlag(true)"
           />
@@ -120,7 +139,7 @@
           Disc number
           <vee-field
             type="number"
-            name="disc-number"
+            name="disc"
             placeholder="0"
             @input="updateUnsavedFlag(true)"
           />
@@ -129,9 +148,9 @@
       <div>
         <label>
           From
-          <input
+          <vee-field
             type="number"
-            name="disc-number-total"
+            name="discTotal"
             placeholder="0"
             @input="updateUnsavedFlag(true)"
           />
@@ -140,12 +159,14 @@
       <div>
         <label>
           Lyrics
-          <textarea
-            name="lyrics"
-            placeholder="Enter lyrics"
-            rows="1"
-            @input="updateUnsavedFlag(true)"
-          />
+          <vee-field v-slot="{ field }" name="lyrics">
+            <textarea
+              v-bind="field"
+              placeholder="Enter lyrics"
+              rows="1"
+              @input="updateUnsavedFlag(true)"
+            />
+          </vee-field>
         </label>
       </div>
       <div class="form-group">

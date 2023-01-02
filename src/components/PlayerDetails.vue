@@ -1,6 +1,14 @@
 <template>
   <!-- Song details -->
-  <div v-show="showCover" class="song-cover" />
+  <div
+    v-show="showCover"
+    class="song-cover"
+    :style="{
+      'background-image': currentSong.picture
+        ? `url(${currentSong.picture})`
+        : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+    }"
+  />
   <div class="song-details">
     <router-link
       :to="
@@ -10,9 +18,9 @@
       "
       class="song-title"
     >
-      {{ currentSong.modified_name }}
+      {{ currentSong.title }}
     </router-link>
-    <span class="song-artist">{{ currentSong.display_name }}</span>
+    <span class="song-artist">{{ currentSong.artist }}</span>
   </div>
   <!-- Progress bar -->
   <div class="progress-bar">
