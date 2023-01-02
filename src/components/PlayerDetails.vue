@@ -11,6 +11,7 @@
   />
   <div class="song-details">
     <router-link
+      v-if="$route.nem === 'song'"
       :to="
         currentSong.docId
           ? { name: 'song', params: { id: currentSong.docId } }
@@ -20,6 +21,7 @@
     >
       {{ currentSong.title }}
     </router-link>
+    <p v-else class="song-title">{{ currentSong.title }}</p>
     <span class="song-artist">{{ currentSong.artist }}</span>
   </div>
   <!-- Progress bar -->
