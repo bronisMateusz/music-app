@@ -4,7 +4,12 @@
     <div>
       <label>
         Email
-        <vee-field type="email" name="email" placeholder="Email" />
+        <vee-field
+          type="email"
+          name="email"
+          placeholder="Email"
+          autocomplete="email"
+        />
       </label>
       <ErrorMessage name="email" />
     </div>
@@ -13,34 +18,21 @@
       <label>
         Password
         <vee-field
-          v-if="!isPasswordVisible"
-          type="password"
+          :type="!isPasswordVisible ? 'password' : 'text'"
           name="password"
           placeholder="Password"
-          autocomplete="on"
-        />
-        <vee-field
-          v-else
-          type="text"
-          name="password"
-          placeholder="Password"
-          autocomplete="on"
+          autocomplete="current-password"
         />
         <button
-          v-if="!isPasswordVisible"
           tabindex="-1"
-          title="Show password"
+          :title="!isPasswordVisible ? 'Show password' : 'Hide password'"
           @click.prevent="togglePasswordVisibility"
         >
-          <eva-icon name="eye-outline" height="18" width="18" />
-        </button>
-        <button
-          v-else
-          tabindex="-1"
-          title="Hide password"
-          @click.prevent="togglePasswordVisibility"
-        >
-          <eva-icon name="eye-off-outline" height="18" width="18" />
+          <eva-icon
+            :name="!isPasswordVisible ? 'eye-outline' : 'eye-off-outline'"
+            height="18"
+            width="18"
+          />
         </button>
       </label>
       <ErrorMessage name="password" />
