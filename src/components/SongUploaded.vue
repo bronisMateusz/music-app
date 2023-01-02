@@ -241,69 +241,77 @@ export default {
 </script>
 
 <style lang="scss">
-#uploaded-songs form {
-  display: grid;
-  column-gap: 12px;
-  row-gap: 8px;
-  width: 100%;
+#uploaded-songs {
+  @include songs-list;
 
-  .song-cover-wrapper {
+  .song-details {
+    @include song-details;
+  }
+
+  form {
     display: grid;
-    gap: 12px;
-    grid-template-columns: auto 1fr;
-    margin-bottom: 12px;
+    column-gap: 12px;
+    row-gap: 8px;
+    width: 100%;
 
-    .song-cover {
-      max-height: 244px;
-      max-width: 244px;
-    }
+    .song-cover-wrapper {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: auto 1fr;
+      margin-bottom: 12px;
 
-    .song-cover-info {
-      align-self: center;
+      .song-cover {
+        max-height: 244px;
+        max-width: 244px;
+      }
 
-      ul {
-        color: $text-secondary;
-        list-style: disc;
-        margin-top: 8px;
-        padding-left: 16px;
+      .song-cover-info {
+        align-self: center;
 
-        li p {
-          line-height: 1rem;
-          font-size: 0.75rem;
+        ul {
+          color: $text-secondary;
+          list-style: disc;
+          margin-top: 8px;
+          padding-left: 16px;
+
+          li p {
+            line-height: 1rem;
+            font-size: 0.75rem;
+          }
         }
       }
     }
-  }
 
-  div:not(.song-cover-wrapper):not(.form-group) {
-    @include form-element;
-    @include form-element-error;
+    div:not(.song-cover-wrapper):not(.form-group) {
+      @include form-element;
+      @include form-element-error;
 
-    label textarea {
-      margin-bottom: 12px;
-    }
-  }
-
-  .form-group {
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  @media (min-width: 767px) {
-    grid-template-columns: 1fr 1fr;
-
-    .song-cover-wrapper,
-    div:nth-of-type(12) {
-      grid-column: 1/3;
-
-      .song-cover {
-        height: 124px;
-        width: 124px;
+      label textarea {
+        margin-bottom: 12px;
       }
     }
 
     .form-group {
-      grid-column: 2;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    @media (min-width: 767px) {
+      grid-template-columns: 1fr 1fr;
+
+      .song-cover-wrapper,
+      div:nth-of-type(12) {
+        grid-column: 1/3;
+
+        .song-cover {
+          height: 124px;
+          width: 124px;
+        }
+      }
+
+      .form-group {
+        grid-column: 2;
+      }
     }
   }
 }

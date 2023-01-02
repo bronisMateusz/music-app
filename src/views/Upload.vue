@@ -263,10 +263,7 @@ export default {
   }
 }
 
-#upload-progress,
-#uploaded-songs {
-  @include songs-list;
-
+#upload-progress {
   .song-details {
     @include song-details;
   }
