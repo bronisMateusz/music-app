@@ -103,80 +103,22 @@ export default {
   }
 
   form {
-    column-gap: 8px;
-    display: flex;
-    flex-grow: 1;
-    flex-wrap: wrap;
-    max-height: calc(100vh - 246.5px);
+    @include scrollbar-styles($color-element);
     overflow-y: auto;
     padding: 0 24px 48px;
-
-    @include scrollbar-styles($color-element);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 
     > div {
-      position: relative;
-      width: 100%;
+      @include form-element;
 
       &:not(.form-group) {
         label {
-          font-size: 0.875rem;
           color: transparent;
-          position: relative;
 
           &:focus-within {
             color: $text-secondary;
-          }
-
-          input {
-            background-color: transparent;
-            border-color: $text-secondary;
-            border-width: 0 0 1px 0;
-            color: $text-primary;
-            font-size: 1rem;
-            margin-bottom: 34px;
-            padding: 12px 0;
-            color-scheme: dark;
-
-            &:not(#login-remember) {
-              width: 100%;
-
-              &:focus {
-                border-color: $text-primary;
-                outline: 0;
-
-                &::placeholder {
-                  opacity: 0;
-                }
-              }
-
-              &:hover {
-                border-color: $text-primary;
-
-                &::placeholder {
-                  color: $text-primary;
-                }
-              }
-
-              &::placeholder {
-                color: $text-secondary;
-                font-family: "Josefin Sans", sans-serif;
-                font-weight: 500;
-              }
-            }
-          }
-
-          button {
-            position: absolute !important;
-            right: 0;
-            top: 1.5rem !important;
-          }
-        }
-
-        span[role="alert"] {
-          position: absolute;
-
-          &::first-letter {
-            text-transform: uppercase;
           }
         }
       }
@@ -196,6 +138,7 @@ export default {
 
         label {
           display: flex;
+          color: $text-primary;
 
           input {
             height: 16px;
@@ -213,11 +156,7 @@ export default {
         }
       }
 
-      span[role="alert"] {
-        bottom: 12px;
-        color: $text-error;
-        left: 0;
-      }
+      @include form-element-error;
     }
 
     button[type="submit"] {
@@ -230,7 +169,7 @@ export default {
       padding: 16px;
       text-align: center;
       width: 100%;
-      margin: 48px 0 12px;
+      margin: 24px 0 12px;
 
       &:hover {
         background-color: darken($color-canvas, 5%);
@@ -256,7 +195,7 @@ export default {
 
     form {
       padding: 0 48px 48px;
-      max-height: 398.5px;
+      max-height: 408.5px;
     }
   }
 }

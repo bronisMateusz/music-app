@@ -1,6 +1,13 @@
 <template>
-  <div id="song">
-    <div class="song-bg" />
+  <div id="song" v-show="currentSong.picture">
+    <div
+      class="song-bg"
+      :style="{
+        'background-image': currentSong.picture
+          ? `url(${currentSong.picture})`
+          : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+      }"
+    />
     <div class="options">
       <router-link :to="{ name: 'home' }" title="Home">
         <eva-icon name="arrow-back-outline" height="28" width="28" />
@@ -22,14 +29,22 @@
         <div class="song-cover"></div>
         <div class="song-cover"></div>
       </div>
-      <div class="song-cover" :class="playing ? 'playing' : ''"></div>
+      <div
+        class="song-cover"
+        :class="playing ? 'playing' : ''"
+        :style="{
+          'background-image': currentSong.picture
+            ? `url(${currentSong.picture})`
+            : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+        }"
+      />
       <div class="next-songs">
         <div class="song-cover"></div>
         <div class="song-cover"></div>
       </div>
     </div>
     <div class="player-controls">
-      <player-details />
+      <player-details :currentSong="currentSong" />
     </div>
   </div>
 </template>
@@ -43,6 +58,11 @@ import usePlayerStore from "@/stores/player";
 
 export default {
   components: { PlayerDetails },
+  data() {
+    return {
+      currentSong: {},
+    };
+  },
   async created() {
     const docRef = doc(db, "songs", this.$route.params.id);
     const docSnap = await getDoc(docRef);
@@ -52,11 +72,11 @@ export default {
       return;
     }
 
-    const song = {
+    this.currentSong = {
       docId: docSnap.id,
       ...docSnap.data(),
     };
-    this.newSong(song);
+    this.newSong(this.currentSong);
   },
   methods: {
     ...mapActions(usePlayerStore, ["newSong"]),
@@ -76,7 +96,6 @@ export default {
   width: 100vw;
 
   .song-bg {
-    @include conic-bg;
     filter: blur(150px);
     inset: 0;
     opacity: 0.7;
@@ -102,7 +121,6 @@ export default {
     }
 
     > .song-cover {
-      @include conic-bg;
       animation: zoom-out 0.3s ease-in-out;
       border-radius: 20px;
       box-shadow: rgba(0, 0, 0, 0.15) 0px 10px 15px -3px,
@@ -172,7 +190,11 @@ export default {
         transform: translateY(-10%);
 
         .song-cover {
-          @include conic-bg;
+          background-image: conic-gradient(
+            from 180deg at 50% 50%,
+            #616db9 0deg,
+            #bfc5fc 360deg
+          );
           border-radius: 20px;
           position: absolute;
           top: 50%;

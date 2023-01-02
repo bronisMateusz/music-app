@@ -12,7 +12,12 @@
     <div>
       <label>
         Email
-        <vee-field type="email" name="email" placeholder="Email" />
+        <vee-field
+          type="email"
+          name="email"
+          placeholder="Email"
+          autocomplete="email"
+        />
       </label>
       <ErrorMessage name="email" />
     </div>
@@ -21,34 +26,21 @@
       <label>
         Password
         <vee-field
-          v-if="!isPasswordVisible"
-          type="password"
+          :type="!isPasswordVisible ? 'password' : 'textfield'"
           name="password"
           placeholder="Password"
-          autocomplete="on"
-        />
-        <vee-field
-          v-else
-          type="text"
-          name="password"
-          placeholder="Password"
-          autocomplete="on"
+          autocomplete="new-password"
         />
         <button
-          v-if="!isPasswordVisible"
           tabindex="-1"
-          title="Show password"
-          @click.prevent="isPasswordVisible = !isPasswordVisible"
+          :title="!isPasswordVisible ? 'Show password' : 'Hide password'"
+          @click.prevent="togglePasswordVisibility"
         >
-          <eva-icon name="eye-outline" height="18" width="18" />
-        </button>
-        <button
-          v-else
-          tabindex="-1"
-          title="Hide password"
-          @click.prevent="isPasswordVisible = !isPasswordVisible"
-        >
-          <eva-icon name="eye-off-outline" height="18" width="18" />
+          <eva-icon
+            :name="!isPasswordVisible ? 'eye-outline' : 'eye-off-outline'"
+            height="18"
+            width="18"
+          />
         </button>
       </label>
       <ErrorMessage name="password" />
@@ -58,34 +50,23 @@
       <label>
         Confirm password
         <vee-field
-          v-if="!isConfirmPasswordVisible"
-          type="password"
-          name="confirm_password"
-          placeholder="Confirm password"
-          autocomplete="on"
-        />
-        <vee-field
-          v-else
-          type="text"
+          :type="!isConfirmPasswordVisible ? 'password' : 'textfield'"
           name="confirm_password"
           placeholder="Confirm password"
           autocomplete="on"
         />
         <button
-          v-if="!isConfirmPasswordVisible"
           tabindex="-1"
-          title="Show password"
-          @click.prevent="isConfirmPasswordVisible = !isConfirmPasswordVisible"
+          :title="!isConfirmPasswordVisible ? 'Show password' : 'Hide password'"
+          @click.prevent="togglePasswordVisibility"
         >
-          <eva-icon name="eye-outline" height="18" width="18" />
-        </button>
-        <button
-          v-else
-          tabindex="-1"
-          title="Hide password"
-          @click.prevent="isConfirmPasswordVisible = !isConfirmPasswordVisible"
-        >
-          <eva-icon name="eye-off-outline" height="18" width="18" />
+          <eva-icon
+            :name="
+              !isConfirmPasswordVisible ? 'eye-outline' : 'eye-off-outline'
+            "
+            height="18"
+            width="18"
+          />
         </button>
       </label>
       <ErrorMessage name="confirm_password" />

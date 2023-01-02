@@ -1,4 +1,14 @@
 {
-  "cSpell.words": ["appspot", "csvg", "firestore", "rushstack", "stefandesu"],
+  "cSpell.words": [
+    "appspot",
+    "csvg",
+    "firestore",
+    "jsmediatags",
+    "rushstack",
+    "stefandesu",
+    "TCOM",
+    "TDRC",
+    "TPOS"
+  ],
   "cSpell.ignorePaths": ["firebase.js"]
 }

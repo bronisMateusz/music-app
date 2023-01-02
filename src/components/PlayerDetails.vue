@@ -1,8 +1,17 @@
 <template>
   <!-- Song details -->
-  <div v-show="showCover" class="song-cover" />
+  <div
+    v-show="showCover"
+    class="song-cover"
+    :style="{
+      'background-image': currentSong.picture
+        ? `url(${currentSong.picture})`
+        : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+    }"
+  />
   <div class="song-details">
     <router-link
+      v-if="$route.nem === 'song'"
       :to="
         currentSong.docId
           ? { name: 'song', params: { id: currentSong.docId } }
@@ -10,9 +19,10 @@
       "
       class="song-title"
     >
-      {{ currentSong.modified_name }}
+      {{ currentSong.title }}
     </router-link>
-    <span class="song-artist">{{ currentSong.display_name }}</span>
+    <p v-else class="song-title">{{ currentSong.title }}</p>
+    <span class="song-artist">{{ currentSong.artist }}</span>
   </div>
   <!-- Progress bar -->
   <div class="progress-bar">
@@ -128,7 +138,6 @@ export default {
 
 <style lang="scss">
 .song-cover {
-  @include conic-bg;
   border-radius: 15px;
   height: 70px;
   min-width: 70px;

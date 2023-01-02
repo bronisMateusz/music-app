@@ -40,4 +40,8 @@ svg {
     }
   }
 }
+
+.song-cover {
+  background-size: cover;
+}
 </style>
