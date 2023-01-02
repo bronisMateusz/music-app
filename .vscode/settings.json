@@ -5,7 +5,10 @@
     "firestore",
     "jsmediatags",
     "rushstack",
-    "stefandesu"
+    "stefandesu",
+    "TCOM",
+    "TDRC",
+    "TPOS"
   ],
   "cSpell.ignorePaths": ["firebase.js"]
 }
