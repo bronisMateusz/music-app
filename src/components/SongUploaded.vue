@@ -14,28 +14,144 @@
   </li>
   <li v-show="showForm">
     <vee-form :validation-schema="schema" :initial-values="song" @submit="edit">
-      <label>
-        Song title
-        <vee-field
-          type="text"
-          name="modified_name"
-          placeholder="Title"
-          @input="updateUnsavedFlag(true)"
-        />
-        <ErrorMessage name="modified_name" />
-      </label>
-      <label>
-        Genre
-        <vee-field
-          type="text"
-          name="genre"
-          placeholder="Genre"
-          @input="updateUnsavedFlag(true)"
-        />
-        <ErrorMessage name="genre" />
-      </label>
-      <button type="submit">Submit</button>
-      <button @click.prevent="toggleFormVisibility">Cancel</button>
+      <div class="song-cover-wrapper">
+        <div class="song-cover" />
+        <div class="song-cover-info">
+          <p>Image guidelines</p>
+          <ul>
+            <li><p>Square, at least 800x800px.</p></li>
+            <li><p>File formats: JPEG or PNG.</p></li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <label>
+          Title
+          <vee-field
+            type="text"
+            name="title"
+            placeholder="Enter title"
+            @input="updateUnsavedFlag(true)"
+          />
+        </label>
+        <ErrorMessage name="title" />
+      </div>
+      <div>
+        <label>
+          Artist
+          <vee-field
+            type="text"
+            name="artist"
+            placeholder="Enter artist"
+            @input="updateUnsavedFlag(true)"
+          />
+        </label>
+        <ErrorMessage name="artist" />
+      </div>
+      <div>
+        <label>
+          Album
+          <vee-field
+            type="text"
+            name="album"
+            placeholder="Enter album name"
+            @input="updateUnsavedFlag(true)"
+          />
+        </label>
+        <ErrorMessage name="album" />
+      </div>
+      <div>
+        <label>
+          Author
+          <vee-field
+            type="text"
+            name="author"
+            placeholder="Enter author"
+            @input="updateUnsavedFlag(true)"
+          />
+        </label>
+        <ErrorMessage name="artist" />
+      </div>
+      <div>
+        <label>
+          Genre
+          <select name="genre" @input="updateUnsavedFlag(true)">
+            <option>Select genre</option>
+            <option>Hip-Hop</option>
+            <option>Rock</option>
+          </select>
+        </label>
+      </div>
+      <div>
+        <label>
+          Year
+          <input
+            type="number"
+            name="year"
+            placeholder="Enter year"
+            @input="updateUnsavedFlag(true)"
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          Track
+          <vee-field
+            type="number"
+            name="track"
+            placeholder="0"
+            @input="updateUnsavedFlag(true)"
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          From
+          <vee-field
+            type="number"
+            name="track-total"
+            placeholder="0"
+            @input="updateUnsavedFlag(true)"
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          Disc number
+          <vee-field
+            type="number"
+            name="disc-number"
+            placeholder="0"
+            @input="updateUnsavedFlag(true)"
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          From
+          <input
+            type="number"
+            name="disc-number-total"
+            placeholder="0"
+            @input="updateUnsavedFlag(true)"
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          Lyrics
+          <textarea
+            name="lyrics"
+            placeholder="Enter lyrics"
+            rows="1"
+            @input="updateUnsavedFlag(true)"
+          />
+        </label>
+      </div>
+      <div class="form-group">
+        <button @click.prevent="toggleFormVisibility">Cancel</button>
+        <button type="submit">Save</button>
+      </div>
     </vee-form>
   </li>
 </template>
@@ -73,8 +189,9 @@ export default {
     return {
       showForm: false,
       schema: {
-        modified_name: "required",
-        genre: "alphaSpaces",
+        title: "required",
+        artist: "required",
+        album: "required",
       },
     };
   },
@@ -122,3 +239,72 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+#uploaded-songs form {
+  display: grid;
+  column-gap: 12px;
+  row-gap: 8px;
+  width: 100%;
+
+  .song-cover-wrapper {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: auto 1fr;
+    margin-bottom: 12px;
+
+    .song-cover {
+      max-height: 244px;
+      max-width: 244px;
+    }
+
+    .song-cover-info {
+      align-self: center;
+
+      ul {
+        color: $text-secondary;
+        list-style: disc;
+        margin-top: 8px;
+        padding-left: 16px;
+
+        li p {
+          line-height: 1rem;
+          font-size: 0.75rem;
+        }
+      }
+    }
+  }
+
+  div:not(.song-cover-wrapper):not(.form-group) {
+    @include form-element;
+    @include form-element-error;
+
+    label textarea {
+      margin-bottom: 12px;
+    }
+  }
+
+  .form-group {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  @media (min-width: 767px) {
+    grid-template-columns: 1fr 1fr;
+
+    .song-cover-wrapper,
+    div:nth-of-type(12) {
+      grid-column: 1/3;
+
+      .song-cover {
+        height: 124px;
+        width: 124px;
+      }
+    }
+
+    .form-group {
+      grid-column: 2;
+    }
+  }
+}
+</style>
