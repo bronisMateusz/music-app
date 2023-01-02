@@ -128,7 +128,6 @@ export default {
 
 <style lang="scss">
 .song-cover {
-  @include conic-bg;
   border-radius: 15px;
   height: 70px;
   min-width: 70px;

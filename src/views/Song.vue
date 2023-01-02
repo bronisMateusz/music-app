@@ -1,6 +1,6 @@
 <template>
   <div id="song">
-    <div class="song-bg" />
+    <div class="song-cover" />
     <div class="options">
       <router-link :to="{ name: 'home' }" title="Home">
         <eva-icon name="arrow-back-outline" height="28" width="28" />
@@ -75,8 +75,7 @@ export default {
   position: relative;
   width: 100vw;
 
-  .song-bg {
-    @include conic-bg;
+  .song-cover {
     filter: blur(150px);
     inset: 0;
     opacity: 0.7;
@@ -102,7 +101,6 @@ export default {
     }
 
     > .song-cover {
-      @include conic-bg;
       animation: zoom-out 0.3s ease-in-out;
       border-radius: 20px;
       box-shadow: rgba(0, 0, 0, 0.15) 0px 10px 15px -3px,
@@ -172,7 +170,6 @@ export default {
         transform: translateY(-10%);
 
         .song-cover {
-          @include conic-bg;
           border-radius: 20px;
           position: absolute;
           top: 50%;
