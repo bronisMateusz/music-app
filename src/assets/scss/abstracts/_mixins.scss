@@ -42,7 +42,7 @@
   flex-direction: column;
   row-gap: 18px;
 
-  li {
+  >li {
     background-color: $color-element;
     border-radius: 20px;
     display: flex;
@@ -174,4 +174,73 @@
 @mixin hidden-list-marks {
   list-style: none;
   padding: 0;
+}
+
+@mixin form-element {
+  position: relative;
+
+  label {
+    font-size: 0.875rem;
+    color: $text-secondary;
+    position: relative;
+
+    input,
+    select,
+    textarea {
+      background-color: transparent;
+      border-color: $text-secondary;
+      border-width: 0 0 1px 0;
+      color: $text-primary;
+      font-size: 1rem;
+      padding: 12px 0;
+      color-scheme: dark;
+      margin-bottom: 24px;
+
+      &:not([type='checkbox']) {
+        width: 100%;
+
+        &:focus {
+          border-color: $text-primary;
+          outline: 0;
+
+          &::placeholder {
+            opacity: 0;
+          }
+        }
+
+        &:hover {
+          border-color: $text-primary;
+
+          &::placeholder {
+            color: $text-primary;
+          }
+        }
+
+        &::placeholder {
+          color: $text-secondary;
+          font-family: "Josefin Sans", sans-serif;
+          font-weight: 500;
+        }
+      }
+    }
+
+    button {
+      position: absolute !important;
+      right: 0;
+      top: 1.5rem !important;
+    }
+  }
+}
+
+@mixin form-element-error {
+  span[role="alert"] {
+    position: absolute;
+    bottom: 0;
+    color: $text-error;
+    left: 0;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
 }
