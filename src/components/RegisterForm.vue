@@ -82,7 +82,7 @@
     <button type="submit" title="Create account">Create account</button>
     <div class="form-group">
       <p>Already have an account?</p>
-      <a href="#" @click.prevent="tabChange">Log in</a>
+      <a href="#" @click.prevent="tabChange('login')">Log in</a>
     </div>
   </vee-form>
 </template>
@@ -133,8 +133,8 @@ export default {
       this.setNotification("success", "Success", "Your account is ready!");
     },
 
-    tabChange() {
-      this.$emit("tab-change");
+    tabChange(targetTab) {
+      this.$emit("tab-change", targetTab);
     },
   },
 };

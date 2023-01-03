@@ -1,5 +1,5 @@
 <template>
-  <div id="content" v-show="songs.length">
+  <div id="content" v-if="songs.length">
     <!-- Latest albums -->
     <section id="latest-albums">
       <ul>

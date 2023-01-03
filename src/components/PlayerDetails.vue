@@ -1,7 +1,7 @@
 <template>
   <!-- Song details -->
   <div
-    v-show="showCover"
+    v-if="showCover"
     class="song-cover"
     :style="{
       'background-image': currentSong.picture

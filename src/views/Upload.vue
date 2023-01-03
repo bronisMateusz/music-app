@@ -32,7 +32,7 @@
     </div>
   </section>
   <!-- Upload progress -->
-  <section v-show="uploads.length">
+  <section v-if="uploads.length">
     <h2>Upload progress</h2>
     <ul id="upload-progress">
       <li v-for="upload in uploads" :key="upload.title">
@@ -83,7 +83,7 @@
     <h2>Uploaded albums</h2>
   </section>
   <!-- Uploaded songs -->
-  <section v-show="songs.length">
+  <section v-if="songs.length">
     <h2>Uploaded songs</h2>
     <ul id="uploaded-songs">
       <song-uploaded
