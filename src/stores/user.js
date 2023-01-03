@@ -2,9 +2,10 @@ import { defineStore } from "pinia";
 import { auth, db } from "@/includes/firebase";
 import {
   createUserWithEmailAndPassword,
-  updateProfile,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 
@@ -40,6 +41,10 @@ export default defineStore("user", {
     async logout() {
       signOut(auth);
       this.userLoggedIn = false;
+    },
+
+    async resetPassword(email) {
+      await sendPasswordResetEmail(auth, email);
     },
   },
 });
