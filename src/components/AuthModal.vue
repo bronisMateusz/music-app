@@ -84,7 +84,7 @@ export default {
   left: 0;
   max-height: calc(100% - 96px);
   overflow: hidden;
-  position: absolute;
+  position: fixed;
   right: 0;
   z-index: 1;
 
