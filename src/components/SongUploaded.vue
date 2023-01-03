@@ -1,5 +1,5 @@
 <template>
-  <li v-show="!showForm">
+  <li v-if="!showForm">
     <div
       class="song-cover"
       :style="{
@@ -24,7 +24,7 @@
       <eva-icon name="close-outline" height="28" width="28" />
     </button>
   </li>
-  <li v-show="showForm">
+  <li v-if="showForm">
     <vee-form :validation-schema="schema" :initial-values="song" @submit="edit">
       <div class="song-cover-wrapper">
         <div
