@@ -36,26 +36,22 @@ export default defineStore("user", {
     },
 
     async login(values) {
-      console.log(values);
+      !values.remember
+        ? await setPersistence(auth, browserSessionPersistence)
+            .then(() => {
+              // Closing the window would clear any existing state even if a user forgets to sign out.
 
-      if (!values.remember) {
-        await setPersistence(auth, browserSessionPersistence)
-          .then(() => {
-            // Closing the window would clear any existing state even if a user forgets to sign out.
-
-            // Sign in user
-            return signInWithEmailAndPassword(
-              auth,
-              values.email,
-              values.password
-            );
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        await signInWithEmailAndPassword(auth, values.email, values.password);
-      }
+              // Sign in user
+              return signInWithEmailAndPassword(
+                auth,
+                values.email,
+                values.password
+              );
+            })
+            .catch((error) => {
+              console.log(error);
+            })
+        : await signInWithEmailAndPassword(auth, values.email, values.password);
 
       this.userLoggedIn = true;
     },
