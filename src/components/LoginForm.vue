@@ -46,12 +46,14 @@
         </label>
       </div>
       <!-- Forgot password-->
-      <a href="#" id="forgot-password">Forgot password</a>
+      <a href="#" id="forgot-password" @click.prevent="tabChange('reset')"
+        >Forgot password</a
+      >
     </div>
     <button type="submit" title="Log in">Log in</button>
     <div class="form-group">
       <p>Don't have an account?</p>
-      <a href="#" @click.prevent="tabChange">Sign up for free</a>
+      <a href="#" @click.prevent="tabChange('register')">Sign up for free</a>
     </div>
   </vee-form>
 </template>
@@ -87,8 +89,8 @@ export default {
       this.setNotification("success", "Success", "You are logged in");
     },
 
-    tabChange() {
-      this.$emit("tab-change");
+    tabChange(targetTab) {
+      this.$emit("tab-change", targetTab);
     },
 
     togglePasswordVisibility() {

@@ -1,41 +1,51 @@
 <template>
-  <div id="auth-modal" v-if="!!isOpen">
+  <div id="auth-modal" v-if="isOpen">
     <header>
-      <!-- Modal Close Button -->
+      <!-- Modal close button -->
       <button
         class="close-btn"
         value="cancel"
         title="Close"
-        @click.prevent="isOpen = false"
+        @click.prevent="
+          isOpen = false;
+          tab = 'login';
+        "
       >
         <eva-icon name="close-outline" height="28" width="28" />
       </button>
-      <div v-show="tab === 'login'">
+      <div v-if="tab === 'login'">
         <!--Title-->
         <h2 class="title">Welcome back</h2>
         <!--Subtitle-->
         <p class="subtitle">Enter your account details</p>
       </div>
-      <div v-show="tab === 'register'">
+      <div v-if="tab === 'register'">
         <!--Title-->
         <h2 class="title">Create an account</h2>
         <!--Subtitle-->
         <p class="subtitle">Enter the fields below to get started for free.</p>
       </div>
     </header>
-    <!-- Login Form -->
+    <!-- Login form -->
     <login-form
       v-if="tab === 'login'"
       :tab="tab"
-      @tab-change="tab = 'register'"
+      @tab-change="tab = $event"
       @close-modal="isOpen = false"
     />
-    <!-- Registration Form -->
+    <!-- Registration form -->
     <register-form
-      v-else
+      v-if="tab === 'register'"
       :tab="tab"
       :reg_show_alert="reg_show_alert"
-      @tab-change="tab = 'login'"
+      @tab-change="tab = $event"
+      @close-modal="isOpen = false"
+    />
+    <!-- Reset password form -->
+    <reset-password-form
+      v-if="tab === 'reset'"
+      :tab="tab"
+      @tab-change="tab = $event"
       @close-modal="isOpen = false"
     />
   </div>
@@ -46,11 +56,13 @@ import { mapWritableState } from "pinia";
 import useAuthModalStore from "@/stores/auth-modal";
 import LoginForm from "@/components/LoginForm.vue";
 import RegisterForm from "@/components/RegisterForm.vue";
+import ResetPasswordForm from "@/components/ResetPasswordForm.vue";
 
 export default {
   components: {
     LoginForm,
     RegisterForm,
+    ResetPasswordForm,
   },
   data() {
     return {
