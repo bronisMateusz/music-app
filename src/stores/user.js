@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
 import { auth, db } from "@/includes/firebase";
 import {
+  browserSessionPersistence,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
+  setPersistence,
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
@@ -34,7 +36,27 @@ export default defineStore("user", {
     },
 
     async login(values) {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      console.log(values);
+
+      if (!values.remember) {
+        await setPersistence(auth, browserSessionPersistence)
+          .then(() => {
+            // Closing the window would clear any existing state even if a user forgets to sign out.
+
+            // Sign in user
+            return signInWithEmailAndPassword(
+              auth,
+              values.email,
+              values.password
+            );
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        await signInWithEmailAndPassword(auth, values.email, values.password);
+      }
+
       this.userLoggedIn = true;
     },
 

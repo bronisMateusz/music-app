@@ -41,8 +41,8 @@
       <!-- Password remember -->
       <div>
         <label>
-          <input type="checkbox" id="login-remember" name="login-remember" />
-          Remember for 30 days
+          <vee-field type="checkbox" name="remember" value="remember" />
+          Remember me
         </label>
       </div>
       <!-- Forgot password-->
