@@ -16,6 +16,7 @@
     "@vee-validate/rules": "^4.7.3",
     "firebase": "^9.14.0",
     "howler": "^2.2.3",
+    "js-cookie": "^3.0.1",
     "jsmediatags": "^3.9.7",
     "patch-package": "^6.5.0",
     "pinia": "^2.0.23",
