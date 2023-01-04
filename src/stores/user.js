@@ -14,6 +14,7 @@ import { setDoc, doc } from "firebase/firestore";
 export default defineStore("user", {
   state: () => ({
     userLoggedIn: false,
+    userId: "",
   }),
   actions: {
     async register(values) {
@@ -33,6 +34,7 @@ export default defineStore("user", {
       });
 
       this.userLoggedIn = true;
+      this.userId = userCred.user.uid;
     },
 
     async login(values) {
@@ -54,6 +56,7 @@ export default defineStore("user", {
         : await signInWithEmailAndPassword(auth, values.email, values.password);
 
       this.userLoggedIn = true;
+      this.userId = auth.currentUser.uid;
     },
 
     async logout() {
