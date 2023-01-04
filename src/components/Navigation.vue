@@ -49,11 +49,11 @@ export default {
   z-index: 1;
   padding: 17px;
 
-  .auth-btn {
+  .auth-btn-wrapper {
     display: none;
   }
 
-  ul {
+  > ul {
     @include hidden-list-marks;
     display: flex;
     justify-content: space-around;
@@ -72,11 +72,11 @@ export default {
     right: inherit;
     top: 0;
 
-    .auth-btn {
-      display: initial;
+    .auth-btn-wrapper {
+      display: block;
     }
 
-    ul {
+    > ul {
       align-items: center;
       flex-direction: column;
       gap: 52px;
