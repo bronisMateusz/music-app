@@ -41,7 +41,7 @@
       <!-- Password remember -->
       <div>
         <label>
-          <vee-field type="checkbox" name="remember" value="remember" />
+          <vee-field type="checkbox" name="remember" checkboxValue="true" />
           Remember me
         </label>
       </div>
