@@ -19,11 +19,16 @@ export default {
     currentTemplate() {
       return this.$route.meta.template;
     },
-    ...mapWritableState(useUserStore, ["userLoggedIn", "userId"]),
+    ...mapWritableState(useUserStore, [
+      "displayName",
+      "userLoggedIn",
+      "userId",
+    ]),
   },
   created() {
     const currentUser = auth.currentUser;
     if (currentUser) {
+      this.displayName = currentUser.displayName;
       this.userLoggedIn = true;
       this.userId = currentUser.uid;
     }
