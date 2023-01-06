@@ -250,8 +250,19 @@ export default {
       this.uploads.forEach((upload) => upload.task.cancel());
     },
     updateSongDetails(index, values) {
-      this.songs[index].modified_name = values.modified_name;
+      this.songs[index].album = values.album;
+      this.songs[index].artist = values.artist;
+      this.songs[index].author = values.author;
+      this.songs[index].disc = values.disc;
+      this.songs[index].discTotal = values.discTotal;
+      this.songs[index].format = values.format;
       this.songs[index].genre = values.genre;
+      this.songs[index].lyrics = values.lyrics;
+      this.songs[index].picture = values.picture;
+      this.songs[index].title = values.title;
+      this.songs[index].track = values.track;
+      this.songs[index].trackTotal = values.trackTotal;
+      this.songs[index].year = values.year;
     },
     removeSong(index) {
       this.songs.splice(index, 1);
