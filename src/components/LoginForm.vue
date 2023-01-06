@@ -22,6 +22,7 @@
           name="password"
           placeholder="Password"
           autocomplete="current-password"
+          @keydown.enter.prevent
         />
         <button
           tabindex="-1"
