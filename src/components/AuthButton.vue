@@ -49,7 +49,6 @@ export default {
     border-radius: 50px;
     color: $color-canvas;
     height: 60px;
-    height: 60px;
     padding: 0;
     position: relative;
     width: 60px;
