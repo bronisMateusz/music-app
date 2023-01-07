@@ -60,7 +60,7 @@ export default {
   top: calc(100%);
 
   &::after {
-    @include blurred-bg;
+    @include blurred-bg($color-element);
     content: "";
     border-radius: 8px;
     inset: 0;

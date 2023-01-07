@@ -41,7 +41,7 @@ export default {
 </script>
 <style lang="scss">
 #main-nav {
-  @include blurred-bg;
+  @include blurred-bg($color-element);
   position: fixed;
   left: 0;
   right: 0;
