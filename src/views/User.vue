@@ -5,15 +5,22 @@
     </div>
     <h2>{{ displayName }}</h2>
     <vee-form
+      ref="userDetailsForm"
       :validation-schema="userSchema"
       :initial-values="user"
-      @submit="update"
     >
       <!-- User name -->
       <div>
         <label>
           User name
-          <vee-field type="text" name="displayName" placeholder="User name" />
+          <vee-field
+            v-model="user.displayName"
+            type="text"
+            name="displayName"
+            placeholder="User name"
+            @keyup="validate"
+            validateOnInput="true"
+          />
         </label>
         <ErrorMessage name="displayName" />
       </div>
@@ -28,7 +35,6 @@
           </select>
         </label>
       </div>
-      <button type="submit" title="Log in">Log in</button>
     </vee-form>
   </div>
 </template>
@@ -68,9 +74,13 @@ export default {
     ...mapActions(useUserStore, ["updateProfile"]),
     ...mapActions(useNotificationsStore, ["setNotification"]),
 
-    async update(values) {
-      this.user.displayName = values.displayName;
+    validate() {
+      this.$refs.userDetailsForm.validate().then((result) => {
+        if (result.valid) this.update();
+      });
+    },
 
+    async update() {
       try {
         await this.updateProfile(this.user);
       } catch (error) {
@@ -93,15 +103,15 @@ export default {
   align-items: center;
   background: linear-gradient(
     180deg,
-    rgba($text-primary, 0.5) 0%,
-    $color-canvas 100%
+    $color-canvas 0%,
+    rgba($text-primary, 0.3) 100%
   );
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 24px;
+  margin: -36px -24px -48px;
+  padding: 48px 24px;
   position: relative;
-  margin: -36px -24px auto;
 
   .user-picture {
     background-color: $text-primary;
@@ -125,19 +135,20 @@ export default {
     column-gap: 24px;
     display: flex;
     flex-direction: column;
-    margin-top: 48px;
+    margin-top: 96px;
     row-gap: 8px;
     width: 100%;
 
     div {
       @include form-element;
       @include form-element-error;
+      width: 100%;
     }
   }
 
   @media (min-width: 992px) {
-    margin-top: -7px;
-    padding: 48px 24px;
+    margin: -1px -24px -48px;
+    height: calc(100vh - 315px);
 
     form {
       flex-direction: row;
