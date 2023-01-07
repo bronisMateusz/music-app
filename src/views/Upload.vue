@@ -10,9 +10,9 @@
       @dragleave.prevent.stop="is_dragover = false"
       @drop.prevent.stop="upload($event)"
     >
-      <div v-if="!is_dragover">
+      <div>
         <eva-icon name="cloud-upload-outline" height="72" width="72" />
-        <p>
+        <p v-if="!is_dragover">
           Drop your file(s) here or
           <label for="files-input">browse</label>
           <input
@@ -23,11 +23,8 @@
             @change="upload($event)"
           />
         </p>
+        <p v-else>Drop your file(s) to upload</p>
         <span>Maximum file size is 25 MB</span>
-      </div>
-      <div v-else>
-        <eva-icon name="cloud-upload-outline" height="72" width="72" />
-        <p>Drop your file(s) to upload</p>
       </div>
     </div>
   </section>
@@ -296,39 +293,35 @@ export default {
 <style lang="scss">
 #drop-zone {
   @include blurred-bg($color-element);
+  align-items: center;
   background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='20' ry='20' stroke='%2356504D' stroke-width='3' stroke-dasharray='12' stroke-dashoffset='0' stroke-linecap='round'/%3e%3c/svg%3e");
   border-radius: 20px;
+  display: flex;
+  flex-direction: column;
   height: 254px;
+  justify-content: center;
+  padding: 36px;
+  text-align: center;
 
-  div {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    padding: 36px;
-    text-align: center;
+  svg,
+  span {
+    color: $text-secondary;
+  }
 
-    svg,
-    span {
-      color: $text-secondary;
-    }
+  svg {
+    margin-bottom: 36px;
+  }
 
-    svg {
-      margin-bottom: 36px;
-    }
+  p {
+    font-size: 1.375rem;
+    margin-bottom: 12px;
 
-    p {
-      font-size: 1.375rem;
-      margin-bottom: 12px;
+    label {
+      color: $text-success;
+      cursor: pointer;
 
-      label {
-        color: $text-success;
-        cursor: pointer;
-
-        &:hover {
-          text-decoration: underline;
-        }
+      &:hover {
+        text-decoration: underline;
       }
     }
   }
