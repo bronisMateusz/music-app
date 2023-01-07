@@ -42,7 +42,12 @@
       <!-- Password remember -->
       <div>
         <label>
-          <vee-field type="checkbox" name="remember" checkboxValue="true" />
+          <vee-field
+            type="checkbox"
+            name="remember"
+            value="true"
+            modelValue="true"
+          />
           Remember me
         </label>
       </div>
