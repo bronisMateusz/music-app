@@ -101,6 +101,7 @@
             @input="updateUnsavedFlag(true)"
           />
         </label>
+        <ErrorMessage name="genre" />
       </div>
       <div>
         <label>
@@ -214,6 +215,7 @@ export default {
         title: "required",
         artist: "required",
         album: "required",
+        genre: "required|min:3|max:100|alphaSpaces",
       },
     };
   },
