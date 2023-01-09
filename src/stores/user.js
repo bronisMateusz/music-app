@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { auth, db } from "@/includes/firebase";
+import { auth, db, storage } from "@/includes/firebase";
 import {
   browserSessionPersistence,
   createUserWithEmailAndPassword,
@@ -9,11 +9,13 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, updateDoc, setDoc } from "firebase/firestore";
 
 export default defineStore("user", {
   state: () => ({
     displayName: "",
+    photoURL: "",
     userLoggedIn: false,
     userId: "",
   }),
@@ -73,9 +75,10 @@ export default defineStore("user", {
     },
 
     setStoreDetails(user) {
-      this.userLoggedIn = true;
       this.displayName = user.displayName;
+      this.photoURL = user.photoURL;
       this.userId = user.uid;
+      this.userLoggedIn = true;
     },
 
     async updateProfile(user) {
@@ -88,6 +91,22 @@ export default defineStore("user", {
 
       // Update store displayName
       this.displayName = user.displayName;
+      this.photoURL = user.photoURL;
+    },
+
+    async uploadPhoto(file) {
+      const userPhotosRef = ref(
+        storage,
+        `userPhotos/${this.userId}/${Date.now()}-${file.name}`
+      );
+
+      // Upload photo to Firebase storage
+      await uploadBytes(userPhotosRef, file);
+
+      // Get the download URL for the file
+      await getDownloadURL(userPhotosRef).then((url) => {
+        this.updateProfile({ displayName: this.displayName, photoURL: url });
+      });
     },
   },
 });
