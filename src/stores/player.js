@@ -5,9 +5,8 @@ import helper from "@/includes/helper";
 export default defineStore("player", {
   state: () => ({
     currentSong: {
-      modified_name: "Song title",
-      display_name: "Artist",
-      docId: "",
+      artist: "Artist",
+      title: "Song title",
     },
     sound: {},
     seekPosition: 0,
@@ -24,7 +23,11 @@ export default defineStore("player", {
       if (this.interval) clearInterval(this.interval);
 
       // Store details from Firebase
-      this.currentSong = song;
+      this.currentSong = {
+        artist: song.artist,
+        picture: song.picture,
+        title: song.title,
+      };
 
       // Create Howl object
       this.sound = new Howl({
