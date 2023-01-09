@@ -94,11 +94,12 @@
       <div>
         <label>
           Genre
-          <select name="genre" @input="updateUnsavedFlag(true)">
-            <option>Select genre</option>
-            <option>Hip-Hop</option>
-            <option>Rock</option>
-          </select>
+          <vee-field
+            type="text"
+            name="genre"
+            placeholder="Enter genre"
+            @input="updateUnsavedFlag(true)"
+          />
         </label>
       </div>
       <div>
