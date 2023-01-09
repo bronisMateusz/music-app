@@ -1,5 +1,5 @@
 <template>
-  <div id="content" v-if="songs.length">
+  <div id="content">
     <!-- Latest albums -->
     <section id="latest-albums">
       <ul>
@@ -46,23 +46,10 @@
     <section id="genres">
       <h2>Genres</h2>
       <ul>
-        <li>
-          <button>Hip-hop</button>
-        </li>
-        <li>
-          <button>Rock</button>
-        </li>
-        <li>
-          <button>Alternative</button>
-        </li>
-        <li>
-          <button>Electronica</button>
-        </li>
-        <li>
-          <button>Hard Rock</button>
-        </li>
-        <li>
-          <button>Lo-Fi</button>
+        <li v-for="genre in genres" :key="genre.name">
+          <router-link :to="{ name: 'genre', params: { name: genre.name } }">
+            {{ genre.name }}
+          </router-link>
         </li>
       </ul>
       <a href="/all-genres">All genres</a>
@@ -96,7 +83,7 @@
       <h2>Newest songs</h2>
       <!-- Playlist -->
       <ul>
-        <song-newest v-for="song in songs" :key="song.docId" :song="song" />
+        <song-newest v-for="song in songs" :key="song.id" :song="song" />
       </ul>
       <!-- .. end Playlist -->
     </section>
@@ -111,16 +98,25 @@ import { collection, query, getDocs, limit } from "firebase/firestore";
 export default {
   data() {
     return {
+      genres: [],
       songs: [],
     };
   },
   components: { AuroraGradient, SongNewest },
   async created() {
-    const q = query(collection(db, "songs"), limit(7));
-    const songsSnap = await getDocs(q);
+    const songsQuery = query(collection(db, "songs"), limit(7));
+    const songsSnap = await getDocs(songsQuery);
     songsSnap.forEach((doc) => {
       this.songs.push({
-        docId: doc.id,
+        id: doc.id,
+        ...doc.data(),
+      });
+    });
+
+    const genreQuery = query(collection(db, "genres"), limit(7));
+    const genreSnap = await getDocs(genreQuery);
+    genreSnap.forEach((doc) => {
+      this.genres.push({
         ...doc.data(),
       });
     });
@@ -230,14 +226,16 @@ body {
           @include blurred-bg($color-element);
           border: 1px solid $color-border-primary;
           border-radius: 20px;
-        }
 
-        button {
-          padding: 16px 32px;
-          width: 100%;
+          a {
+            display: block;
+            padding: 16px 32px;
+            text-align: center;
+            width: 100%;
+          }
         }
       }
-      a {
+      > a {
         @include btn-secondary;
         text-transform: capitalize;
       }
