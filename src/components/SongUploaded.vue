@@ -10,7 +10,7 @@
     />
     <div class="song-details">
       <router-link
-        :to="{ name: 'song', params: { id: song.docId } }"
+        :to="{ name: 'song', params: { id: song.id } }"
         class="song-title"
       >
         {{ song.title }}
@@ -94,12 +94,14 @@
       <div>
         <label>
           Genre
-          <select name="genre" @input="updateUnsavedFlag(true)">
-            <option>Select genre</option>
-            <option>Hip-Hop</option>
-            <option>Rock</option>
-          </select>
+          <vee-field
+            type="text"
+            name="genre"
+            placeholder="Enter genre"
+            @input="updateUnsavedFlag(true)"
+          />
         </label>
+        <ErrorMessage name="genre" />
       </div>
       <div>
         <label>
@@ -178,7 +180,7 @@
 </template>
 
 <script>
-import { db, storage } from "@/includes/firebase";
+import { auth, db, storage } from "@/includes/firebase";
 import { ref, deleteObject } from "firebase/storage";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { mapActions } from "pinia";
@@ -213,13 +215,14 @@ export default {
         title: "required",
         artist: "required",
         album: "required",
+        genre: "required|min:3|max:100|alphaSpaces",
       },
     };
   },
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),
     async edit(values) {
-      const songsRef = doc(db, "songs", this.song.docId);
+      const songsRef = doc(db, "songs", this.song.id);
       try {
         await updateDoc(songsRef, values);
       } catch (error) {
@@ -241,7 +244,10 @@ export default {
       this.updateUnsavedFlag(false);
     },
     async deleteSong() {
-      const songRef = ref(storage, `songs/${this.song.original_name}`);
+      const songRef = ref(
+        storage,
+        `songs/${auth.currentUser.uid}/${this.song.file_name}`
+      );
       await deleteObject(songRef)
         .then(() => {
           this.setNotification("success", "Success!", "Song has been removed");
@@ -250,11 +256,11 @@ export default {
           this.setNotification(
             "error",
             "Something went wrong",
-            "We couldn't update song details"
+            "We couldn't remove this song"
           );
           return;
         });
-      await deleteDoc(doc(db, "songs", this.song.docId));
+      await deleteDoc(doc(db, "songs", this.song.id));
       this.removeSong(this.index);
     },
   },

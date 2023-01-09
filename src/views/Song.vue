@@ -73,7 +73,7 @@ export default {
     }
 
     this.currentSong = {
-      docId: songSnap.id,
+      id: songSnap.id,
       ...songSnap.data(),
     };
     this.newSong(this.currentSong);

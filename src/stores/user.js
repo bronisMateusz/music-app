@@ -99,12 +99,9 @@ export default defineStore("user", {
       // Upload photo to Firebase storage
       await uploadBytes(userPhotosRef, file);
 
-      // Get the download URL for the file
-      await getDownloadURL(userPhotosRef).then((url) => {
-        this.updateProfile({
-          displayName: this.displayName,
-          photoURL: url,
-        });
+      await this.updateProfile({
+        displayName: this.displayName,
+        photoURL: await getDownloadURL(userPhotosRef),
       });
     },
   },

@@ -85,7 +85,7 @@
     <ul id="uploaded-songs">
       <song-uploaded
         v-for="(song, index) in songs"
-        :key="song.docId"
+        :key="song.id"
         :song="song"
         :updateSongDetails="updateSongDetails"
         :index="index"
@@ -125,13 +125,14 @@ export default {
     // Get list of user songs
     const q = query(
       collection(db, "songs"),
-      where("uid", "==", auth.currentUser.uid)
+      where("user_id", "==", auth.currentUser.uid)
     );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach(this.addSong);
   },
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),
+
     async upload($event) {
       this.isDragover = false;
 
@@ -147,9 +148,12 @@ export default {
         const metadata = await this.getMetadata(file);
 
         // Create song ref
-        const songRef = ref(storage, `songs/${file.name}`);
+        const songRef = ref(
+          storage,
+          `songs/${auth.currentUser.uid}/${file.name}`
+        );
 
-        //Upload song to Firestore Database
+        //Upload song to Storage
         const task = uploadBytesResumable(songRef, file, metadata);
 
         const uploadIndex =
@@ -181,7 +185,11 @@ export default {
           async () => {
             const song = {
               ...metadata,
-              uid: auth.currentUser.uid,
+              album_id: await this.getId("albums", metadata.album),
+              artist_id: await this.getId("artists", metadata.artist),
+              file_name: file.name,
+              genre_id: await this.getId("genres", metadata.genre),
+              user_id: auth.currentUser.uid,
               url: await getDownloadURL(task.snapshot.ref),
             };
             const songRef = await addDoc(collection(db, "songs"), song);
@@ -197,6 +205,26 @@ export default {
         );
       }
     },
+
+    async getId(collectionName, name) {
+      const q = query(
+        collection(db, collectionName),
+        where("name", "==", name)
+      );
+
+      const querySnapshot = await getDocs(q);
+      const doc = querySnapshot.docs[0];
+
+      if (doc) {
+        return doc.id;
+      } else {
+        const docRef = await addDoc(collection(db, collectionName), {
+          name: name,
+        });
+        return docRef.id;
+      }
+    },
+
     async getMetadata(file) {
       return new Promise((resolve, reject) => {
         jsmediatags.read(file, {
@@ -243,9 +271,11 @@ export default {
         });
       });
     },
+
     cancelUpload() {
       this.uploads.forEach((upload) => upload.task.cancel());
     },
+
     updateSongDetails(index, values) {
       this.songs[index].album = values.album;
       this.songs[index].artist = values.artist;
@@ -261,16 +291,19 @@ export default {
       this.songs[index].trackTotal = values.trackTotal;
       this.songs[index].year = values.year;
     },
+
     removeSong(index) {
       this.songs.splice(index, 1);
     },
+
     addSong(doc) {
       const song = {
         ...doc.data(),
-        docId: doc.id,
+        id: doc.id,
       };
       this.songs.push(song);
     },
+
     updateUnsavedFlag(value) {
       this.unsavedFlag = value;
     },

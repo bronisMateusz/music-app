@@ -13,9 +13,7 @@
     <router-link
       v-if="$route.nem === 'song'"
       :to="
-        currentSong.docId
-          ? { name: 'song', params: { id: currentSong.docId } }
-          : {}
+        currentSong.id ? { name: 'song', params: { id: currentSong.id } } : {}
       "
       class="song-title"
     >

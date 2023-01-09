@@ -10,7 +10,7 @@
     />
     <div class="song-details">
       <router-link
-        :to="{ name: 'song', params: { id: song.docId } }"
+        :to="{ name: 'song', params: { id: song.id } }"
         class="song-title"
       >
         {{ song.title }}
