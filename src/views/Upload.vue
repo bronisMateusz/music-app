@@ -85,7 +85,7 @@
     <ul id="uploaded-songs">
       <song-uploaded
         v-for="(song, index) in songs"
-        :key="song.docId"
+        :key="song.id"
         :song="song"
         :updateSongDetails="updateSongDetails"
         :index="index"
@@ -148,7 +148,10 @@ export default {
         const metadata = await this.getMetadata(file);
 
         // Create song ref
-        const songRef = ref(storage, `songs/${file.name}`);
+        const songRef = ref(
+          storage,
+          `songs/${auth.currentUser.uid}/${file.name}`
+        );
 
         //Upload song to Storage
         const task = uploadBytesResumable(songRef, file, metadata);
@@ -182,7 +185,9 @@ export default {
           async () => {
             const song = {
               ...metadata,
+              album_id: await this.getId("albums", metadata.album),
               artist_id: await this.getId("artists", metadata.artist),
+              file_name: file.name,
               genre_id: await this.getId("genres", metadata.genre),
               user_id: auth.currentUser.uid,
               url: await getDownloadURL(task.snapshot.ref),
@@ -294,7 +299,7 @@ export default {
     addSong(doc) {
       const song = {
         ...doc.data(),
-        docId: doc.id,
+        id: doc.id,
       };
       this.songs.push(song);
     },
