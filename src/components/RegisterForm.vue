@@ -30,11 +30,12 @@
           name="password"
           placeholder="Password"
           autocomplete="new-password"
+          @keydown.enter.prevent
         />
         <button
           tabindex="-1"
           :title="!isPasswordVisible ? 'Show password' : 'Hide password'"
-          @click.prevent="togglePasswordVisibility"
+          @click.prevent="isPasswordVisible = !isPasswordVisible"
         >
           <eva-icon
             :name="!isPasswordVisible ? 'eye-outline' : 'eye-off-outline'"
@@ -54,11 +55,12 @@
           name="confirm_password"
           placeholder="Confirm password"
           autocomplete="on"
+          @keydown.enter.prevent
         />
         <button
           tabindex="-1"
           :title="!isConfirmPasswordVisible ? 'Show password' : 'Hide password'"
-          @click.prevent="togglePasswordVisibility"
+          @click.prevent="isConfirmPasswordVisible = !isConfirmPasswordVisible"
         >
           <eva-icon
             :name="

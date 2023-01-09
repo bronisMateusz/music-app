@@ -52,9 +52,9 @@
         </label>
       </div>
       <!-- Forgot password-->
-      <a href="#" id="forgot-password" @click.prevent="tabChange('reset')"
-        >Forgot password</a
-      >
+      <a href="#" id="forgot-password" @click.prevent="tabChange('reset')">
+        Forgot password
+      </a>
     </div>
     <button type="submit" title="Log in">Log in</button>
     <div class="form-group">
