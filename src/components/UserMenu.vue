@@ -2,10 +2,7 @@
   <div id="user-menu" ref="userMenu">
     <ul>
       <li>
-        <router-link
-          :to="{ name: 'user', params: { id: userId } }"
-          @click.prevent="closeMenu"
-        >
+        <router-link :to="{ name: 'user' }" @click.prevent="closeMenu">
           Settings
         </router-link>
       </li>
