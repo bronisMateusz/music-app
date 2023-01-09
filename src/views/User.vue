@@ -68,6 +68,14 @@ import useUserStore from "@/stores/user";
 import useNotificationsStore from "@/stores/notifications";
 
 export default {
+  beforeRouteEnter(to, from, next) {
+    const userStore = useUserStore();
+    if (userStore.userLoggedIn) {
+      next();
+    } else {
+      next({ name: "home" });
+    }
+  },
   data() {
     return {
       is_dragover: false,

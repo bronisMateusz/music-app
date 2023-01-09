@@ -44,21 +44,16 @@ export default defineStore("user", {
     },
 
     async login(values) {
+      // Closing the window would clear any existing state even if a user forgets to sign out.
       !values.remember
-        ? await setPersistence(auth, browserSessionPersistence)
-            .then(() => {
-              // Closing the window would clear any existing state even if a user forgets to sign out.
-
-              // Sign in user
-              return signInWithEmailAndPassword(
-                auth,
-                values.email,
-                values.password
-              );
-            })
-            .catch((error) => {
-              console.log(error);
-            })
+        ? await setPersistence(auth, browserSessionPersistence).then(() => {
+            // Sign in user
+            return signInWithEmailAndPassword(
+              auth,
+              values.email,
+              values.password
+            );
+          })
         : await signInWithEmailAndPassword(auth, values.email, values.password);
 
       // Set store details
@@ -68,6 +63,7 @@ export default defineStore("user", {
     async logout() {
       signOut(auth);
       this.userLoggedIn = false;
+      window.location.reload();
     },
 
     async resetPassword(email) {
@@ -105,7 +101,10 @@ export default defineStore("user", {
 
       // Get the download URL for the file
       await getDownloadURL(userPhotosRef).then((url) => {
-        this.updateProfile({ displayName: this.displayName, photoURL: url });
+        this.updateProfile({
+          displayName: this.displayName,
+          photoURL: url,
+        });
       });
     },
   },
