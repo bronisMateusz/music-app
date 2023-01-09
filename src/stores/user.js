@@ -91,10 +91,7 @@ export default defineStore("user", {
     },
 
     async uploadPhoto(file) {
-      const userPhotosRef = ref(
-        storage,
-        `userPhotos/${this.userId}/${Date.now()}-${file.name}`
-      );
+      const userPhotosRef = ref(storage, `userPhotos/${this.userId}/photo`);
 
       // Upload photo to Firebase storage
       await uploadBytes(userPhotosRef, file);
