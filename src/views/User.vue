@@ -1,7 +1,30 @@
 <template>
   <div id="user-details">
-    <div class="user-picture">
-      <eva-icon name="people-outline" height="112" width="112" />
+    <div
+      class="user-picture"
+      @dragend.prevent.stop="is_dragover = false"
+      @dragover.prevent.stop="is_dragover = true"
+      @dragenter.prevent.stop="is_dragover = true"
+      @dragleave.prevent.stop="is_dragover = false"
+      @drop.prevent.stop="upload($event)"
+    >
+      <eva-icon
+        v-if="!photoURL"
+        name="people-outline"
+        height="112"
+        width="112"
+      />
+      <img v-else :src="photoURL" alt="user photo" />
+      <label v-if="!is_dragover" for="file-input">browse</label>
+      <label v-else for="file-input" class="dragover">
+        <eva-icon name="cloud-upload-outline" height="72" width="72" />
+      </label>
+      <input
+        id="file-input"
+        class="hidden"
+        type="file"
+        @change="upload($event)"
+      />
     </div>
     <h2>{{ displayName }}</h2>
     <vee-form
@@ -49,8 +72,10 @@ import useNotificationsStore from "@/stores/notifications";
 export default {
   data() {
     return {
+      is_dragover: false,
       user: {
         displayName: "",
+        photoURL: "",
       },
       userSchema: {
         displayName: "required|min:3|max:100|alphaSpaces",
@@ -66,12 +91,13 @@ export default {
       return;
     }
     this.user.displayName = this.displayName;
+    this.user.photoURL = this.photoURL;
   },
   computed: {
-    ...mapWritableState(useUserStore, ["displayName", "userId"]),
+    ...mapWritableState(useUserStore, ["displayName", "photoURL", "userId"]),
   },
   methods: {
-    ...mapActions(useUserStore, ["updateProfile"]),
+    ...mapActions(useUserStore, ["updateProfile", "uploadPhoto"]),
     ...mapActions(useNotificationsStore, ["setNotification"]),
 
     validate() {
@@ -83,6 +109,27 @@ export default {
     async update() {
       try {
         await this.updateProfile(this.user);
+      } catch (error) {
+        this.setNotification(
+          "error",
+          "Something went wrong",
+          "We couldn't update your profile"
+        );
+        return;
+      }
+
+      this.setNotification("success", "Success!", "Profile details updated");
+    },
+
+    async upload(event) {
+      const file = event.dataTransfer
+        ? [...event.dataTransfer.files][0]
+        : [...event.target.files][0];
+
+      if (file.type !== "image/jpeg") return;
+
+      try {
+        await this.uploadPhoto(file);
       } catch (error) {
         this.setNotification(
           "error",
@@ -123,11 +170,30 @@ export default {
     position: relative;
     width: 242px;
 
-    svg {
-      position: absolute;
+    svg,
+    label {
       left: 50%;
+      position: absolute;
       top: 50% !important;
       transform: translate(-50%, -50%);
+    }
+
+    img {
+      @include user-photo;
+    }
+
+    label {
+      border-radius: 50%;
+      color: transparent;
+      cursor: pointer;
+      display: block;
+      height: 242px;
+      width: 242px;
+
+      &.dragover {
+        background-color: rgba($text-primary, 0.9);
+        color: $text-primary-inverted;
+      }
     }
   }
 
@@ -148,7 +214,7 @@ export default {
 
   @media (min-width: 992px) {
     margin: -1px -24px -48px;
-    height: calc(100vh - 315px);
+    min-height: calc(100vh - 315px);
 
     form {
       flex-direction: row;
