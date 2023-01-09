@@ -125,13 +125,14 @@ export default {
     // Get list of user songs
     const q = query(
       collection(db, "songs"),
-      where("uid", "==", auth.currentUser.uid)
+      where("user_id", "==", auth.currentUser.uid)
     );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach(this.addSong);
   },
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),
+
     async upload($event) {
       this.isDragover = false;
 
@@ -181,8 +182,9 @@ export default {
           async () => {
             const song = {
               ...metadata,
-              uid: auth.currentUser.uid,
+              user_id: auth.currentUser.uid,
               url: await getDownloadURL(task.snapshot.ref),
+
             };
             const songRef = await addDoc(collection(db, "songs"), song);
             const songSnapshot = await getDoc(songRef);
@@ -197,6 +199,7 @@ export default {
         );
       }
     },
+
     async getMetadata(file) {
       return new Promise((resolve, reject) => {
         jsmediatags.read(file, {
@@ -243,9 +246,11 @@ export default {
         });
       });
     },
+
     cancelUpload() {
       this.uploads.forEach((upload) => upload.task.cancel());
     },
+
     updateSongDetails(index, values) {
       this.songs[index].album = values.album;
       this.songs[index].artist = values.artist;
@@ -261,9 +266,11 @@ export default {
       this.songs[index].trackTotal = values.trackTotal;
       this.songs[index].year = values.year;
     },
+
     removeSong(index) {
       this.songs.splice(index, 1);
     },
+
     addSong(doc) {
       const song = {
         ...doc.data(),
@@ -271,6 +278,7 @@ export default {
       };
       this.songs.push(song);
     },
+
     updateUnsavedFlag(value) {
       this.unsavedFlag = value;
     },
