@@ -63,8 +63,6 @@
 </template>
 
 <script>
-import { db } from "@/includes/firebase";
-import { doc, getDoc } from "firebase/firestore";
 import { mapWritableState, mapActions } from "pinia";
 import useUserStore from "@/stores/user";
 import useNotificationsStore from "@/stores/notifications";
@@ -74,8 +72,8 @@ export default {
     return {
       is_dragover: false,
       user: {
+        // Exists only because of validation.
         displayName: "",
-        photoURL: "",
       },
       userSchema: {
         displayName: "required|min:3|max:100|alphaSpaces",
@@ -83,24 +81,17 @@ export default {
     };
   },
   async created() {
-    const userRef = doc(db, "users", this.$route.params.id);
-    const userSnap = await getDoc(userRef);
-
-    if (!userSnap.exists()) {
-      this.$router.push({ name: "home" });
-      return;
-    }
     this.user.displayName = this.displayName;
-    this.user.photoURL = this.photoURL;
   },
   computed: {
-    ...mapWritableState(useUserStore, ["displayName", "photoURL", "userId"]),
+    ...mapWritableState(useUserStore, ["displayName", "photoURL"]),
   },
   methods: {
     ...mapActions(useUserStore, ["updateProfile", "uploadPhoto"]),
     ...mapActions(useNotificationsStore, ["setNotification"]),
 
     validate() {
+      // If validation pass update user store and details in Firebase.
       this.$refs.userDetailsForm.validate().then((result) => {
         if (result.valid) this.update();
       });
@@ -108,7 +99,10 @@ export default {
 
     async update() {
       try {
-        await this.updateProfile(this.user);
+        await this.updateProfile({
+          displayName: this.user.displayName,
+          photoURL: this.photoURL,
+        });
       } catch (error) {
         this.setNotification(
           "error",

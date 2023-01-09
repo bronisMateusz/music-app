@@ -59,7 +59,7 @@ const routes = [
   },
   {
     name: "user",
-    path: "/user/:id",
+    path: "/user",
     component: User,
     meta: {
       template: "AppTemplate",
