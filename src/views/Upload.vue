@@ -150,7 +150,7 @@ export default {
         // Create song ref
         const songRef = ref(storage, `songs/${file.name}`);
 
-        //Upload song to Firestore Database
+        //Upload song to Storage
         const task = uploadBytesResumable(songRef, file, metadata);
 
         const uploadIndex =
@@ -182,9 +182,10 @@ export default {
           async () => {
             const song = {
               ...metadata,
+              artist_id: await this.getId("artists", metadata.artist),
+              genre_id: await this.getId("genres", metadata.genre),
               user_id: auth.currentUser.uid,
               url: await getDownloadURL(task.snapshot.ref),
-
             };
             const songRef = await addDoc(collection(db, "songs"), song);
             const songSnapshot = await getDoc(songRef);
@@ -197,6 +198,25 @@ export default {
             );
           }
         );
+      }
+    },
+
+    async getId(collectionName, name) {
+      const q = query(
+        collection(db, collectionName),
+        where("name", "==", name)
+      );
+
+      const querySnapshot = await getDocs(q);
+      const doc = querySnapshot.docs[0];
+
+      if (doc) {
+        return doc.id;
+      } else {
+        const docRef = await addDoc(collection(db, collectionName), {
+          name: name,
+        });
+        return docRef.id;
       }
     },
 
