@@ -21,6 +21,7 @@ export default {
     },
     ...mapWritableState(useUserStore, [
       "displayName",
+      "photoURL",
       "userLoggedIn",
       "userId",
     ]),
@@ -29,6 +30,7 @@ export default {
     const currentUser = auth.currentUser;
     if (currentUser) {
       this.displayName = currentUser.displayName;
+      this.photoURL = currentUser.photoURL;
       this.userLoggedIn = true;
       this.userId = currentUser.uid;
     }

@@ -5,7 +5,8 @@
       :title="!userLoggedIn ? 'Login / Register' : 'User menu'"
       @click.prevent="!userLoggedIn ? toggleAuthModal() : toggleUserMenu()"
     >
-      <eva-icon name="people-outline" height="28" width="28" />
+      <eva-icon v-if="!photoURL" name="people-outline" height="28" width="28" />
+      <img v-else :src="photoURL" alt="user photo" />
     </button>
     <user-menu v-if="isUserMenuOpen" @closeMenu="isUserMenuOpen = false" />
   </div>
@@ -26,7 +27,7 @@ export default {
   components: { UserMenu },
   computed: {
     ...mapWritableState(useAuthModalStore, ["isOpen"]),
-    ...mapState(useUserStore, ["userLoggedIn"]),
+    ...mapState(useUserStore, ["photoURL", "userLoggedIn"]),
   },
   methods: {
     toggleAuthModal() {
@@ -60,6 +61,10 @@ export default {
 
     svg {
       pointer-events: none;
+    }
+
+    img {
+      @include user-photo;
     }
   }
 }
