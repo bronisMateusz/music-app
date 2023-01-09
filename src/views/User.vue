@@ -2,10 +2,10 @@
   <div id="user-details">
     <div
       class="user-picture"
-      @dragend.prevent.stop="is_dragover = false"
-      @dragover.prevent.stop="is_dragover = true"
-      @dragenter.prevent.stop="is_dragover = true"
-      @dragleave.prevent.stop="is_dragover = false"
+      @dragend.prevent.stop="isDragover = false"
+      @dragover.prevent.stop="isDragover = true"
+      @dragenter.prevent.stop="isDragover = true"
+      @dragleave.prevent.stop="isDragover = false"
       @drop.prevent.stop="upload($event)"
     >
       <eva-icon
@@ -15,7 +15,7 @@
         width="112"
       />
       <img v-else :src="photoURL" alt="user photo" />
-      <label v-if="!is_dragover" for="file-input">browse</label>
+      <label v-if="!isDragover" for="file-input">browse</label>
       <label v-else for="file-input" class="dragover">
         <eva-icon name="cloud-upload-outline" height="72" width="72" />
       </label>
@@ -78,7 +78,7 @@ export default {
   },
   data() {
     return {
-      is_dragover: false,
+      isDragover: false,
       user: {
         // Exists only because of validation.
         displayName: "",

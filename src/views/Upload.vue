@@ -4,15 +4,15 @@
     <h2>Upload</h2>
     <div
       id="drop-zone"
-      @dragend.prevent.stop="is_dragover = false"
-      @dragover.prevent.stop="is_dragover = true"
-      @dragenter.prevent.stop="is_dragover = true"
-      @dragleave.prevent.stop="is_dragover = false"
+      @dragend.prevent.stop="isDragover = false"
+      @dragover.prevent.stop="isDragover = true"
+      @dragenter.prevent.stop="isDragover = true"
+      @dragleave.prevent.stop="isDragover = false"
       @drop.prevent.stop="upload($event)"
     >
       <div>
         <eva-icon name="cloud-upload-outline" height="72" width="72" />
-        <p v-if="!is_dragover">
+        <p v-if="!isDragover">
           Drop your file(s) here or
           <label for="files-input">browse</label>
           <input
@@ -115,7 +115,7 @@ export default {
   components: { SongUploaded },
   data() {
     return {
-      is_dragover: false,
+      isDragover: false,
       songs: [],
       unsavedFlag: false,
       uploads: [],
@@ -133,7 +133,7 @@ export default {
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),
     async upload($event) {
-      this.is_dragover = false;
+      this.isDragover = false;
 
       const files = $event.dataTransfer
         ? [...$event.dataTransfer.files]
