@@ -5,6 +5,7 @@ import Library from "@/views/Library.vue";
 import Discover from "@/views/Discover.vue";
 import Upload from "@/views/Upload.vue";
 import Song from "@/views/Song.vue";
+import User from "@/views/User.vue";
 import NotFound from "@/views/NotFound.vue";
 
 const routes = [
@@ -54,6 +55,14 @@ const routes = [
     component: Song,
     meta: {
       template: "SongTemplate",
+    },
+  },
+  {
+    name: "user",
+    path: "/user",
+    component: User,
+    meta: {
+      template: "AppTemplate",
     },
   },
   {

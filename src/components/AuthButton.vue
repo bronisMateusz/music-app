@@ -1,48 +1,71 @@
 <template>
-  <button
-    class="auth-btn"
-    v-if="!userLoggedIn"
-    title="Login / Register"
-    @click.prevent="toggleAuthModal"
-  >
-    <eva-icon name="people-outline" height="28" width="28" />
-  </button>
-  <button v-else class="auth-btn" title="Logout" @click.prevent="logout">
-    <eva-icon name="people-outline" height="28" width="28" />
-  </button>
+  <div class="auth-btn-wrapper">
+    <button
+      class="auth-btn"
+      :title="!userLoggedIn ? 'Login / Register' : 'User menu'"
+      @click.prevent="!userLoggedIn ? toggleAuthModal() : toggleUserMenu()"
+    >
+      <eva-icon v-if="!photoURL" name="people-outline" height="28" width="28" />
+      <img v-else :src="photoURL" alt="user photo" />
+    </button>
+    <user-menu v-if="isUserMenuOpen" @closeMenu="isUserMenuOpen = false" />
+  </div>
 </template>
 
 <script>
-import { mapActions, mapWritableState } from "pinia";
+import { mapState, mapWritableState } from "pinia";
 import useAuthModalStore from "@/stores/auth-modal";
 import useUserStore from "@/stores/user";
+import UserMenu from "@/components/UserMenu.vue";
 
 export default {
+  data() {
+    return {
+      isUserMenuOpen: false,
+    };
+  },
+  components: { UserMenu },
   computed: {
     ...mapWritableState(useAuthModalStore, ["isOpen"]),
-    ...mapWritableState(useUserStore, ["userLoggedIn"]),
+    ...mapState(useUserStore, ["photoURL", "userLoggedIn"]),
   },
   methods: {
-    ...mapActions(useUserStore, ["logout"]),
     toggleAuthModal() {
       this.isOpen = !this.isOpen;
+    },
+
+    toggleUserMenu() {
+      this.isUserMenuOpen = !this.isUserMenuOpen;
     },
   },
 };
 </script>
 
 <style lang="scss">
-.auth-btn {
-  background-color: $text-primary;
-  border-radius: 50px;
-  color: $color-canvas;
-  height: 60px;
-  padding: 0;
-  width: 60px;
+.auth-btn-wrapper {
+  position: relative;
 
-  &:hover {
-    background-color: $color-canvas;
-    color: $text-primary;
+  .auth-btn {
+    background-color: $text-primary;
+    border-radius: 50px;
+    color: $color-canvas;
+    height: 60px;
+    padding: 0;
+    position: relative;
+    width: 60px;
+
+    &:hover {
+      background-color: $color-canvas;
+      color: $text-primary;
+    }
+
+    svg {
+      pointer-events: none;
+    }
+
+    img {
+      @include user-photo;
+    }
   }
 }
 </style>

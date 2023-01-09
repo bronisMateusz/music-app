@@ -26,7 +26,6 @@ export default {
 
 <style lang="scss">
 #header {
-  @include blurred-bg;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -36,6 +35,14 @@ export default {
   right: 0;
   top: 0;
   z-index: 1;
+
+  &::before {
+    @include blurred-bg($color-element);
+    content: "";
+    inset: 0;
+    position: absolute;
+    z-index: -1;
+  }
 
   #searchbar {
     position: relative;
@@ -61,13 +68,16 @@ export default {
       transform: translateY(-50%);
     }
 
-    .auth-btn {
-      height: 40px;
+    .auth-btn-wrapper {
       position: absolute;
       right: 6px;
       top: 50%;
       transform: translateY(-50%);
-      width: 40px;
+
+      .auth-btn {
+        height: 40px;
+        width: 40px;
+      }
 
       svg {
         height: 22px;
@@ -78,22 +88,25 @@ export default {
 
   @media (min-width: 992px) {
     align-items: center;
-    background-color: $color-canvas;
     flex-direction: row;
     justify-content: space-between;
     margin-left: 100px;
     padding: 24px;
+
+    &::before {
+      @include blurred-bg($color-canvas);
+    }
 
     #searchbar {
       width: 100%;
       max-width: 600px;
 
       input {
-        @include blurred-bg;
+        @include blurred-bg($color-element);
         border: 1px solid $color-border-primary;
       }
 
-      .auth-btn {
+      .auth-btn-wrapper {
         display: none;
       }
     }

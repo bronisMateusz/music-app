@@ -14,7 +14,7 @@ export default {
 
 <style lang="scss">
 #player {
-  @include blurred-bg;
+  @include blurred-bg($color-element);
   align-items: center;
   border-radius: 20px;
   bottom: 82px;

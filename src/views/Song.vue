@@ -64,17 +64,17 @@ export default {
     };
   },
   async created() {
-    const docRef = doc(db, "songs", this.$route.params.id);
-    const docSnap = await getDoc(docRef);
+    const songRef = doc(db, "songs", this.$route.params.id);
+    const songSnap = await getDoc(songRef);
 
-    if (!docSnap.exists()) {
+    if (!songSnap.exists()) {
       this.$router.push({ name: "home" });
       return;
     }
 
     this.currentSong = {
-      docId: docSnap.id,
-      ...docSnap.data(),
+      docId: songSnap.id,
+      ...songSnap.data(),
     };
     this.newSong(this.currentSong);
   },

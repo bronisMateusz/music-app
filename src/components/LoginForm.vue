@@ -22,6 +22,7 @@
           name="password"
           placeholder="Password"
           autocomplete="current-password"
+          @keydown.enter.prevent
         />
         <button
           tabindex="-1"
@@ -41,14 +42,19 @@
       <!-- Password remember -->
       <div>
         <label>
-          <vee-field type="checkbox" name="remember" value="remember" />
+          <vee-field
+            type="checkbox"
+            name="remember"
+            value="true"
+            modelValue="true"
+          />
           Remember me
         </label>
       </div>
       <!-- Forgot password-->
-      <a href="#" id="forgot-password" @click.prevent="tabChange('reset')"
-        >Forgot password</a
-      >
+      <a href="#" id="forgot-password" @click.prevent="tabChange('reset')">
+        Forgot password
+      </a>
     </div>
     <button type="submit" title="Log in">Log in</button>
     <div class="form-group">

@@ -227,7 +227,7 @@ body {
 
         li {
           flex: 1 1 auto;
-          @include blurred-bg;
+          @include blurred-bg($color-element);
           border: 1px solid $color-border-primary;
           border-radius: 20px;
         }
