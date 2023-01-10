@@ -82,9 +82,7 @@
     <section id="newest-songs">
       <h2>Newest songs</h2>
       <!-- Playlist -->
-      <ul>
-        <song-newest v-for="song in songs" :key="song.id" :song="song" />
-      </ul>
+      <song :songs="songs" />
       <!-- .. end Playlist -->
     </section>
   </div>
@@ -92,7 +90,7 @@
 
 <script>
 import AuroraGradient from "@/components/AuroraGradient.vue";
-import SongNewest from "@/components/SongNewest.vue";
+import Song from "@/components/Song.vue";
 import { db } from "@/includes/firebase";
 import { collection, query, getDocs, limit } from "firebase/firestore";
 export default {
@@ -102,7 +100,7 @@ export default {
       songs: [],
     };
   },
-  components: { AuroraGradient, SongNewest },
+  components: { AuroraGradient, Song },
   async created() {
     const songsQuery = query(collection(db, "songs"), limit(7));
     const songsSnap = await getDocs(songsQuery);
@@ -265,14 +263,6 @@ body {
         @include btn-secondary;
         margin-right: 24px;
         text-transform: capitalize;
-      }
-    }
-
-    #newest-songs ul {
-      @include songs-list;
-
-      .song-details {
-        @include song-details;
       }
     }
   }

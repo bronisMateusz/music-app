@@ -158,8 +158,8 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: -36px -24px -48px;
-  padding: 48px 24px;
+  margin: -164px -24px auto;
+  padding: 176px 24px 48px;
   position: relative;
 
   .user-picture {
@@ -215,8 +215,7 @@ export default {
   }
 
   @media (min-width: 992px) {
-    margin: -1px -24px -48px;
-    min-height: calc(100vh - 315px);
+    margin-top: -128px;
 
     form {
       flex-direction: row;
