@@ -245,9 +245,11 @@ export default {
             // Convert track to track info
             const trackData = metadata.track.split("/");
 
-            // Convert TDC to year
-            const TDRC = metadata.TDRC.data;
-            const yearData = TDRC.slice(0, 4);
+            // If year is store in TDRC, get only year
+            // else get just year
+            const yearData = metadata.TDRC
+              ? metadata.TDRC.data.slice(0, 4)
+              : metadata.year;
 
             resolve({
               album: metadata.album,
