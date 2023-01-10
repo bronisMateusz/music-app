@@ -36,12 +36,14 @@
         </button>
       </div>
     </div>
+    <song :songs="songs" />
   </div>
 </template>
 
 <script>
 import { db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import Song from "@/components/Song.vue";
 
 export default {
   data() {
@@ -51,6 +53,7 @@ export default {
       songsQuantity: 0,
     };
   },
+  components: { Song },
   async created() {
     const albumRef = doc(db, "albums", this.$route.params.id);
     const albumSnap = await getDoc(albumRef);
@@ -99,8 +102,8 @@ export default {
     );
     display: grid;
     justify-content: center;
-    margin: -36px -24px -48px;
-    padding: 48px 24px;
+    margin: -164px -24px auto;
+    padding: 176px 24px 48px;
     row-gap: 12px;
     text-align: center;
 
@@ -131,6 +134,44 @@ export default {
         height: 64px;
         padding: 0;
         width: 64px;
+      }
+    }
+    @media (min-width: 992px) {
+      column-gap: 24px;
+      grid-template-columns: 260px 1fr;
+      margin-top: -128px;
+      row-gap: 0;
+      text-align: left;
+
+      .album-cover {
+        grid-row: 1/5;
+        margin-bottom: 0;
+      }
+
+      .title,
+      .artist,
+      .songs-quantity,
+      .actions {
+        grid-column: 2;
+      }
+
+      .title {
+        align-self: flex-end;
+        line-height: 3.5rem;
+        font-size: 48px;
+      }
+
+      .artist {
+        align-self: center;
+      }
+
+      .songs-quantity {
+        align-self: flex-start;
+      }
+
+      .actions {
+        align-self: flex-end;
+        justify-content: flex-start;
       }
     }
   }
