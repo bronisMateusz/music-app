@@ -78,6 +78,7 @@
   <!-- Uploaded albums -->
   <section>
     <h2>Uploaded albums</h2>
+    <ul id="uploaded-albums"></ul>
   </section>
   <!-- Uploaded songs -->
   <section v-if="songs.length">
@@ -246,7 +247,9 @@ export default {
       } else {
         await addDoc(collection(db, "albums"), {
           artist: metadata.artist,
+          format: metadata.format,
           name: metadata.album,
+          picture: metadata.picture,
           songs: [{ id: songSnapshot.id }],
         });
       }
