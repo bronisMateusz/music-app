@@ -277,14 +277,14 @@ export default {
       );
 
       const albumsSnapshot = await getDocs(albumsQuery);
-      const albumDoc = albumsSnapshot.docs[0];
+      let albumDoc = albumsSnapshot.docs[0];
 
       if (albumDoc) {
         await updateDoc(doc(db, "albums", albumDoc.id), {
           songs: arrayUnion({ id: songSnapshot.id }),
         });
       } else {
-        await addDoc(collection(db, "albums"), {
+        albumDoc = await addDoc(collection(db, "albums"), {
           artist: metadata.artist,
           name: metadata.album,
           picture: metadata.picture,
@@ -292,6 +292,10 @@ export default {
           user_id: auth.currentUser.uid,
         });
       }
+
+      await updateDoc(doc(db, "songs", songSnapshot.id), {
+        album_id: albumDoc.id,
+      });
     },
 
     async getMetadata(file) {
