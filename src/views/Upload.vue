@@ -486,11 +486,7 @@ export default {
       width: 260px;
 
       .album-cover {
-        border-radius: 20px;
-        height: 260px;
-        background-size: cover;
-        margin-bottom: 12px;
-        width: 260px;
+        @include album-cover;
       }
     }
 

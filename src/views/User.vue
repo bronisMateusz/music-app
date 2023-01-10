@@ -152,8 +152,8 @@ export default {
   align-items: center;
   background: linear-gradient(
     180deg,
-    $color-canvas 0%,
-    rgba($text-primary, 0.3) 100%
+    rgba($text-primary, 0.3) 0,
+    $color-canvas 100%
   );
   display: flex;
   flex-direction: column;
