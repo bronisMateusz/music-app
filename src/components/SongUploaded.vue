@@ -287,11 +287,6 @@ export default {
       grid-template-columns: auto 1fr;
       margin-bottom: 12px;
 
-      .song-cover {
-        max-height: 244px;
-        max-width: 244px;
-      }
-
       .song-cover-info {
         align-self: center;
 
