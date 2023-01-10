@@ -76,7 +76,7 @@
     </ul>
   </section>
   <!-- Uploaded albums -->
-  <section class="hidden">
+  <section>
     <h2>Uploaded albums</h2>
   </section>
   <!-- Uploaded songs -->
@@ -100,11 +100,14 @@ import { auth, db, storage } from "@/includes/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import {
   addDoc,
+  arrayUnion,
   collection,
+  doc,
   getDocs,
   query,
   where,
   getDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
@@ -185,16 +188,17 @@ export default {
           async () => {
             const song = {
               ...metadata,
-              album_id: await this.getId("albums", metadata.album),
-              artist_id: await this.getId("artists", metadata.artist),
+              artist_id: await this.getDocId("artists", metadata.artist),
               file_name: file.name,
-              genre_id: await this.getId("genres", metadata.genre),
+              genre_id: await this.getDocId("genres", metadata.genre),
               user_id: auth.currentUser.uid,
               url: await getDownloadURL(task.snapshot.ref),
             };
             const songRef = await addDoc(collection(db, "songs"), song);
             const songSnapshot = await getDoc(songRef);
+
             this.addSong(songSnapshot);
+            this.updateAlbumDoc(metadata, songSnapshot);
 
             this.setNotification(
               "success",
@@ -206,7 +210,7 @@ export default {
       }
     },
 
-    async getId(collectionName, name) {
+    async getDocId(collectionName, name) {
       const q = query(
         collection(db, collectionName),
         where("name", "==", name)
@@ -221,7 +225,30 @@ export default {
         const docRef = await addDoc(collection(db, collectionName), {
           name: name,
         });
-        return docRef.id;
+        return docRef;
+      }
+    },
+
+    async updateAlbumDoc(metadata, songSnapshot) {
+      const albumsQuery = query(
+        collection(db, "albums"),
+        where("artist", "==", metadata.artist),
+        where("name", "==", metadata.album)
+      );
+
+      const albumsSnapshot = await getDocs(albumsQuery);
+      const albumDoc = albumsSnapshot.docs[0];
+
+      if (albumDoc) {
+        await updateDoc(doc(db, "albums", albumDoc.id), {
+          songs: arrayUnion({ id: songSnapshot.id }),
+        });
+      } else {
+        await addDoc(collection(db, "albums"), {
+          artist: metadata.artist,
+          name: metadata.album,
+          songs: [{ id: songSnapshot.id }],
+        });
       }
     },
 
