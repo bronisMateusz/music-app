@@ -247,3 +247,11 @@
   object-fit: cover;
   width: 100%;
 }
+
+@mixin album-cover {
+  border-radius: 20px;
+  height: 260px;
+  background-size: cover;
+  margin-bottom: 12px;
+  width: 260px;
+}
