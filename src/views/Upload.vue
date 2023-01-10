@@ -89,7 +89,9 @@
                 : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
             }"
           />
-          <a href="#">{{ album.name }}</a>
+          <router-link :to="{ name: 'album', params: { id: album.id } }">{{
+            album.name
+          }}</router-link>
         </li>
       </ul>
     </section>
@@ -260,8 +262,10 @@ export default {
       const doc = querySnapshot.docs[0];
 
       if (doc) {
+        // If doc with name exist return doc id
         return doc.id;
       } else {
+        // Id doesn't exist create doc and return id
         const docRef = await addDoc(collection(db, collectionName), {
           name: name,
         });
@@ -280,10 +284,12 @@ export default {
       let albumDoc = albumsSnapshot.docs[0];
 
       if (albumDoc) {
+        // If album with artist and name exist add new song
         await updateDoc(doc(db, "albums", albumDoc.id), {
           songs: arrayUnion({ id: songSnapshot.id }),
         });
       } else {
+        // If doesn't exist create new document
         albumDoc = await addDoc(collection(db, "albums"), {
           artist: metadata.artist,
           name: metadata.album,
@@ -293,6 +299,7 @@ export default {
         });
       }
 
+      // Add album_id to uploaded song
       await updateDoc(doc(db, "songs", songSnapshot.id), {
         album_id: albumDoc.id,
       });
