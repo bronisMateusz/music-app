@@ -21,9 +21,14 @@ export default defineStore("player", {
   }),
   actions: {
     async newSong(song) {
-      // If current song is equal to new song, return
-      if (this.currentSong.id === song.id) return;
-      // If song is stored, remove an instance of it from memory
+      // If song is playing, return
+      if (this.currentSong.id === song.id && this.playing) return;
+      // If current song is paused
+      if (this.currentSong.id === song.id && !this.playing) {
+        this.toggleAudio();
+        return;
+      }
+      // If song is stored, remove an instance of it
       if (this.sound instanceof Howl) this.sound.unload();
       // If interval is set, clear it
       if (this.interval) this.clearSeekInterval;
