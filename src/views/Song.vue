@@ -9,7 +9,7 @@
       }"
     />
     <div class="options">
-      <button title="Back" @click.prevent="$router.go(-1)">
+      <button title="Back" @click.prevent="goBack">
         <eva-icon name="arrow-back-outline" height="28" width="28" />
       </button>
       <div class="options-group">
@@ -53,36 +53,45 @@
 import PlayerDetails from "@/components/PlayerDetails.vue";
 import { db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { mapActions, mapState } from "pinia";
+import { mapActions, mapWritableState } from "pinia";
 import usePlayerStore from "@/stores/player";
 
 export default {
   components: { PlayerDetails },
-  data() {
-    return {
-      currentSong: {},
-    };
-  },
   async created() {
-    const songRef = doc(db, "songs", this.$route.params.id);
-    const songSnap = await getDoc(songRef);
+    if (!this.currentSong.id) {
+      const songRef = doc(db, "songs", this.$route.params.id);
+      const songSnap = await getDoc(songRef);
 
-    if (!songSnap.exists()) {
-      this.$router.push({ name: "home" });
-      return;
+      if (!songSnap.exists()) {
+        this.$router.push({ name: "home" });
+        return;
+      }
+
+      const song = {
+        id: songSnap.id,
+        ...songSnap.data(),
+      };
+
+      await this.newSong(song);
+      this.sound.pause();
     }
-
-    this.currentSong = {
-      id: songSnap.id,
-      ...songSnap.data(),
-    };
-    this.newSong(this.currentSong);
+  },
+  computed: {
+    ...mapWritableState(usePlayerStore, ["currentSong", "playing", "sound"]),
   },
   methods: {
     ...mapActions(usePlayerStore, ["newSong"]),
-  },
-  computed: {
-    ...mapState(usePlayerStore, ["playing", "currentSong"]),
+
+    goBack() {
+      const router = this.$router;
+
+      // If view is displayed from App, go back
+      // else go back to home
+      router.options.history.state.back
+        ? router.back()
+        : router.push({ name: "home" });
+    },
   },
 };
 </script>
