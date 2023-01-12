@@ -146,6 +146,7 @@ button {
   border-style: none;
   cursor: pointer;
   color: $text-secondary;
+  font-family: "Josefin Sans", sans-serif;
 
   &:hover,
   &.active {
