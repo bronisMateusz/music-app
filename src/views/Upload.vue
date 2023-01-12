@@ -81,17 +81,17 @@
       <h2>Uploaded albums</h2>
       <ul id="uploaded-albums">
         <li v-for="album in albums" :key="album.name">
-          <div
-            class="album-cover"
-            :style="{
-              'background-image': album.picture
-                ? `url(${album.picture})`
-                : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
-            }"
-          />
-          <router-link :to="{ name: 'album', params: { id: album.id } }">{{
-            album.name
-          }}</router-link>
+          <router-link :to="{ name: 'album', params: { id: album.id } }">
+            <div
+              class="album-cover"
+              :style="{
+                'background-image': album.picture
+                  ? `url(${album.picture})`
+                  : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+              }"
+            />
+            <p>{{ album.name }}</p>
+          </router-link>
         </li>
       </ul>
     </section>
