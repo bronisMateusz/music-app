@@ -6,6 +6,8 @@ export default defineStore("player", {
   state: () => ({
     currentSong: {
       artist: "Artist",
+      id: "",
+      picture: "",
       title: "Song title",
     },
     sound: {},
@@ -25,6 +27,7 @@ export default defineStore("player", {
       // Store details from Firebase
       this.currentSong = {
         artist: song.artist,
+        id: song.id,
         picture: song.picture,
         title: song.title,
       };
