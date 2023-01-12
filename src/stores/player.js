@@ -21,10 +21,14 @@ export default defineStore("player", {
   }),
   actions: {
     async newSong(song) {
-      if (this.currentSong.url === song.url) return;
-      if (this.interval) clearInterval(this.interval);
+      // If current song is equal to new song, return
+      if (this.currentSong.id === song.id) return;
+      // If song is stored, remove an instance of it from memory
+      if (this.sound instanceof Howl) this.sound.unload();
+      // If interval is set, clear it
+      if (this.interval) this.clearSeekInterval;
 
-      // Store details from Firebase
+      // Store song details from Firebase
       this.currentSong = {
         artist: song.artist,
         id: song.id,
@@ -34,11 +38,13 @@ export default defineStore("player", {
 
       // Create Howl object
       this.sound = new Howl({
+        autoplay: true,
         src: [song.url],
         html5: true,
         volume: this.volume / 100,
       });
 
+      // Set song duration on load
       this.sound.once("load", () => {
         this.duration = helper.formatTime(this.sound.duration());
       });
@@ -46,6 +52,8 @@ export default defineStore("player", {
       this.sound.on("play", () => {
         // Start the interval to update the seek
         this.playing = true;
+
+        // Update seek and seekPosition on every second
         this.interval = setInterval(() => {
           this.seek = helper.formatTime(this.sound.seek());
           this.seekPosition = (this.sound.seek() / this.sound.duration()) * 100;
@@ -54,21 +62,18 @@ export default defineStore("player", {
 
       this.sound.on("pause", () => {
         this.playing = false;
-        clearInterval(this.interval);
+        this.clearSeekInterval;
       });
 
       this.sound.on("end", () => {
         this.playing = false;
-        // Reset seek and clear the interval when the song ends
         this.seek = "0:00";
         this.seekPosition = 0;
-        clearInterval(this.interval);
+        this.clearSeekInterval;
       });
-
-      // Play audio file
-      this.sound.play();
     },
     changeSeek() {
+      // If no song is is stored, return
       if (!this.sound.playing) return;
 
       this.sound.seek((this.seekPosition / 100) * this.sound.duration());
@@ -76,10 +81,16 @@ export default defineStore("player", {
     changeVolume(event) {
       this.volume = parseInt(event.target.value);
 
+      // If no song is is stored, return
       if (!this.sound.playing) return;
       this.sound.volume(this.volume / 100);
     },
+    clearSeekInterval() {
+      clearInterval(this.interval);
+      this.interval = null;
+    },
     updateSeek(event) {
+      // If no song is is stored, return
       if (!this.sound.playing) return;
 
       this.seekPosition = parseInt(event.target.value);
@@ -90,12 +101,16 @@ export default defineStore("player", {
     updateVolume(direction) {
       if (direction === "up") this.volume = Math.min(100, this.volume + 5);
       if (direction === "down") this.volume = Math.max(0, this.volume - 5);
+      // If no song is is stored, return
       if (!this.sound.playing) return;
 
       this.sound.volume(this.volume / 100);
     },
     async toggleAudio() {
+      // If no song is is stored, return
       if (!this.sound.playing) return;
+
+      // If song is stored, toggle audio
       this.playing ? this.sound.pause() : this.sound.play();
     },
     toggleLoop() {

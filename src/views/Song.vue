@@ -9,9 +9,9 @@
       }"
     />
     <div class="options">
-      <router-link :to="{ name: 'home' }" title="Home">
+      <button title="Back" @click.prevent="$router.go(-1)">
         <eva-icon name="arrow-back-outline" height="28" width="28" />
-      </router-link>
+      </button>
       <div class="options-group">
         <button>
           <eva-icon name="heart-outline" height="28" width="28" />
@@ -82,7 +82,7 @@ export default {
     ...mapActions(usePlayerStore, ["newSong"]),
   },
   computed: {
-    ...mapState(usePlayerStore, ["playing"]),
+    ...mapState(usePlayerStore, ["playing", "currentSong"]),
   },
 };
 </script>

@@ -8,14 +8,12 @@
             ? `url(${song.picture})`
             : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
         }"
+        @click.prevent="newSong(song)"
       />
-      <div class="song-details">
-        <router-link
-          :to="{ name: 'song', params: { id: song.id } }"
-          class="song-title"
-        >
+      <div class="song-details" @click.prevent="newSong(song)">
+        <button class="song-title">
           {{ song.title }}
-        </router-link>
+        </button>
         <span class="song-artist">{{ song.artist }}</span>
       </div>
       <eva-icon
@@ -29,8 +27,14 @@
 </template>
 
 <script>
+import { mapActions } from "pinia";
+import usePlayerStore from "@/stores/player";
+
 export default {
   props: ["songs"],
+  methods: {
+    ...mapActions(usePlayerStore, ["newSong"]),
+  },
 };
 </script>
 

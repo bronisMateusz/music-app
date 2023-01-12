@@ -7,14 +7,12 @@
           ? `url(${song.picture})`
           : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
       }"
+      @click.prevent="newSong(song)"
     />
-    <div class="song-details">
-      <router-link
-        :to="{ name: 'song', params: { id: song.id } }"
-        class="song-title"
-      >
+    <div class="song-details" @click.prevent="newSong(song)">
+      <button class="song-title">
         {{ song.title }}
-      </router-link>
+      </button>
       <span class="song-artist">{{ song.artist }}</span>
     </div>
     <button @click.prevent="toggleFormVisibility">
@@ -185,7 +183,7 @@ import { ref, deleteObject } from "firebase/storage";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
-
+import usePlayerStore from "@/stores/player";
 export default {
   props: {
     song: {
@@ -221,6 +219,9 @@ export default {
   },
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),
+
+    ...mapActions(usePlayerStore, ["newSong"]),
+
     async edit(values) {
       const songsRef = doc(db, "songs", this.song.id);
       try {
@@ -239,10 +240,12 @@ export default {
       this.setNotification("success", "Success!", "Song details updated");
       this.toggleFormVisibility();
     },
+
     toggleFormVisibility() {
       this.showForm = !this.showForm;
       this.updateUnsavedFlag(false);
     },
+
     async deleteSong() {
       const songRef = ref(
         storage,
