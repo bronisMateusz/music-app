@@ -77,12 +77,14 @@ export default defineStore("player", {
         this.clearSeekInterval;
       });
     },
+
     changeSeek() {
       // If no song is is stored, return
       if (!this.sound.playing) return;
 
       this.sound.seek((this.seekPosition / 100) * this.sound.duration());
     },
+
     changeVolume(event) {
       this.volume = parseInt(event.target.value);
 
@@ -90,27 +92,12 @@ export default defineStore("player", {
       if (!this.sound.playing) return;
       this.sound.volume(this.volume / 100);
     },
+
     clearSeekInterval() {
       clearInterval(this.interval);
       this.interval = null;
     },
-    updateSeek(event) {
-      // If no song is is stored, return
-      if (!this.sound.playing) return;
 
-      this.seekPosition = parseInt(event.target.value);
-      this.seek = helper.formatTime(
-        (this.seekPosition / 100) * this.sound.duration()
-      );
-    },
-    updateVolume(direction) {
-      if (direction === "up") this.volume = Math.min(100, this.volume + 5);
-      if (direction === "down") this.volume = Math.max(0, this.volume - 5);
-      // If no song is is stored, return
-      if (!this.sound.playing) return;
-
-      this.sound.volume(this.volume / 100);
-    },
     async toggleAudio() {
       // If no song is is stored, return
       if (!this.sound.playing) return;
@@ -118,11 +105,29 @@ export default defineStore("player", {
       // If song is stored, toggle audio
       this.playing ? this.sound.pause() : this.sound.play();
     },
+
     toggleLoop() {
       this.loop = !this.loop;
 
       if (!this.sound.playing) return;
       this.sound.loop(this.loop);
+    },
+
+    updateSeek(event) {
+      // If no song is is stored, return
+      if (!this.sound.playing) return;
+
+      this.seekPosition = parseInt(event.target.value);
+      this.seek = helper.formatTime(this.sound.seek());
+    },
+
+    updateVolume(direction) {
+      if (direction === "up") this.volume = Math.min(100, this.volume + 5);
+      if (direction === "down") this.volume = Math.max(0, this.volume - 5);
+      // If no song is is stored, return
+      if (!this.sound.playing) return;
+
+      this.sound.volume(this.volume / 100);
     },
   },
 });
