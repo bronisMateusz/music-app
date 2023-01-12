@@ -1,5 +1,4 @@
 <template>
-  <!-- Song details -->
   <div
     v-if="showCover"
     class="song-cover"
@@ -9,12 +8,11 @@
         : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
     }"
   />
+  <!-- Song details -->
   <div class="song-details">
     <router-link
-      v-if="$route.nem === 'song'"
-      :to="
-        currentSong.id ? { name: 'song', params: { id: currentSong.id } } : {}
-      "
+      v-if="$route.name !== 'song' && currentSong.id"
+      :to="{ name: 'song', params: { id: currentSong.id } }"
       class="song-title"
     >
       {{ currentSong.title }}
@@ -39,6 +37,7 @@
     </div>
     <span class="time-total">{{ duration }}</span>
   </div>
+  <!-- Control buttons -->
   <div class="control-buttons">
     <!-- Shuffle Button -->
     <button title="Shuffle">
@@ -69,6 +68,7 @@
       <eva-icon name="repeat-outline" height="24" width="24" />
     </button>
   </div>
+  <!-- Volume controls -->
   <div class="volume-controls">
     <!-- Decrease Volume Button -->
     <button title="Decrease volume" @click.prevent="updateVolume('down')">
