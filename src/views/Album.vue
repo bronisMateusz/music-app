@@ -14,14 +14,11 @@
       <p class="songs-quantity">{{ songs.length }} songs</p>
       <div class="actions">
         <!-- Play/Pause Button -->
-        <button
-          :title="!playing ? 'Play' : 'Pause'"
-          @click.prevent="toggleAudio"
-        >
+        <button :title="!playing ? 'Play' : 'Pause'" @click.prevent="playAlbum">
           <eva-icon
             :name="!playing ? 'arrow-right-outline' : 'pause-circle-outline'"
-            height="64"
-            width="64"
+            height="48"
+            width="48"
           />
         </button>
         <button title="favorites">
@@ -44,13 +41,14 @@
 import { db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import Song from "@/components/Song.vue";
+import { mapActions, mapWritableState } from "pinia";
+import usePlayerStore from "@/stores/player";
 
 export default {
   data() {
     return {
       album: {},
       songs: [],
-      songsQuantity: 0,
     };
   },
   components: { Song },
@@ -72,8 +70,16 @@ export default {
       this.addSong(songSnap);
     }
   },
-
+  computed: {
+    ...mapWritableState(usePlayerStore, [
+      "currentSongIndex",
+      "playing",
+      "songsQueue",
+    ]),
+  },
   methods: {
+    ...mapActions(usePlayerStore, ["newSong", "toggleAudio"]),
+
     addAlbum(doc) {
       this.album = {
         ...doc.data(),
@@ -87,6 +93,17 @@ export default {
         id: doc.id,
       };
       this.songs.push(song);
+    },
+
+    playAlbum() {
+      if (!this.playing) {
+        this.songsQueue = this.songs;
+        this.currentSongIndex = 0;
+        this.newSong(this.songs[0]);
+        return;
+      }
+
+      this.toggleAudio();
     },
   },
 };
