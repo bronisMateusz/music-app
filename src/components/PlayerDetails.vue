@@ -40,11 +40,15 @@
   <!-- Control buttons -->
   <div class="control-buttons">
     <!-- Shuffle Button -->
-    <button title="Shuffle">
+    <button
+      title="Shuffle"
+      :class="randomPlay ? 'active' : ''"
+      @click.prevent="randomPlay = !randomPlay"
+    >
       <eva-icon name="shuffle-2-outline" height="24" width="24" />
     </button>
     <!-- Previous Button -->
-    <button title="Previous" @click.prevent="playPrevious">
+    <button title="Previous" @click.prevent="changeSong(-1)">
       <eva-icon name="rewind-left-outline" height="48" width="48" />
     </button>
     <!-- Play/Pause Button -->
@@ -56,7 +60,7 @@
       />
     </button>
     <!-- Next Button -->
-    <button title="Next" @click.prevent="playNext">
+    <button title="Next" @click.prevent="changeSong(1)">
       <eva-icon name="rewind-right-outline" height="48" width="48" />
     </button>
     <!-- Loop Button -->
@@ -100,7 +104,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "pinia";
+import { mapActions, mapWritableState } from "pinia";
 import usePlayerStore from "@/stores/player";
 
 export default {
@@ -113,21 +117,21 @@ export default {
   methods: {
     ...mapActions(usePlayerStore, [
       "changeSeek",
+      "changeSong",
       "changeVolume",
       "toggleAudio",
       "toggleLoop",
-      "playNext",
-      "playPrevious",
       "updateSeek",
       "updateVolume",
     ]),
   },
   computed: {
-    ...mapState(usePlayerStore, [
+    ...mapWritableState(usePlayerStore, [
       "currentSong",
       "duration",
       "loopMode",
       "playing",
+      "randomPlay",
       "seek",
       "seekPosition",
       "volume",
