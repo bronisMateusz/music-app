@@ -1,6 +1,6 @@
 <template>
   <ul class="songs">
-    <li v-for="song in songs" :key="song.id">
+    <li v-for="(song, index) in songs" :key="song.id">
       <div
         class="song-cover"
         :style="{
@@ -8,9 +8,9 @@
             ? `url(${song.picture})`
             : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
         }"
-        @click.prevent="newSong(song)"
+        @click.prevent="addSongs(song, index)"
       />
-      <div class="song-details" @click.prevent="newSong(song)">
+      <div class="song-details" @click.prevent="addSongs(song, index)">
         <button class="song-title">
           {{ song.title }}
         </button>
@@ -27,13 +27,22 @@
 </template>
 
 <script>
-import { mapActions } from "pinia";
+import { mapActions, mapWritableState } from "pinia";
 import usePlayerStore from "@/stores/player";
 
 export default {
   props: ["songs"],
+  computed: {
+    ...mapWritableState(usePlayerStore, ["currentSongIndex", "songsQueue"]),
+  },
   methods: {
     ...mapActions(usePlayerStore, ["newSong"]),
+
+    addSongs(song, index) {
+      this.songsQueue = this.songs;
+      this.currentSongIndex = index;
+      this.newSong(song);
+    },
   },
 };
 </script>
