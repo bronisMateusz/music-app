@@ -10,6 +10,8 @@ export default defineStore("player", {
       picture: "",
       title: "Song title",
     },
+    currentSongIndex: 0,
+    songsQueue: [],
     sound: {},
     seekPosition: 0,
     seek: "0:00",
@@ -96,6 +98,37 @@ export default defineStore("player", {
     clearSeekInterval() {
       clearInterval(this.interval);
       this.interval = null;
+    },
+
+    playNext() {
+      // Check if there are more songs in the queue
+      if (this.songsQueue.length > 0) {
+        this.currentSongIndex++;
+
+        // If the currentSongIndex is greater than the number of songs in the queue
+        // set the currentSongIndex back to 0
+        if (this.currentSongIndex >= this.songsQueue.length)
+          this.currentSongIndex = 0;
+
+        // Play the next song in the queue
+        this.newSong(this.songsQueue[this.currentSongIndex]);
+      }
+    },
+
+    playPrevious() {
+      // Check if there are more songs in the queue before the current song
+      if (this.songsQueue.length > 1) {
+        // decrement the currentSongIndex
+        this.currentSongIndex--;
+
+        // if the currentSongIndex is less than 0
+        // set the currentSongIndex to the last song in the queue
+        if (this.currentSongIndex < 0)
+          this.currentSongIndex = this.songsQueue.length - 1;
+
+        // Play the previous song in the queue
+        this.newSong(this.songsQueue[this.currentSongIndex]);
+      }
     },
 
     async toggleAudio() {
