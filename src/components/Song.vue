@@ -42,6 +42,7 @@ export default {
       this.songsQueue = this.songs;
       this.currentSongIndex = index;
       this.newSong(song);
+      this.$emit("album-id", song.album_id);
     },
   },
 };
