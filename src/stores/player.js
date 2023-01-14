@@ -11,15 +11,16 @@ export default defineStore("player", {
       title: "Song title",
     },
     currentSongIndex: 0,
-    songsQueue: [],
-    sound: {},
-    seekPosition: 0,
-    seek: "0:00",
     duration: "0:00",
-    volume: 100,
     interval: null,
     loopMode: 0,
     playing: false,
+    randomPlay: false,
+    seek: "0:00",
+    seekPosition: 0,
+    songsQueue: [],
+    sound: {},
+    volume: 100,
   }),
   actions: {
     async newSong(song) {
@@ -70,7 +71,7 @@ export default defineStore("player", {
         this.clearSeekInterval();
       });
 
-      this.sound.on("end", () => this.playNext());
+      this.sound.on("end", () => this.changeSong(1));
     },
 
     changeSeek() {
@@ -80,81 +81,31 @@ export default defineStore("player", {
       this.sound.seek((this.seekPosition / 100) * this.sound.duration());
     },
 
+    changeSong(indexModifier) {
+      // If no song is is stored, return
+      if (!this.sound.playing) return;
+
+      this.clearSeekInterval();
+
+      // Play current song looped, play again
+      if (this.loopMode === 2 && this.sound) {
+        this.playAgain();
+        return;
+      }
+
+      if (this.randomPlay) {
+        this.playRandom();
+      } else {
+        this.updateCurrentSongIndex(indexModifier);
+      }
+    },
+
     changeVolume(event) {
       this.volume = parseInt(event.target.value);
 
       // If no song is is stored, return
       if (!this.sound.playing) return;
       this.sound.volume(this.volume / 100);
-    },
-
-    clearSeekInterval() {
-      clearInterval(this.interval);
-      this.interval = null;
-    },
-
-    playAgain() {
-      this.sound.stop();
-      this.sound.play();
-    },
-
-    playNext() {
-      // If no song is is stored, return
-      if (!this.sound.playing) return;
-
-      // Play current song looped, play again
-      if (this.loopMode === 2 && this.sound) {
-        this.playAgain();
-        return;
-      }
-
-      this.currentSongIndex++;
-      const queueLength = this.songsQueue.length;
-
-      // If only one song is in queue or
-      // If no loop is set and it is last song in queue, clear player
-      if (
-        queueLength === 0 ||
-        (this.loopMode === 0 && this.currentSongIndex === queueLength)
-      ) {
-        this.clearSeekInterval();
-        this.clearPlayer();
-        return;
-      }
-
-      // If loop is set and it is last song i queue, play again all queue
-      if (this.currentSongIndex === queueLength) this.currentSongIndex = 0;
-
-      this.newSong(this.songsQueue[this.currentSongIndex]);
-    },
-
-    playPrevious() {
-      // If no song is is stored, return
-      if (!this.sound.playing) return;
-
-      // Play current song looped, play again
-      if (this.loopMode === 2 && this.sound) {
-        this.playAgain();
-        return;
-      }
-
-      this.currentSongIndex--;
-      const queueLength = this.songsQueue.length;
-
-      // If only one song is in queue or
-      // If no loop is set and currentSongIndex is less than 0
-      if (
-        queueLength === 0 ||
-        (this.loopMode === 0 && this.currentSongIndex < 0)
-      ) {
-        this.clearSeekInterval();
-        this.clearPlayer();
-        return;
-      }
-      // If currentSongIndex is less than 0
-      if (this.currentSongIndex < 0) this.currentSongIndex = queueLength - 1;
-
-      this.newSong(this.songsQueue[this.currentSongIndex]);
     },
 
     clearPlayer() {
@@ -169,12 +120,36 @@ export default defineStore("player", {
         title: "Song title",
       };
       this.currentSongIndex = 0;
-      this.songsQueue = [];
-      this.sound = {};
-      this.seekPosition = 0;
-      this.seek = "0:00";
       this.duration = "0:00";
       this.playing = false;
+      this.seek = "0:00";
+      this.seekPosition = 0;
+      this.songsQueue = [];
+      this.sound = {};
+    },
+
+    clearSeekInterval() {
+      clearInterval(this.interval);
+      this.interval = null;
+    },
+
+    playAgain() {
+      this.sound.stop();
+      this.sound.play();
+    },
+
+    playRandom() {
+      if (this.randomPlay) {
+        // Generate a random index for the song in the queue
+        let randomIndex = Math.floor(Math.random() * this.songsQueue.length);
+
+        while (randomIndex === this.currentSongIndex) {
+          randomIndex = Math.floor(Math.random() * this.songsQueue.length);
+        }
+
+        this.currentSongIndex = randomIndex;
+        this.newSong(this.songsQueue[this.currentSongIndex]);
+      }
     },
 
     async toggleAudio() {
@@ -192,6 +167,41 @@ export default defineStore("player", {
       }
 
       this.loopMode++;
+    },
+
+    updateCurrentSongIndex(indexModifier) {
+      const queueLength = this.songsQueue.length;
+
+      // Check if the queue is empty
+      if (queueLength === 0) {
+        this.clearPlayer();
+        return;
+      }
+
+      // Update the current songIndex based on the indexModifier
+      this.currentSongIndex += indexModifier;
+
+      // Create a condition depending on the direction of the song change
+      const condition =
+        indexModifier === 1
+          ? this.currentSongIndex === queueLength
+          : this.currentSongIndex < 0;
+
+      // Check if the currentSongIndex is out of bounds
+      if (condition) {
+        // Check if loop mode is enabled
+        if (this.loopMode === 0) {
+          this.clearPlayer();
+          return;
+        } else {
+          // If indexModifier is equal to 1, play song from queue start
+          // else play from queue end
+          this.currentSongIndex = indexModifier === 1 ? 0 : queueLength - 1;
+        }
+      }
+
+      // Play the new song
+      this.newSong(this.songsQueue[this.currentSongIndex]);
     },
 
     updateSeek(event) {
