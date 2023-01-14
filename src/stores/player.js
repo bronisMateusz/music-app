@@ -32,8 +32,6 @@ export default defineStore("player", {
       }
       // If song is stored, remove an instance of it
       if (this.sound instanceof Howl) this.sound.unload();
-      // If interval is set, clear it
-      if (this.interval) this.clearSeekInterval;
 
       // Store song details from Firebase
       this.currentSong = {
@@ -69,14 +67,15 @@ export default defineStore("player", {
 
       this.sound.on("pause", () => {
         this.playing = false;
-        this.clearSeekInterval;
+        this.clearSeekInterval();
       });
 
       this.sound.on("end", () => {
         this.playing = false;
         this.seek = "0:00";
         this.seekPosition = 0;
-        this.clearSeekInterval;
+        this.clearSeekInterval();
+        this.playNext();
       });
     },
 
@@ -105,12 +104,13 @@ export default defineStore("player", {
       if (this.songsQueue.length > 0) {
         this.currentSongIndex++;
 
-        // If the currentSongIndex is greater than the number of songs in the queue
-        // set the currentSongIndex back to 0
-        if (this.currentSongIndex >= this.songsQueue.length)
-          this.currentSongIndex = 0;
+        // If currentIndex is equal to the last index of the songsQueue array
+        if (this.currentSongIndex === this.songsQueue.length) {
+          this.clearPlayer();
+          return;
+        }
 
-        // Play the next song in the queue
+        // Play next song in the queue
         this.newSong(this.songsQueue[this.currentSongIndex]);
       }
     },
@@ -129,6 +129,26 @@ export default defineStore("player", {
         // Play the previous song in the queue
         this.newSong(this.songsQueue[this.currentSongIndex]);
       }
+    },
+
+    clearPlayer() {
+      // Destroy Howl instance
+      this.sound.unload();
+      this.sound = {};
+
+      // Set currentSong back to first song from queue
+      this.currentSong = {
+        artist: "Artist",
+        id: "",
+        picture: "",
+        title: "Song title",
+      };
+
+      // Set currentIndex back to 0
+      this.currentSongIndex = 0;
+
+      // Clear queue
+      this.songsQueue = [];
     },
 
     async toggleAudio() {
