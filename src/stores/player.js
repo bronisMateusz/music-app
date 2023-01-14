@@ -18,7 +18,7 @@ export default defineStore("player", {
     duration: "0:00",
     volume: 100,
     interval: null,
-    loop: false,
+    loopMode: 0,
     playing: false,
   }),
   actions: {
@@ -122,7 +122,7 @@ export default defineStore("player", {
         this.currentSongIndex--;
 
         // if the currentSongIndex is less than 0
-        // set the currentSongIndex to the last song in the queue
+        // set the currentSongIndex to the lastsong in the queue
         if (this.currentSongIndex < 0)
           this.currentSongIndex = this.songsQueue.length - 1;
 
@@ -160,10 +160,12 @@ export default defineStore("player", {
     },
 
     toggleLoop() {
-      this.loop = !this.loop;
+      if (this.loopMode === 2) {
+        this.loopMode = 0;
+        return;
+      }
 
-      if (!this.sound.playing) return;
-      this.sound.loop(this.loop);
+      this.loopMode++;
     },
 
     updateSeek(event) {
