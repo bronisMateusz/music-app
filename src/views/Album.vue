@@ -14,9 +14,14 @@
       <p class="songs-quantity">{{ songs.length }} songs</p>
       <div class="actions">
         <!-- Play/Pause Button -->
-        <button :title="!playing ? 'Play' : 'Pause'" @click.prevent="playAlbum">
+        <button
+          :title="!isAlbumPlaying ? 'Play' : 'Pause'"
+          @click.prevent="playAlbum"
+        >
           <eva-icon
-            :name="!playing ? 'arrow-right-outline' : 'pause-circle-outline'"
+            :name="
+              !isAlbumPlaying ? 'arrow-right-outline' : 'pause-circle-outline'
+            "
             height="48"
             width="48"
           />
@@ -33,7 +38,7 @@
         </button>
       </div>
     </div>
-    <song :songs="songs" />
+    <song :songs="songs" @album-id="isAlbumPlaying = album.id === $event" />
   </div>
 </template>
 
@@ -49,6 +54,7 @@ export default {
     return {
       album: {},
       songs: [],
+      isAlbumPlaying: false,
     };
   },
   components: { Song },
@@ -69,9 +75,12 @@ export default {
       const songSnap = await getDoc(songRef);
       this.addSong(songSnap);
     }
+
+    this.isAlbumPlaying = this.playing && doc.id === this.albumId;
   },
   computed: {
     ...mapWritableState(usePlayerStore, [
+      "albumId",
       "currentSongIndex",
       "playing",
       "songsQueue",
@@ -96,13 +105,15 @@ export default {
     },
 
     playAlbum() {
-      if (!this.playing) {
+      if (!this.isAlbumPlaying) {
         this.songsQueue = this.songs;
         this.currentSongIndex = 0;
         this.newSong(this.songs[0]);
+        this.isAlbumPlaying = true;
         return;
       }
 
+      this.isAlbumPlaying = false;
       this.toggleAudio();
     },
   },
