@@ -5,6 +5,7 @@ import helper from "@/includes/helper";
 export default defineStore("player", {
   state: () => ({
     currentSong: {
+      albumId: "",
       artist: "Artist",
       id: "",
       picture: "",
@@ -36,6 +37,7 @@ export default defineStore("player", {
 
       // Store song details from Firebase
       this.currentSong = {
+        albumId: song.album_id,
         artist: song.artist,
         id: song.id,
         picture: song.picture,
@@ -114,6 +116,7 @@ export default defineStore("player", {
 
       // Set states to default values
       this.currentSong = {
+        albumId: "",
         artist: "Artist",
         id: "",
         picture: "",
