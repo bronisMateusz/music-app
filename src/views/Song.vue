@@ -44,7 +44,7 @@
       </div>
     </div>
     <div class="player-controls">
-      <player-details :currentSong="currentSong" />
+      <player-details />
     </div>
   </div>
 </template>
