@@ -44,7 +44,7 @@
       <eva-icon name="shuffle-2-outline" height="24" width="24" />
     </button>
     <!-- Previous Button -->
-    <button title="Previous">
+    <button title="Previous" @click.prevent="playPrevious">
       <eva-icon name="rewind-left-outline" height="48" width="48" />
     </button>
     <!-- Play/Pause Button -->
@@ -56,14 +56,14 @@
       />
     </button>
     <!-- Next Button -->
-    <button title="Next">
+    <button title="Next" @click.prevent="playNext">
       <eva-icon name="rewind-right-outline" height="48" width="48" />
     </button>
     <!-- Loop Button -->
     <button
       title="Loop"
       @click.prevent="toggleLoop"
-      :class="loop ? 'active' : ''"
+      :class="{ active: loopMode === 1, 'active repeat-this': loopMode === 2 }"
     >
       <eva-icon name="repeat-outline" height="24" width="24" />
     </button>
@@ -116,6 +116,8 @@ export default {
       "changeVolume",
       "toggleAudio",
       "toggleLoop",
+      "playNext",
+      "playPrevious",
       "updateSeek",
       "updateVolume",
     ]),
@@ -124,7 +126,7 @@ export default {
     ...mapState(usePlayerStore, [
       "currentSong",
       "duration",
-      "loop",
+      "loopMode",
       "playing",
       "seek",
       "seekPosition",
@@ -156,6 +158,18 @@ export default {
     padding: 0;
     height: 48px;
     width: 48px;
+
+    &.repeat-this {
+      position: relative;
+
+      &::after {
+        color: $text-primary;
+        content: "1";
+        height: 12px;
+        width: 12px;
+        position: absolute;
+      }
+    }
   }
 }
 
