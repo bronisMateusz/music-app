@@ -1,5 +1,5 @@
 <template>
-  <div id="song" v-if="currentSong.picture">
+  <div id="song">
     <div
       class="song-bg"
       :style="{
