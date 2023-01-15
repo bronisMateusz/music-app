@@ -251,6 +251,8 @@ export default {
     },
 
     async deleteSong() {
+      this.setNotification("notice", "Please wait", "We're removing this song");
+
       const songRef = ref(
         storage,
         `songs/${auth.currentUser.uid}/${this.song.file_name}`
