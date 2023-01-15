@@ -105,6 +105,7 @@
           :song="song"
           :updateSongDetails="updateSongDetails"
           :index="index"
+          :removeAlbum="removeAlbum"
           :removeSong="removeSong"
           :updateUnsavedFlag="updateUnsavedFlag"
         />
@@ -297,6 +298,7 @@ export default {
           songs: [{ id: songSnapshot.id }],
           user_id: auth.currentUser.uid,
         });
+        this.addAlbum(await getDoc(albumDoc));
       }
 
       // Add album_id to uploaded song
@@ -372,6 +374,15 @@ export default {
       this.songs[index].track = values.track;
       this.songs[index].trackTotal = values.trackTotal;
       this.songs[index].year = values.year;
+    },
+
+    removeAlbum(id) {
+      this.albums.forEach((album, index) => {
+        if (album.id === id) {
+          this.albums.splice(index, 1);
+          return;
+        }
+      });
     },
 
     removeSong(index) {
