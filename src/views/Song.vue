@@ -13,13 +13,16 @@
         <eva-icon name="arrow-back-outline" height="28" width="28" />
       </button>
       <div class="options-group">
-        <button>
+        <!-- Add to favorites Button -->
+        <button title="Add to favorites">
           <eva-icon name="heart-outline" height="28" width="28" />
         </button>
-        <button>
+        <!-- Share Button -->
+        <button title="Share">
           <eva-icon name="share-outline" height="28" width="28" />
         </button>
-        <button>
+        <!-- More Button -->
+        <button title="More">
           <eva-icon name="more-horizontal-outline" height="28" width="28" />
         </button>
       </div>
@@ -176,6 +179,9 @@ export default {
     opacity: 0.7;
     position: absolute;
     z-index: -1;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
   }
 
   .options {
