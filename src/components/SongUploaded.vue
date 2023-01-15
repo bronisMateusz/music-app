@@ -37,7 +37,18 @@
           @dragenter.prevent.stop="isDragover = true"
           @dragleave.prevent.stop="isDragover = false"
           @drop.prevent.stop="upload($event)"
-        />
+        >
+          <label v-if="!isDragover" for="file-input">browse</label>
+          <label v-else for="file-input" class="dragover">
+            <eva-icon name="cloud-upload-outline" height="72" width="72" />
+          </label>
+          <input
+            id="file-input"
+            class="hidden"
+            type="file"
+            @change="upload($event)"
+          />
+        </div>
         <div class="song-cover-info">
           <p>Image guidelines</p>
           <ul>
@@ -391,6 +402,25 @@ export default {
       gap: 12px;
       grid-template-columns: auto 1fr;
       margin-bottom: 12px;
+      position: relative;
+
+      .song-cover label {
+        align-items: center;
+        border-radius: 15px;
+        color: transparent;
+        cursor: pointer;
+        display: flex;
+        height: 70px;
+        justify-content: center;
+        min-width: 70px;
+        position: absolute;
+        width: 70px;
+
+        &.dragover {
+          background-color: rgba($text-primary, 0.9);
+          color: $text-primary-inverted;
+        }
+      }
 
       .song-cover-info {
         align-self: center;
@@ -430,7 +460,8 @@ export default {
       div:nth-of-type(12) {
         grid-column: 1/3;
 
-        .song-cover {
+        .song-cover,
+        .song-cover label {
           height: 124px;
           width: 124px;
         }
