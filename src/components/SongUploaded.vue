@@ -192,16 +192,12 @@ import usePlayerStore from "@/stores/player";
 
 export default {
   props: {
-    song: {
-      type: Object,
-      required: true,
-    },
-    updateSongDetails: {
-      type: Function,
-      required: true,
-    },
     index: {
       type: Number,
+      required: true,
+    },
+    song: {
+      type: Object,
       required: true,
     },
     removeAlbum: {
@@ -209,6 +205,14 @@ export default {
       required: true,
     },
     removeSong: {
+      type: Function,
+      required: true,
+    },
+    updateSongDetails: {
+      type: Function,
+      required: true,
+    },
+    updateSongPicture: {
       type: Function,
       required: true,
     },
@@ -236,7 +240,20 @@ export default {
     async edit(values) {
       const songsRef = doc(db, "songs", this.song.id);
       try {
-        await updateDoc(songsRef, values);
+        await updateDoc(songsRef, {
+          album: values.album,
+          artist: values.artist,
+          author: values.author,
+          disc: values.disc,
+          discTotal: values.discTotal,
+          format: values.format,
+          genre: values.genre,
+          lyrics: values.lyrics,
+          title: values.title,
+          track: values.track,
+          trackTotal: values.trackTotal,
+          year: values.year,
+        });
       } catch (error) {
         this.setNotification(
           "error",
@@ -338,7 +355,7 @@ export default {
             format: "image/jpeg",
             picture: pictureBase64,
           });
-          this.song.picture = pictureBase64;
+          this.updateSongPicture(this.index, pictureBase64);
         };
       } catch (error) {
         this.setNotification(
