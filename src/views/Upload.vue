@@ -1,110 +1,131 @@
 <template>
-  <!-- Upload -->
-  <section>
-    <h2>Upload</h2>
-    <div
-      id="drop-zone"
-      @dragend.prevent.stop="isDragover = false"
-      @dragover.prevent.stop="isDragover = true"
-      @dragenter.prevent.stop="isDragover = true"
-      @dragleave.prevent.stop="isDragover = false"
-      @drop.prevent.stop="upload($event)"
-    >
-      <div>
-        <eva-icon name="cloud-upload-outline" height="72" width="72" />
-        <p v-if="!isDragover">
-          Drop your file(s) here or
-          <label for="files-input">browse</label>
-          <input
-            id="files-input"
-            class="hidden"
-            type="file"
-            multiple
-            @change="upload($event)"
-          />
-        </p>
-        <p v-else>Drop your file(s) to upload</p>
-        <span>Maximum file size is 25 MB</span>
-      </div>
-    </div>
-  </section>
-  <!-- Upload progress -->
-  <section v-if="uploads.length">
-    <h2>Upload progress</h2>
-    <ul id="upload-progress">
-      <li v-for="upload in uploads" :key="upload.title">
-        <div
-          class="song-cover"
-          :style="{
-            'background-image': upload.picture
-              ? `url(${upload.picture})`
-              : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
-          }"
-        />
-        <div class="song-details" :class="upload.variant">
-          <p class="song-title">{{ upload.title }}</p>
-          <span class="song-artist">{{ upload.artist }}</span>
-          <!-- Progress bar -->
-          <div class="progress-bar">
-            <div class="bar">
-              <label for="upload-progress" class="hidden">
-                Upload progress
-              </label>
-              <input
-                id="upload-progress"
-                v-model="upload.current_progress"
-                type="range"
-                :style="{
-                  'background-size': `${upload.current_progress}% 100%`,
-                }"
-                disabled
-              />
-              <div class="bar-bg"></div>
-            </div>
-            <span v-if="upload.variant === 'error'" class="progress-value">
-              error
-            </span>
-            <span v-else class="progress-value">
-              {{ upload.current_progress }}&nbsp;%
-            </span>
-          </div>
+  <div id="upload">
+    <!-- Upload -->
+    <section>
+      <h2>Upload</h2>
+      <div
+        id="drop-zone"
+        @dragend.prevent.stop="isDragover = false"
+        @dragover.prevent.stop="isDragover = true"
+        @dragenter.prevent.stop="isDragover = true"
+        @dragleave.prevent.stop="isDragover = false"
+        @drop.prevent.stop="upload($event)"
+      >
+        <div>
+          <eva-icon name="cloud-upload-outline" height="72" width="72" />
+          <p v-if="!isDragover">
+            Drop your file(s) here or
+            <label for="files-input">browse</label>
+            <input
+              id="files-input"
+              class="hidden"
+              type="file"
+              multiple
+              @change="upload($event)"
+            />
+          </p>
+          <p v-else>Drop your file(s) to upload</p>
+          <span>Maximum file size is 25 MB</span>
         </div>
-        <button title="Cancel upload" @click.prevent="cancelUpload">
-          <eva-icon name="close-outline" height="28" width="28" />
-        </button>
-      </li>
-    </ul>
-  </section>
-  <!-- Uploaded albums -->
-  <section class="hidden">
-    <h2>Uploaded albums</h2>
-  </section>
-  <!-- Uploaded songs -->
-  <section v-if="songs.length">
-    <h2>Uploaded songs</h2>
-    <ul id="uploaded-songs">
-      <song-uploaded
-        v-for="(song, index) in songs"
-        :key="song.id"
-        :song="song"
-        :updateSongDetails="updateSongDetails"
-        :index="index"
-        :removeSong="removeSong"
-        :updateUnsavedFlag="updateUnsavedFlag"
-      />
-    </ul>
-  </section>
+      </div>
+    </section>
+    <!-- Upload progress -->
+    <section v-if="uploads.length">
+      <h2>Upload progress</h2>
+      <ul id="upload-progress">
+        <li v-for="upload in uploads" :key="upload.title">
+          <div
+            class="song-cover"
+            :style="{
+              'background-image': upload.picture
+                ? `url(${upload.picture})`
+                : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+            }"
+          />
+          <div class="song-details" :class="upload.variant">
+            <p class="song-title">{{ upload.title }}</p>
+            <span class="song-artist">{{ upload.artist }}</span>
+            <!-- Progress bar -->
+            <div class="progress-bar">
+              <div class="bar">
+                <label for="upload-progress" class="hidden">
+                  Upload progress
+                </label>
+                <input
+                  id="upload-progress"
+                  v-model="upload.current_progress"
+                  type="range"
+                  :style="{
+                    'background-size': `${upload.current_progress}% 100%`,
+                  }"
+                  disabled
+                />
+                <div class="bar-bg"></div>
+              </div>
+              <span v-if="upload.variant === 'error'" class="progress-value">
+                error
+              </span>
+              <span v-else class="progress-value">
+                {{ upload.current_progress }}&nbsp;%
+              </span>
+            </div>
+          </div>
+          <button title="Cancel upload" @click.prevent="cancelUpload">
+            <eva-icon name="close-outline" height="28" width="28" />
+          </button>
+        </li>
+      </ul>
+    </section>
+    <!-- Uploaded albums -->
+    <section v-if="albums.length">
+      <h2>Uploaded albums</h2>
+      <ul id="uploaded-albums">
+        <li v-for="album in albums" :key="album.name">
+          <router-link :to="{ name: 'album', params: { id: album.id } }">
+            <div
+              class="album-cover"
+              :style="{
+                'background-image': album.picture
+                  ? `url(${album.picture})`
+                  : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+              }"
+            />
+            <p>{{ album.name }}</p>
+          </router-link>
+        </li>
+      </ul>
+    </section>
+    <!-- Uploaded songs -->
+    <section v-if="songs.length">
+      <h2>Uploaded songs</h2>
+      <ul id="uploaded-songs">
+        <song-uploaded
+          v-for="(song, index) in songs"
+          :key="song.id"
+          :song="song"
+          :updateSongDetails="updateSongDetails"
+          :index="index"
+          :removeAlbum="removeAlbum"
+          :removeSong="removeSong"
+          :updateUnsavedFlag="updateUnsavedFlag"
+        />
+      </ul>
+    </section>
+  </div>
 </template>
 <script>
 import { auth, db, storage } from "@/includes/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import {
   addDoc,
+  arrayUnion,
   collection,
+  doc,
   getDocs,
   query,
   where,
   getDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
@@ -115,6 +136,7 @@ export default {
   components: { SongUploaded },
   data() {
     return {
+      albums: [],
       isDragover: false,
       songs: [],
       unsavedFlag: false,
@@ -123,15 +145,39 @@ export default {
   },
   async created() {
     // Get list of user songs
-    const q = query(
+    const songsQuery = query(
       collection(db, "songs"),
       where("user_id", "==", auth.currentUser.uid)
     );
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(this.addSong);
+    const songsSnapshot = await getDocs(songsQuery);
+    songsSnapshot.forEach(this.addSong);
+
+    // Get list of user albums
+    const albumsQuery = query(
+      collection(db, "albums"),
+      where("user_id", "==", auth.currentUser.uid)
+    );
+    const albumsSnapshot = await getDocs(albumsQuery);
+    albumsSnapshot.forEach(this.addAlbum);
   },
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),
+
+    addSong(doc) {
+      const song = {
+        ...doc.data(),
+        id: doc.id,
+      };
+      this.songs.push(song);
+    },
+
+    addAlbum(doc) {
+      const album = {
+        ...doc.data(),
+        id: doc.id,
+      };
+      this.albums.push(album);
+    },
 
     async upload($event) {
       this.isDragover = false;
@@ -185,16 +231,17 @@ export default {
           async () => {
             const song = {
               ...metadata,
-              album_id: await this.getId("albums", metadata.album),
-              artist_id: await this.getId("artists", metadata.artist),
+              artist_id: await this.getDocId("artists", metadata.artist),
               file_name: file.name,
-              genre_id: await this.getId("genres", metadata.genre),
+              genre_id: await this.getDocId("genres", metadata.genre),
               user_id: auth.currentUser.uid,
               url: await getDownloadURL(task.snapshot.ref),
             };
             const songRef = await addDoc(collection(db, "songs"), song);
             const songSnapshot = await getDoc(songRef);
+
             this.addSong(songSnapshot);
+            this.updateAlbumDoc(metadata, songSnapshot);
 
             this.setNotification(
               "success",
@@ -206,7 +253,7 @@ export default {
       }
     },
 
-    async getId(collectionName, name) {
+    async getDocId(collectionName, name) {
       const q = query(
         collection(db, collectionName),
         where("name", "==", name)
@@ -216,13 +263,48 @@ export default {
       const doc = querySnapshot.docs[0];
 
       if (doc) {
+        // If doc with name exist return doc id
         return doc.id;
       } else {
+        // Id doesn't exist create doc and return id
         const docRef = await addDoc(collection(db, collectionName), {
           name: name,
         });
-        return docRef.id;
+        return docRef;
       }
+    },
+
+    async updateAlbumDoc(metadata, songSnapshot) {
+      const albumsQuery = query(
+        collection(db, "albums"),
+        where("artist", "==", metadata.artist),
+        where("name", "==", metadata.album)
+      );
+
+      const albumsSnapshot = await getDocs(albumsQuery);
+      let albumDoc = albumsSnapshot.docs[0];
+
+      if (albumDoc) {
+        // If album with artist and name exist add new song
+        await updateDoc(doc(db, "albums", albumDoc.id), {
+          songs: arrayUnion({ id: songSnapshot.id }),
+        });
+      } else {
+        // If doesn't exist create new document
+        albumDoc = await addDoc(collection(db, "albums"), {
+          artist: metadata.artist,
+          name: metadata.album,
+          picture: metadata.picture,
+          songs: [{ id: songSnapshot.id }],
+          user_id: auth.currentUser.uid,
+        });
+        this.addAlbum(await getDoc(albumDoc));
+      }
+
+      // Add album_id to uploaded song
+      await updateDoc(doc(db, "songs", songSnapshot.id), {
+        album_id: albumDoc.id,
+      });
     },
 
     async getMetadata(file) {
@@ -245,9 +327,11 @@ export default {
             // Convert track to track info
             const trackData = metadata.track.split("/");
 
-            // Convert TDC to year
-            const TDRC = metadata.TDRC.data;
-            const yearData = TDRC.slice(0, 4);
+            // If year is store in TDRC, get only year
+            // else get just year
+            const yearData = metadata.TDRC
+              ? metadata.TDRC.data.slice(0, 4)
+              : metadata.year;
 
             resolve({
               album: metadata.album,
@@ -292,16 +376,17 @@ export default {
       this.songs[index].year = values.year;
     },
 
-    removeSong(index) {
-      this.songs.splice(index, 1);
+    removeAlbum(id) {
+      this.albums.forEach((album, index) => {
+        if (album.id === id) {
+          this.albums.splice(index, 1);
+          return;
+        }
+      });
     },
 
-    addSong(doc) {
-      const song = {
-        ...doc.data(),
-        id: doc.id,
-      };
-      this.songs.push(song);
+    removeSong(index) {
+      this.songs.splice(index, 1);
     },
 
     updateUnsavedFlag(value) {
@@ -324,74 +409,100 @@ export default {
 </script>
 
 <style lang="scss">
-#drop-zone {
-  @include blurred-bg($color-element);
-  align-items: center;
-  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='20' ry='20' stroke='%2356504D' stroke-width='3' stroke-dasharray='12' stroke-dashoffset='0' stroke-linecap='round'/%3e%3c/svg%3e");
-  border-radius: 20px;
+#upload {
   display: flex;
   flex-direction: column;
-  height: 254px;
-  justify-content: center;
-  padding: 36px;
-  text-align: center;
+  gap: 36px;
 
-  svg,
-  span {
-    color: $text-secondary;
-  }
+  #drop-zone {
+    @include blurred-bg($color-element);
+    align-items: center;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='20' ry='20' stroke='%2356504D' stroke-width='3' stroke-dasharray='12' stroke-dashoffset='0' stroke-linecap='round'/%3e%3c/svg%3e");
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 254px;
+    justify-content: center;
+    padding: 36px;
+    text-align: center;
 
-  svg {
-    margin-bottom: 36px;
-  }
+    svg,
+    span {
+      color: $text-secondary;
+    }
 
-  p {
-    font-size: 1.375rem;
-    margin-bottom: 12px;
+    svg {
+      margin-bottom: 36px;
+    }
 
-    label {
-      color: $text-success;
-      cursor: pointer;
+    p {
+      font-size: 1.375rem;
+      margin-bottom: 12px;
 
-      &:hover {
-        text-decoration: underline;
+      label {
+        color: $text-success;
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
   }
-}
 
-#upload-progress {
-  @include songs-list;
+  #upload-progress {
+    @include songs-list;
 
-  .song-details {
-    @include song-details;
+    .song-details {
+      @include song-details;
+    }
   }
-}
 
-#upload-progress {
-  .song-details {
-    &.error {
-      .song-title,
-      .song-artist,
+  #upload-progress {
+    .song-details {
+      &.error {
+        .song-title,
+        .song-artist,
+        .progress-bar {
+          color: $text-error;
+        }
+
+        .progress-bar .bar input {
+          background-image: linear-gradient($text-error, $text-error);
+        }
+      }
+
       .progress-bar {
-        color: $text-error;
-      }
+        @include progress-bar;
 
-      .progress-bar .bar input {
-        background-image: linear-gradient($text-error, $text-error);
+        .bar input {
+          cursor: default;
+        }
+
+        .progress-value {
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  #uploaded-albums {
+    @include hidden-list-marks;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    li {
+      width: 260px;
+
+      .album-cover {
+        @include album-cover;
       }
     }
 
-    .progress-bar {
-      @include progress-bar;
-
-      .bar input {
-        cursor: default;
-      }
-
-      .progress-value {
-        text-align: right;
-      }
+    a {
+      line-height: 1.5rem;
     }
   }
 }

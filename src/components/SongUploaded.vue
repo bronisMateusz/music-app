@@ -7,14 +7,12 @@
           ? `url(${song.picture})`
           : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
       }"
+      @click.prevent="newSong(song)"
     />
-    <div class="song-details">
-      <router-link
-        :to="{ name: 'song', params: { id: song.id } }"
-        class="song-title"
-      >
+    <div class="song-details" @click.prevent="newSong(song)">
+      <button class="song-title">
         {{ song.title }}
-      </router-link>
+      </button>
       <span class="song-artist">{{ song.artist }}</span>
     </div>
     <button @click.prevent="toggleFormVisibility">
@@ -182,9 +180,10 @@
 <script>
 import { auth, db, storage } from "@/includes/firebase";
 import { ref, deleteObject } from "firebase/storage";
-import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc, getDoc, updateDoc } from "firebase/firestore";
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
+import usePlayerStore from "@/stores/player";
 
 export default {
   props: {
@@ -198,6 +197,10 @@ export default {
     },
     index: {
       type: Number,
+      required: true,
+    },
+    removeAlbum: {
+      type: Function,
       required: true,
     },
     removeSong: {
@@ -221,6 +224,9 @@ export default {
   },
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),
+
+    ...mapActions(usePlayerStore, ["newSong"]),
+
     async edit(values) {
       const songsRef = doc(db, "songs", this.song.id);
       try {
@@ -239,28 +245,71 @@ export default {
       this.setNotification("success", "Success!", "Song details updated");
       this.toggleFormVisibility();
     },
+
     toggleFormVisibility() {
       this.showForm = !this.showForm;
       this.updateUnsavedFlag(false);
     },
+
     async deleteSong() {
+      this.setNotification("notice", "Please wait", "We're removing this song");
+
       const songRef = ref(
         storage,
         `songs/${auth.currentUser.uid}/${this.song.file_name}`
       );
-      await deleteObject(songRef)
-        .then(() => {
-          this.setNotification("success", "Success!", "Song has been removed");
-        })
-        .catch(() => {
-          this.setNotification(
-            "error",
-            "Something went wrong",
-            "We couldn't remove this song"
-          );
-          return;
-        });
+
+      // Delete song from Storage
+      await deleteObject(songRef);
+
+      // Delete song from Firestore
       await deleteDoc(doc(db, "songs", this.song.id));
+
+      const albumRef = doc(db, "albums", this.song.album_id);
+      const albumSnap = await getDoc(albumRef);
+      let data = albumSnap.data();
+
+      // Remove the song from the album's songs array
+      data.songs = data.songs.filter((song) => song.id !== this.song.id);
+
+      // If any song left in album, update album doc, else remove whole album doc
+      if (data.songs.length) {
+        await updateDoc(albumRef, data)
+          .then(() => {
+            this.setNotification(
+              "success",
+              "Success!",
+              "Song has been removed"
+            );
+          })
+          .catch(() => {
+            this.setNotification(
+              "error",
+              "Something went wrong",
+              "We couldn't remove this song"
+            );
+            return;
+          });
+      } else {
+        await deleteDoc(doc(db, "albums", this.song.album_id))
+          .then(() => {
+            this.setNotification(
+              "success",
+              "Success!",
+              "Song has been removed"
+            );
+          })
+          .catch(() => {
+            this.setNotification(
+              "error",
+              "Something went wrong",
+              "We couldn't remove this song"
+            );
+            return;
+          });
+        this.removeAlbum(this.song.album_id);
+      }
+
       this.removeSong(this.index);
     },
   },
@@ -286,11 +335,6 @@ export default {
       gap: 12px;
       grid-template-columns: auto 1fr;
       margin-bottom: 12px;
-
-      .song-cover {
-        max-height: 244px;
-        max-width: 244px;
-      }
 
       .song-cover-info {
         align-self: center;

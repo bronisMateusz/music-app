@@ -1,5 +1,4 @@
 <template>
-  <!-- Song details -->
   <div
     v-if="showCover"
     class="song-cover"
@@ -9,12 +8,11 @@
         : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
     }"
   />
+  <!-- Song details -->
   <div class="song-details">
     <router-link
-      v-if="$route.nem === 'song'"
-      :to="
-        currentSong.id ? { name: 'song', params: { id: currentSong.id } } : {}
-      "
+      v-if="$route.name !== 'song' && currentSong.id"
+      :to="{ name: 'song', params: { id: currentSong.id } }"
       class="song-title"
     >
       {{ currentSong.title }}
@@ -39,13 +37,18 @@
     </div>
     <span class="time-total">{{ duration }}</span>
   </div>
+  <!-- Control buttons -->
   <div class="control-buttons">
     <!-- Shuffle Button -->
-    <button title="Shuffle">
+    <button
+      title="Shuffle"
+      :class="randomPlay ? 'active' : ''"
+      @click.prevent="randomPlay = !randomPlay"
+    >
       <eva-icon name="shuffle-2-outline" height="24" width="24" />
     </button>
     <!-- Previous Button -->
-    <button title="Previous">
+    <button title="Previous" @click.prevent="changeTrack(-1)">
       <eva-icon name="rewind-left-outline" height="48" width="48" />
     </button>
     <!-- Play/Pause Button -->
@@ -57,18 +60,19 @@
       />
     </button>
     <!-- Next Button -->
-    <button title="Next">
+    <button title="Next" @click.prevent="changeTrack(1)">
       <eva-icon name="rewind-right-outline" height="48" width="48" />
     </button>
     <!-- Loop Button -->
     <button
       title="Loop"
       @click.prevent="toggleLoop"
-      :class="loop ? 'active' : ''"
+      :class="{ active: loopMode === 1, 'active repeat-this': loopMode === 2 }"
     >
       <eva-icon name="repeat-outline" height="24" width="24" />
     </button>
   </div>
+  <!-- Volume controls -->
   <div class="volume-controls">
     <!-- Decrease Volume Button -->
     <button title="Decrease volume" @click.prevent="updateVolume('down')">
@@ -100,7 +104,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "pinia";
+import { mapActions, mapWritableState } from "pinia";
 import usePlayerStore from "@/stores/player";
 
 export default {
@@ -110,26 +114,37 @@ export default {
       default: false,
     },
   },
+  emits: ["changeSong"],
+  computed: {
+    ...mapWritableState(usePlayerStore, [
+      "currentSong",
+      "currentSongIndex",
+      "duration",
+      "loopMode",
+      "playing",
+      "randomPlay",
+      "seek",
+      "seekPosition",
+      "volume",
+    ]),
+  },
   methods: {
     ...mapActions(usePlayerStore, [
       "changeSeek",
+      "changeSong",
       "changeVolume",
       "toggleAudio",
       "toggleLoop",
       "updateSeek",
       "updateVolume",
     ]),
-  },
-  computed: {
-    ...mapState(usePlayerStore, [
-      "currentSong",
-      "duration",
-      "loop",
-      "playing",
-      "seek",
-      "seekPosition",
-      "volume",
-    ]),
+
+    changeTrack(indexModifier) {
+      this.changeSong(indexModifier);
+
+      const currentId = this.currentSong.id;
+      if (currentId) this.$emit("changeSong", currentId);
+    },
   },
 };
 </script>
@@ -156,6 +171,18 @@ export default {
     padding: 0;
     height: 48px;
     width: 48px;
+
+    &.repeat-this {
+      position: relative;
+
+      &::after {
+        color: $text-primary;
+        content: "1";
+        height: 12px;
+        width: 12px;
+        position: absolute;
+      }
+    }
   }
 }
 

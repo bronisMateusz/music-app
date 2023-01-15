@@ -34,7 +34,7 @@ export default {
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 1;
+  z-index: 2;
 
   &::before {
     @include blurred-bg($color-element);
@@ -52,9 +52,9 @@ export default {
     }
 
     input {
-      background-color: $color-canvas;
+      @include blurred-bg($color-element);
+      border: 1px solid $color-border-primary;
       border-radius: 50px;
-      border-style: none;
       color: $text-primary;
       font-size: 16px;
       padding: 17px 17px 17px 52px;
@@ -69,6 +69,7 @@ export default {
     }
 
     .auth-btn-wrapper {
+      height: 40px;
       position: absolute;
       right: 6px;
       top: 50%;
@@ -100,11 +101,6 @@ export default {
     #searchbar {
       width: 100%;
       max-width: 600px;
-
-      input {
-        @include blurred-bg($color-element);
-        border: 1px solid $color-border-primary;
-      }
 
       .auth-btn-wrapper {
         display: none;

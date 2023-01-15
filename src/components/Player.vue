@@ -55,6 +55,10 @@ export default {
 
     .song-details {
       text-align: center;
+
+      .song-title {
+        text-align: center;
+      }
     }
 
     .progress-bar {

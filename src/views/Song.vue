@@ -1,5 +1,5 @@
 <template>
-  <div id="song" v-if="currentSong.picture">
+  <div id="song">
     <div
       class="song-bg"
       :style="{
@@ -9,9 +9,9 @@
       }"
     />
     <div class="options">
-      <router-link :to="{ name: 'home' }" title="Home">
+      <button title="Back" @click.prevent="goBack">
         <eva-icon name="arrow-back-outline" height="28" width="28" />
-      </router-link>
+      </button>
       <div class="options-group">
         <button>
           <eva-icon name="heart-outline" height="28" width="28" />
@@ -25,9 +25,34 @@
       </div>
     </div>
     <div class="song-switcher">
-      <div class="previous-songs">
-        <div class="song-cover"></div>
-        <div class="song-cover"></div>
+      <div v-if="songsQueue.length" class="previous-songs">
+        <div
+          class="song-cover"
+          :style="{
+            'background-image':
+              songsQueue[currentSongIndex - 1] &&
+              songsQueue[currentSongIndex - 1].picture
+                ? `url(${songsQueue[currentSongIndex - 1].picture})`
+                : songsQueue[songsQueue.length - 1] &&
+                  songsQueue[songsQueue.length - 1].picture
+                ? `url(${songsQueue[songsQueue.length - 1].picture})`
+                : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+          }"
+        />
+        <div
+          v-show="songsQueue.length > 2"
+          class="song-cover"
+          :style="{
+            'background-image':
+              songsQueue[currentSongIndex - 2] &&
+              songsQueue[currentSongIndex - 2].picture
+                ? `url(${songsQueue[currentSongIndex - 2].picture})`
+                : songsQueue[songsQueue.length - 2] &&
+                  songsQueue[songsQueue.length - 2].picture
+                ? `url(${songsQueue[songsQueue.length - 2].picture})`
+                : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+          }"
+        />
       </div>
       <div
         class="song-cover"
@@ -38,13 +63,40 @@
             : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
         }"
       />
-      <div class="next-songs">
-        <div class="song-cover"></div>
-        <div class="song-cover"></div>
+      <div v-if="songsQueue.length" class="next-songs">
+        <div
+          class="song-cover"
+          :style="{
+            'background-image':
+              songsQueue[currentSongIndex + 1] &&
+              songsQueue[currentSongIndex + 1].picture
+                ? `url(${songsQueue[currentSongIndex + 1].picture})`
+                : songsQueue[0] && songsQueue[0].picture
+                ? `url(${songsQueue[0].picture})`
+                : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+          }"
+        />
+        <div
+          v-show="songsQueue.length > 2"
+          class="song-cover"
+          :style="{
+            'background-image':
+              songsQueue[currentSongIndex + 2] &&
+              songsQueue[currentSongIndex + 2].picture
+                ? `url(${songsQueue[currentSongIndex + 2].picture})`
+                : songsQueue[1] && songsQueue[1].picture
+                ? `url(${songsQueue[1].picture})`
+                : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+          }"
+        />
       </div>
     </div>
     <div class="player-controls">
-      <player-details :currentSong="currentSong" />
+      <player-details
+        @changeSong="
+          this.$router.push({ name: 'song', params: { id: $event } })
+        "
+      />
     </div>
   </div>
 </template>
@@ -53,36 +105,59 @@
 import PlayerDetails from "@/components/PlayerDetails.vue";
 import { db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { mapActions, mapState } from "pinia";
+import { mapActions, mapWritableState } from "pinia";
 import usePlayerStore from "@/stores/player";
 
 export default {
   components: { PlayerDetails },
   data() {
     return {
-      currentSong: {},
+      previousViewPath: "",
     };
   },
   async created() {
-    const songRef = doc(db, "songs", this.$route.params.id);
-    const songSnap = await getDoc(songRef);
+    // Keep the path of the view from which the view of the song was called.
+    this.previousViewPath = this.$router.options.history.state.back;
 
-    if (!songSnap.exists()) {
-      this.$router.push({ name: "home" });
-      return;
+    if (!this.currentSong.id) {
+      const songRef = doc(db, "songs", this.$route.params.id);
+      const songSnap = await getDoc(songRef);
+
+      if (!songSnap.exists()) {
+        this.$router.push({ name: "home" });
+        return;
+      }
+
+      const song = {
+        id: songSnap.id,
+        ...songSnap.data(),
+      };
+
+      await this.newSong(song);
+      this.sound.pause();
     }
-
-    this.currentSong = {
-      id: songSnap.id,
-      ...songSnap.data(),
-    };
-    this.newSong(this.currentSong);
+  },
+  computed: {
+    ...mapWritableState(usePlayerStore, [
+      "currentSong",
+      "currentSongIndex",
+      "playing",
+      "songsQueue",
+      "sound",
+    ]),
   },
   methods: {
     ...mapActions(usePlayerStore, ["newSong"]),
-  },
-  computed: {
-    ...mapState(usePlayerStore, ["playing"]),
+
+    goBack() {
+      const router = this.$router;
+
+      // If router history store before route path, go to previousViewPath
+      // else go back to home
+      router.options.history.state.back
+        ? router.push({ path: this.previousViewPath })
+        : router.push({ name: "home" });
+    },
   },
 };
 </script>
