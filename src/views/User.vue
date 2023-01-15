@@ -6,7 +6,7 @@
       @dragover.prevent.stop="isDragover = true"
       @dragenter.prevent.stop="isDragover = true"
       @dragleave.prevent.stop="isDragover = false"
-      @drop.prevent.stop="upload($event)"
+      @drop.prevent.stop="updatePicture($event)"
     >
       <eva-icon
         v-if="!photoURL"
@@ -23,7 +23,7 @@
         id="file-input"
         class="hidden"
         type="file"
-        @change="upload($event)"
+        @change="updatePicture($event)"
       />
     </div>
     <h2>{{ displayName }}</h2>
@@ -42,7 +42,6 @@
             name="displayName"
             placeholder="User name"
             @keyup="validate"
-            validateOnInput="true"
           />
         </label>
         <ErrorMessage name="displayName" />
@@ -64,8 +63,8 @@
 
 <script>
 import { mapWritableState, mapActions } from "pinia";
-import useUserStore from "@/stores/user";
 import useNotificationsStore from "@/stores/notifications";
+import useUserStore from "@/stores/user";
 
 export default {
   beforeRouteEnter(to, from, next) {
@@ -101,11 +100,11 @@ export default {
     validate() {
       // If validation pass update user store and details in Firebase.
       this.$refs.userDetailsForm.validate().then((result) => {
-        if (result.valid) this.update();
+        if (result.valid) this.updateDetails();
       });
     },
 
-    async update() {
+    async updateDetails() {
       try {
         await this.updateProfile({
           displayName: this.user.displayName,
@@ -123,7 +122,14 @@ export default {
       this.setNotification("success", "Success!", "Profile details updated");
     },
 
-    async upload(event) {
+    async updatePicture(event) {
+      this.isDragover = false;
+      this.setNotification(
+        "notice",
+        "Please wait",
+        "New profile picture is uploaded"
+      );
+
       const file = event.dataTransfer
         ? [...event.dataTransfer.files][0]
         : [...event.target.files][0];
@@ -136,12 +142,16 @@ export default {
         this.setNotification(
           "error",
           "Something went wrong",
-          "We couldn't update your profile"
+          "We couldn't change your profile picture"
         );
         return;
       }
 
-      this.setNotification("success", "Success!", "Profile details updated");
+      this.setNotification(
+        "success",
+        "Look at this!",
+        "Your new profile picture looks fresh"
+      );
     },
   },
 };

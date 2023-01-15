@@ -102,11 +102,13 @@
         <song-uploaded
           v-for="(song, index) in songs"
           :key="song.id"
-          :song="song"
-          :updateSongDetails="updateSongDetails"
           :index="index"
           :removeAlbum="removeAlbum"
           :removeSong="removeSong"
+          :song="song"
+          :updateAlbumPicture="updateAlbumPicture"
+          :updateSongDetails="updateSongDetails"
+          :updateSongPicture="updateSongPicture"
           :updateUnsavedFlag="updateUnsavedFlag"
         />
       </ul>
@@ -360,6 +362,11 @@ export default {
       this.uploads.forEach((upload) => upload.task.cancel());
     },
 
+    updateAlbumPicture(albumId, picture) {
+      const index = this.albums.findIndex((album) => album.id === albumId);
+      this.albums[index].picture = picture;
+    },
+
     updateSongDetails(index, values) {
       this.songs[index].album = values.album;
       this.songs[index].artist = values.artist;
@@ -369,11 +376,15 @@ export default {
       this.songs[index].format = values.format;
       this.songs[index].genre = values.genre;
       this.songs[index].lyrics = values.lyrics;
-      this.songs[index].picture = values.picture;
       this.songs[index].title = values.title;
       this.songs[index].track = values.track;
       this.songs[index].trackTotal = values.trackTotal;
       this.songs[index].year = values.year;
+    },
+
+    updateSongPicture(songId, picture) {
+      const index = this.songs.findIndex((song) => song.id === songId);
+      this.songs[index].picture = picture;
     },
 
     removeAlbum(id) {

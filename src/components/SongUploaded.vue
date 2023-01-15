@@ -22,7 +22,7 @@
       <eva-icon name="close-outline" height="28" width="28" />
     </button>
   </li>
-  <li v-if="showForm">
+  <li v-else>
     <vee-form :validation-schema="schema" :initial-values="song" @submit="edit">
       <div class="song-cover-wrapper">
         <div
@@ -32,7 +32,23 @@
               ? `url(${song.picture})`
               : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
           }"
-        />
+          @dragend.prevent.stop="isDragover = false"
+          @dragover.prevent.stop="isDragover = true"
+          @dragenter.prevent.stop="isDragover = true"
+          @dragleave.prevent.stop="isDragover = false"
+          @drop.prevent.stop="updateCover($event)"
+        >
+          <label v-if="!isDragover" for="file-input">browse</label>
+          <label v-else for="file-input" class="dragover">
+            <eva-icon name="cloud-upload-outline" height="72" width="72" />
+          </label>
+          <input
+            id="file-input"
+            class="hidden"
+            type="file"
+            @change="updateCover($event)"
+          />
+        </div>
         <div class="song-cover-info">
           <p>Image guidelines</p>
           <ul>
@@ -180,23 +196,28 @@
 <script>
 import { auth, db, storage } from "@/includes/firebase";
 import { ref, deleteObject } from "firebase/storage";
-import { doc, deleteDoc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  deleteDoc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
 import usePlayerStore from "@/stores/player";
 
 export default {
   props: {
-    song: {
-      type: Object,
-      required: true,
-    },
-    updateSongDetails: {
-      type: Function,
-      required: true,
-    },
     index: {
       type: Number,
+      required: true,
+    },
+    song: {
+      type: Object,
       required: true,
     },
     removeAlbum: {
@@ -207,12 +228,25 @@ export default {
       type: Function,
       required: true,
     },
+    updateAlbumPicture: {
+      type: Function,
+      required: true,
+    },
+    updateSongDetails: {
+      type: Function,
+      required: true,
+    },
+    updateSongPicture: {
+      type: Function,
+      required: true,
+    },
     updateUnsavedFlag: {
       type: Function,
     },
   },
   data() {
     return {
+      isDragover: false,
       showForm: false,
       schema: {
         title: "required",
@@ -224,13 +258,65 @@ export default {
   },
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),
-
     ...mapActions(usePlayerStore, ["newSong"]),
+
+    async deleteSong() {
+      this.setNotification("notice", "Please wait", "We're removing this song");
+
+      try {
+        const songRef = ref(
+          storage,
+          `songs/${auth.currentUser.uid}/${this.song.file_name}`
+        );
+
+        // Delete song from Storage
+        await deleteObject(songRef);
+
+        // Delete song from Firestore
+        await deleteDoc(doc(db, "songs", this.song.id));
+
+        // Remove the song from the album's songs array
+        const albumRef = doc(db, "albums", this.song.album_id);
+        const albumSnap = await getDoc(albumRef);
+        let data = albumSnap.data();
+        data.songs = data.songs.filter((song) => song.id !== this.song.id);
+
+        // If any song left in album, update album doc, else remove whole album doc
+        if (data.songs.length) {
+          await updateDoc(albumRef, data);
+        } else {
+          await deleteDoc(doc(db, "albums", this.song.album_id));
+          this.removeAlbum(this.song.album_id);
+        }
+
+        this.removeSong(this.index);
+        this.setNotification("success", "Success!", "Song has been removed");
+      } catch (error) {
+        this.setNotification(
+          "error",
+          "Something went wrong",
+          "We couldn't remove this song"
+        );
+      }
+    },
 
     async edit(values) {
       const songsRef = doc(db, "songs", this.song.id);
       try {
-        await updateDoc(songsRef, values);
+        await updateDoc(songsRef, {
+          album: values.album,
+          artist: values.artist,
+          author: values.author,
+          disc: values.disc,
+          discTotal: values.discTotal,
+          format: values.format,
+          genre: values.genre,
+          lyrics: values.lyrics,
+          title: values.title,
+          track: values.track,
+          trackTotal: values.trackTotal,
+          year: values.year,
+        });
       } catch (error) {
         this.setNotification(
           "error",
@@ -246,71 +332,65 @@ export default {
       this.toggleFormVisibility();
     },
 
+    async getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+    },
+
     toggleFormVisibility() {
       this.showForm = !this.showForm;
       this.updateUnsavedFlag(false);
     },
 
-    async deleteSong() {
-      this.setNotification("notice", "Please wait", "We're removing this song");
+    async updateCover(event) {
+      this.isDragover = false;
+      this.setNotification("notice", "Please wait", "We're updating cover...");
 
-      const songRef = ref(
-        storage,
-        `songs/${auth.currentUser.uid}/${this.song.file_name}`
-      );
+      const file = event.dataTransfer
+        ? [...event.dataTransfer.files][0]
+        : [...event.target.files][0];
 
-      // Delete song from Storage
-      await deleteObject(songRef);
+      if (file.type !== "image/jpeg") return;
 
-      // Delete song from Firestore
-      await deleteDoc(doc(db, "songs", this.song.id));
+      try {
+        const pictureBase64 = await this.getBase64(file);
 
-      const albumRef = doc(db, "albums", this.song.album_id);
-      const albumSnap = await getDoc(albumRef);
-      let data = albumSnap.data();
+        const songsQuery = query(
+          collection(db, "songs"),
+          where("album_id", "==", this.song.album_id)
+        );
+        const songsSnapshot = await getDocs(songsQuery);
 
-      // Remove the song from the album's songs array
-      data.songs = data.songs.filter((song) => song.id !== this.song.id);
-
-      // If any song left in album, update album doc, else remove whole album doc
-      if (data.songs.length) {
-        await updateDoc(albumRef, data)
-          .then(() => {
-            this.setNotification(
-              "success",
-              "Success!",
-              "Song has been removed"
-            );
-          })
-          .catch(() => {
-            this.setNotification(
-              "error",
-              "Something went wrong",
-              "We couldn't remove this song"
-            );
-            return;
+        // Update picture of all songs in album
+        const songsPromises = songsSnapshot.docs.map(async (doc) => {
+          await updateDoc(doc.ref, {
+            format: "image/jpeg",
+            picture: pictureBase64,
           });
-      } else {
-        await deleteDoc(doc(db, "albums", this.song.album_id))
-          .then(() => {
-            this.setNotification(
-              "success",
-              "Success!",
-              "Song has been removed"
-            );
-          })
-          .catch(() => {
-            this.setNotification(
-              "error",
-              "Something went wrong",
-              "We couldn't remove this song"
-            );
-            return;
-          });
-        this.removeAlbum(this.song.album_id);
+          this.updateSongPicture(doc.id, pictureBase64);
+        });
+
+        // Wait for all songs update to complete
+        await Promise.all(songsPromises);
+
+        // Update album picture
+        await updateDoc(doc(db, "albums", this.song.album_id), {
+          picture: pictureBase64,
+        });
+        this.updateAlbumPicture(this.song.album_id, pictureBase64);
+
+        this.setNotification("success", "Success", "Cover updated!");
+      } catch (error) {
+        this.setNotification(
+          "error",
+          "Something went wrong",
+          "We couldn't update cover"
+        );
       }
-
-      this.removeSong(this.index);
     },
   },
 };
@@ -336,6 +416,22 @@ export default {
       grid-template-columns: auto 1fr;
       margin-bottom: 12px;
 
+      .song-cover label {
+        align-items: center;
+        border-radius: 15px;
+        color: transparent;
+        cursor: pointer;
+        display: flex;
+        height: 70px;
+        justify-content: center;
+        width: 70px;
+
+        &.dragover {
+          background-color: rgba($text-primary, 0.9);
+          color: $text-primary-inverted;
+        }
+      }
+
       .song-cover-info {
         align-self: center;
 
@@ -353,7 +449,7 @@ export default {
       }
     }
 
-    div:not(.song-cover-wrapper):not(.form-group) {
+    > div:not(.song-cover-wrapper):not(.form-group) {
       @include form-element;
       @include form-element-error;
 
@@ -374,7 +470,8 @@ export default {
       div:nth-of-type(12) {
         grid-column: 1/3;
 
-        .song-cover {
+        .song-cover,
+        .song-cover label {
           height: 124px;
           width: 124px;
         }
