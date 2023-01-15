@@ -48,7 +48,7 @@
       <eva-icon name="shuffle-2-outline" height="24" width="24" />
     </button>
     <!-- Previous Button -->
-    <button title="Previous" @click.prevent="change(-1)">
+    <button title="Previous" @click.prevent="changeTrack(-1)">
       <eva-icon name="rewind-left-outline" height="48" width="48" />
     </button>
     <!-- Play/Pause Button -->
@@ -60,7 +60,7 @@
       />
     </button>
     <!-- Next Button -->
-    <button title="Next" @click.prevent="change(1)">
+    <button title="Next" @click.prevent="changeTrack(1)">
       <eva-icon name="rewind-right-outline" height="48" width="48" />
     </button>
     <!-- Loop Button -->
@@ -114,7 +114,7 @@ export default {
       default: false,
     },
   },
-  emits: ["songId"],
+  emits: ["changeSong"],
   computed: {
     ...mapWritableState(usePlayerStore, [
       "currentSong",
@@ -139,11 +139,11 @@ export default {
       "updateVolume",
     ]),
 
-    change(indexModifier) {
+    changeTrack(indexModifier) {
       this.changeSong(indexModifier);
 
       const currentId = this.currentSong.id;
-      if (currentId) this.$emit("songId", currentId);
+      if (currentId) this.$emit("changeSong", currentId);
     },
   },
 };
