@@ -180,7 +180,7 @@
 <script>
 import { auth, db, storage } from "@/includes/firebase";
 import { ref, deleteObject } from "firebase/storage";
-import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc, getDoc, updateDoc } from "firebase/firestore";
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
 import usePlayerStore from "@/stores/player";
@@ -196,6 +196,10 @@ export default {
     },
     index: {
       type: Number,
+      required: true,
+    },
+    removeAlbum: {
+      type: Function,
       required: true,
     },
     removeSong: {
@@ -251,19 +255,58 @@ export default {
         storage,
         `songs/${auth.currentUser.uid}/${this.song.file_name}`
       );
-      await deleteObject(songRef)
-        .then(() => {
-          this.setNotification("success", "Success!", "Song has been removed");
-        })
-        .catch(() => {
-          this.setNotification(
-            "error",
-            "Something went wrong",
-            "We couldn't remove this song"
-          );
-          return;
-        });
+
+      // Delete song from Storage
+      await deleteObject(songRef);
+
+      // Delete song from Firestore
       await deleteDoc(doc(db, "songs", this.song.id));
+
+      const albumRef = doc(db, "albums", this.song.album_id);
+      const albumSnap = await getDoc(albumRef);
+      let data = albumSnap.data();
+
+      // Remove the song from the album's songs array
+      data.songs = data.songs.filter((song) => song.id !== this.song.id);
+
+      // If any song left in album, update album doc, else remove whole album doc
+      if (data.songs.length) {
+        await updateDoc(albumRef, data)
+          .then(() => {
+            this.setNotification(
+              "success",
+              "Success!",
+              "Song has been removed"
+            );
+          })
+          .catch(() => {
+            this.setNotification(
+              "error",
+              "Something went wrong",
+              "We couldn't remove this song"
+            );
+            return;
+          });
+      } else {
+        await deleteDoc(doc(db, "albums", this.song.album_id))
+          .then(() => {
+            this.setNotification(
+              "success",
+              "Success!",
+              "Song has been removed"
+            );
+          })
+          .catch(() => {
+            this.setNotification(
+              "error",
+              "Something went wrong",
+              "We couldn't remove this song"
+            );
+            return;
+          });
+        this.removeAlbum(this.song.album_id);
+      }
+
       this.removeSong(this.index);
     },
   },
