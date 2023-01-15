@@ -15,12 +15,16 @@
       <div class="actions">
         <!-- Play/Pause Button -->
         <button
-          :title="!isAlbumPlaying ? 'Play' : 'Pause'"
+          :title="
+            !(playing && album.id === currentSong.albumId) ? 'Play' : 'Pause'
+          "
           @click.prevent="playAlbum"
         >
           <eva-icon
             :name="
-              !isAlbumPlaying ? 'arrow-right-outline' : 'pause-circle-outline'
+              !(playing && album.id === currentSong.albumId)
+                ? 'arrow-right-outline'
+                : 'pause-circle-outline'
             "
             height="48"
             width="48"
@@ -54,7 +58,6 @@ export default {
     return {
       album: {},
       songs: [],
-      isAlbumPlaying: false,
     };
   },
   components: { Song },
@@ -75,12 +78,10 @@ export default {
       const songSnap = await getDoc(songRef);
       this.addSong(songSnap);
     }
-
-    this.isAlbumPlaying = this.playing && doc.id === this.albumId;
   },
   computed: {
     ...mapWritableState(usePlayerStore, [
-      "albumId",
+      "currentSong",
       "currentSongIndex",
       "playing",
       "songsQueue",
@@ -105,15 +106,13 @@ export default {
     },
 
     playAlbum() {
-      if (!this.isAlbumPlaying) {
+      if (!(this.playing && this.album.id === this.currentSong.albumId)) {
         this.songsQueue = this.songs;
         this.currentSongIndex = 0;
         this.newSong(this.songs[0]);
-        this.isAlbumPlaying = true;
         return;
       }
 
-      this.isAlbumPlaying = false;
       this.toggleAudio();
     },
   },
