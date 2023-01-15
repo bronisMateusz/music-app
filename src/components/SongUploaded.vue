@@ -22,7 +22,7 @@
       <eva-icon name="close-outline" height="28" width="28" />
     </button>
   </li>
-  <li v-if="showForm">
+  <li v-else>
     <vee-form :validation-schema="schema" :initial-values="song" @submit="edit">
       <div class="song-cover-wrapper">
         <div
@@ -32,6 +32,11 @@
               ? `url(${song.picture})`
               : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
           }"
+          @dragend.prevent.stop="isDragover = false"
+          @dragover.prevent.stop="isDragover = true"
+          @dragenter.prevent.stop="isDragover = true"
+          @dragleave.prevent.stop="isDragover = false"
+          @drop.prevent.stop="upload($event)"
         />
         <div class="song-cover-info">
           <p>Image guidelines</p>
@@ -213,6 +218,7 @@ export default {
   },
   data() {
     return {
+      isDragover: false,
       showForm: false,
       schema: {
         title: "required",
@@ -311,6 +317,39 @@ export default {
       }
 
       this.removeSong(this.index);
+    },
+
+    async upload(event) {
+      const file = event.dataTransfer
+        ? [...event.dataTransfer.files][0]
+        : [...event.target.files][0];
+
+      if (file.type !== "image/jpeg") return;
+
+      try {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = async () => {
+          // Convert JPEG file to base64 string
+          const pictureBase64 = reader.result;
+
+          const songRef = doc(db, "songs", this.song.id);
+          await updateDoc(songRef, {
+            format: "image/jpeg",
+            picture: pictureBase64,
+          });
+          this.song.picture = pictureBase64;
+        };
+      } catch (error) {
+        this.setNotification(
+          "error",
+          "Something went wrong",
+          "We couldn't update your profile"
+        );
+        return;
+      }
+
+      this.setNotification("success", "Success!", "Profile details updated");
     },
   },
 };
