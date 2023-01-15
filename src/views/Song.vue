@@ -1,5 +1,6 @@
 <template>
   <div id="song">
+    <notification />
     <div
       class="song-bg"
       :style="{
@@ -18,7 +19,7 @@
           <eva-icon name="heart-outline" height="28" width="28" />
         </button>
         <!-- Share Button -->
-        <button title="Share">
+        <button title="Share" @click.prevent="copyLink">
           <eva-icon name="share-outline" height="28" width="28" />
         </button>
         <!-- More Button -->
@@ -105,14 +106,18 @@
 </template>
 
 <script>
-import PlayerDetails from "@/components/PlayerDetails.vue";
 import { db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { mapActions, mapWritableState } from "pinia";
+
+import Notification from "@/components/Notification.vue";
+import PlayerDetails from "@/components/PlayerDetails.vue";
+
 import usePlayerStore from "@/stores/player";
+import useNotificationsStore from "@/stores/notifications";
 
 export default {
-  components: { PlayerDetails },
+  components: { Notification, PlayerDetails },
   data() {
     return {
       previousViewPath: "",
@@ -151,6 +156,7 @@ export default {
   },
   methods: {
     ...mapActions(usePlayerStore, ["newSong"]),
+    ...mapActions(useNotificationsStore, ["setNotification"]),
 
     goBack() {
       const router = this.$router;
@@ -160,6 +166,25 @@ export default {
       router.options.history.state.back
         ? router.push({ path: this.previousViewPath })
         : router.push({ name: "home" });
+    },
+
+    copyLink() {
+      navigator.clipboard.writeText(window.location.href).then(
+        () => {
+          this.setNotification(
+            "success",
+            "Link copied",
+            "You can now share this song!"
+          );
+        },
+        () => {
+          this.setNotification(
+            "error",
+            "Sorry",
+            "We couldn't prepare share link"
+          );
+        }
+      );
     },
   },
 };
