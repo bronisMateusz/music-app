@@ -32,6 +32,7 @@ import usePlayerStore from "@/stores/player";
 
 export default {
   props: ["songs"],
+  emits: ["albumId"],
   computed: {
     ...mapWritableState(usePlayerStore, ["currentSongIndex", "songsQueue"]),
   },
@@ -42,7 +43,7 @@ export default {
       this.songsQueue = this.songs;
       this.currentSongIndex = index;
       this.newSong(song);
-      this.$emit("album-id", song.album_id);
+      this.$emit("albumId", song.album_id);
     },
   },
 };
