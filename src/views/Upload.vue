@@ -106,6 +106,7 @@
           :removeAlbum="removeAlbum"
           :removeSong="removeSong"
           :song="song"
+          :updateAlbumPicture="updateAlbumPicture"
           :updateSongDetails="updateSongDetails"
           :updateSongPicture="updateSongPicture"
           :updateUnsavedFlag="updateUnsavedFlag"
@@ -361,6 +362,11 @@ export default {
       this.uploads.forEach((upload) => upload.task.cancel());
     },
 
+    updateAlbumPicture(albumId, picture) {
+      const index = this.albums.findIndex((album) => album.id === albumId);
+      this.albums[index].picture = picture;
+    },
+
     updateSongDetails(index, values) {
       this.songs[index].album = values.album;
       this.songs[index].artist = values.artist;
@@ -376,7 +382,8 @@ export default {
       this.songs[index].year = values.year;
     },
 
-    updateSongPicture(index, picture) {
+    updateSongPicture(songId, picture) {
+      const index = this.songs.findIndex((song) => song.id === songId);
       this.songs[index].picture = picture;
     },
 
