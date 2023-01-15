@@ -93,7 +93,9 @@
     </div>
     <div class="player-controls">
       <player-details
-        @songId="this.$router.push({ name: 'song', params: { id: $event } })"
+        @changeSong="
+          this.$router.push({ name: 'song', params: { id: $event } })
+        "
       />
     </div>
   </div>
@@ -108,7 +110,15 @@ import usePlayerStore from "@/stores/player";
 
 export default {
   components: { PlayerDetails },
+  data() {
+    return {
+      previousViewPath: "",
+    };
+  },
   async created() {
+    // Keep the path of the view from which the view of the song was called.
+    this.previousViewPath = this.$router.options.history.state.back;
+
     if (!this.currentSong.id) {
       const songRef = doc(db, "songs", this.$route.params.id);
       const songSnap = await getDoc(songRef);
@@ -142,10 +152,10 @@ export default {
     goBack() {
       const router = this.$router;
 
-      // If view is displayed from App, go back
+      // If router history store before route path, go to previousViewPath
       // else go back to home
       router.options.history.state.back
-        ? router.back()
+        ? router.push({ path: this.previousViewPath })
         : router.push({ name: "home" });
     },
   },
