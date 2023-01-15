@@ -63,8 +63,8 @@
 
 <script>
 import { mapWritableState, mapActions } from "pinia";
-import useUserStore from "@/stores/user";
 import useNotificationsStore from "@/stores/notifications";
+import useUserStore from "@/stores/user";
 
 export default {
   beforeRouteEnter(to, from, next) {

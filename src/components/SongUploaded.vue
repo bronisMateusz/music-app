@@ -36,7 +36,7 @@
           @dragover.prevent.stop="isDragover = true"
           @dragenter.prevent.stop="isDragover = true"
           @dragleave.prevent.stop="isDragover = false"
-          @drop.prevent.stop="upload($event)"
+          @drop.prevent.stop="updateCover($event)"
         >
           <label v-if="!isDragover" for="file-input">browse</label>
           <label v-else for="file-input" class="dragover">
@@ -46,7 +46,7 @@
             id="file-input"
             class="hidden"
             type="file"
-            @change="upload($event)"
+            @change="updateCover($event)"
           />
         </div>
         <div class="song-cover-info">
@@ -196,7 +196,16 @@
 <script>
 import { auth, db, storage } from "@/includes/firebase";
 import { ref, deleteObject } from "firebase/storage";
-import { doc, deleteDoc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  deleteDoc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
 import usePlayerStore from "@/stores/player";
@@ -216,6 +225,10 @@ export default {
       required: true,
     },
     removeSong: {
+      type: Function,
+      required: true,
+    },
+    updateAlbumPicture: {
       type: Function,
       required: true,
     },
@@ -245,8 +258,47 @@ export default {
   },
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),
-
     ...mapActions(usePlayerStore, ["newSong"]),
+
+    async deleteSong() {
+      this.setNotification("notice", "Please wait", "We're removing this song");
+
+      try {
+        const songRef = ref(
+          storage,
+          `songs/${auth.currentUser.uid}/${this.song.file_name}`
+        );
+
+        // Delete song from Storage
+        await deleteObject(songRef);
+
+        // Delete song from Firestore
+        await deleteDoc(doc(db, "songs", this.song.id));
+
+        // Remove the song from the album's songs array
+        const albumRef = doc(db, "albums", this.song.album_id);
+        const albumSnap = await getDoc(albumRef);
+        let data = albumSnap.data();
+        data.songs = data.songs.filter((song) => song.id !== this.song.id);
+
+        // If any song left in album, update album doc, else remove whole album doc
+        if (data.songs.length) {
+          await updateDoc(albumRef, data);
+        } else {
+          await deleteDoc(doc(db, "albums", this.song.album_id));
+          this.removeAlbum(this.song.album_id);
+        }
+
+        this.removeSong(this.index);
+        this.setNotification("success", "Success!", "Song has been removed");
+      } catch (error) {
+        this.setNotification(
+          "error",
+          "Something went wrong",
+          "We couldn't remove this song"
+        );
+      }
+    },
 
     async edit(values) {
       const songsRef = doc(db, "songs", this.song.id);
@@ -280,74 +332,24 @@ export default {
       this.toggleFormVisibility();
     },
 
+    async getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+    },
+
     toggleFormVisibility() {
       this.showForm = !this.showForm;
       this.updateUnsavedFlag(false);
     },
 
-    async deleteSong() {
-      this.setNotification("notice", "Please wait", "We're removing this song");
+    async updateCover(event) {
+      this.isDragover = false;
+      this.setNotification("notice", "Please wait", "We're updating cover...");
 
-      const songRef = ref(
-        storage,
-        `songs/${auth.currentUser.uid}/${this.song.file_name}`
-      );
-
-      // Delete song from Storage
-      await deleteObject(songRef);
-
-      // Delete song from Firestore
-      await deleteDoc(doc(db, "songs", this.song.id));
-
-      const albumRef = doc(db, "albums", this.song.album_id);
-      const albumSnap = await getDoc(albumRef);
-      let data = albumSnap.data();
-
-      // Remove the song from the album's songs array
-      data.songs = data.songs.filter((song) => song.id !== this.song.id);
-
-      // If any song left in album, update album doc, else remove whole album doc
-      if (data.songs.length) {
-        await updateDoc(albumRef, data)
-          .then(() => {
-            this.setNotification(
-              "success",
-              "Success!",
-              "Song has been removed"
-            );
-          })
-          .catch(() => {
-            this.setNotification(
-              "error",
-              "Something went wrong",
-              "We couldn't remove this song"
-            );
-            return;
-          });
-      } else {
-        await deleteDoc(doc(db, "albums", this.song.album_id))
-          .then(() => {
-            this.setNotification(
-              "success",
-              "Success!",
-              "Song has been removed"
-            );
-          })
-          .catch(() => {
-            this.setNotification(
-              "error",
-              "Something went wrong",
-              "We couldn't remove this song"
-            );
-            return;
-          });
-        this.removeAlbum(this.song.album_id);
-      }
-
-      this.removeSong(this.index);
-    },
-
-    async upload(event) {
       const file = event.dataTransfer
         ? [...event.dataTransfer.files][0]
         : [...event.target.files][0];
@@ -355,29 +357,40 @@ export default {
       if (file.type !== "image/jpeg") return;
 
       try {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = async () => {
-          // Convert JPEG file to base64 string
-          const pictureBase64 = reader.result;
+        const pictureBase64 = await this.getBase64(file);
 
-          const songRef = doc(db, "songs", this.song.id);
-          await updateDoc(songRef, {
+        const songsQuery = query(
+          collection(db, "songs"),
+          where("album_id", "==", this.song.album_id)
+        );
+        const songsSnapshot = await getDocs(songsQuery);
+
+        // Update picture of all songs in album
+        const songsPromises = songsSnapshot.docs.map(async (doc) => {
+          await updateDoc(doc.ref, {
             format: "image/jpeg",
             picture: pictureBase64,
           });
-          this.updateSongPicture(this.index, pictureBase64);
-        };
+          this.updateSongPicture(doc.id, pictureBase64);
+        });
+
+        // Wait for all songs update to complete
+        await Promise.all(songsPromises);
+
+        // Update album picture
+        await updateDoc(doc(db, "albums", this.song.album_id), {
+          picture: pictureBase64,
+        });
+        this.updateAlbumPicture(this.song.album_id, pictureBase64);
+
+        this.setNotification("success", "Success", "Cover updated!");
       } catch (error) {
         this.setNotification(
           "error",
           "Something went wrong",
-          "We couldn't update your profile"
+          "We couldn't update cover"
         );
-        return;
       }
-
-      this.setNotification("success", "Success!", "Profile details updated");
     },
   },
 };
@@ -439,7 +452,7 @@ export default {
       }
     }
 
-    div:not(.song-cover-wrapper):not(.form-group) {
+    > div:not(.song-cover-wrapper):not(.form-group) {
       @include form-element;
       @include form-element-error;
 
