@@ -415,7 +415,6 @@ export default {
       gap: 12px;
       grid-template-columns: auto 1fr;
       margin-bottom: 12px;
-      position: relative;
 
       .song-cover label {
         align-items: center;
@@ -425,8 +424,6 @@ export default {
         display: flex;
         height: 70px;
         justify-content: center;
-        min-width: 70px;
-        position: absolute;
         width: 70px;
 
         &.dragover {
