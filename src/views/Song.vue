@@ -25,9 +25,34 @@
       </div>
     </div>
     <div class="song-switcher">
-      <div class="previous-songs">
-        <div class="song-cover"></div>
-        <div class="song-cover"></div>
+      <div v-if="songsQueue.length" class="previous-songs">
+        <div
+          class="song-cover"
+          :style="{
+            'background-image':
+              songsQueue[currentSongIndex - 1] &&
+              songsQueue[currentSongIndex - 1].picture
+                ? `url(${songsQueue[currentSongIndex - 1].picture})`
+                : songsQueue[songsQueue.length - 1] &&
+                  songsQueue[songsQueue.length - 1].picture
+                ? `url(${songsQueue[songsQueue.length - 1].picture})`
+                : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+          }"
+        />
+        <div
+          v-show="songsQueue.length > 2"
+          class="song-cover"
+          :style="{
+            'background-image':
+              songsQueue[currentSongIndex - 2] &&
+              songsQueue[currentSongIndex - 2].picture
+                ? `url(${songsQueue[currentSongIndex - 2].picture})`
+                : songsQueue[songsQueue.length - 2] &&
+                  songsQueue[songsQueue.length - 2].picture
+                ? `url(${songsQueue[songsQueue.length - 2].picture})`
+                : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+          }"
+        />
       </div>
       <div
         class="song-cover"
@@ -38,13 +63,38 @@
             : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
         }"
       />
-      <div class="next-songs">
-        <div class="song-cover"></div>
-        <div class="song-cover"></div>
+      <div v-if="songsQueue.length" class="next-songs">
+        <div
+          class="song-cover"
+          :style="{
+            'background-image':
+              songsQueue[currentSongIndex + 1] &&
+              songsQueue[currentSongIndex + 1].picture
+                ? `url(${songsQueue[currentSongIndex + 1].picture})`
+                : songsQueue[0] && songsQueue[0].picture
+                ? `url(${songsQueue[0].picture})`
+                : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+          }"
+        />
+        <div
+          v-show="songsQueue.length > 2"
+          class="song-cover"
+          :style="{
+            'background-image':
+              songsQueue[currentSongIndex + 2] &&
+              songsQueue[currentSongIndex + 2].picture
+                ? `url(${songsQueue[currentSongIndex + 2].picture})`
+                : songsQueue[1] && songsQueue[1].picture
+                ? `url(${songsQueue[1].picture})`
+                : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+          }"
+        />
       </div>
     </div>
     <div class="player-controls">
-      <player-details />
+      <player-details
+        @songId="this.$router.push({ name: 'song', params: { id: $event } })"
+      />
     </div>
   </div>
 </template>
@@ -78,7 +128,13 @@ export default {
     }
   },
   computed: {
-    ...mapWritableState(usePlayerStore, ["currentSong", "playing", "sound"]),
+    ...mapWritableState(usePlayerStore, [
+      "currentSong",
+      "currentSongIndex",
+      "playing",
+      "songsQueue",
+      "sound",
+    ]),
   },
   methods: {
     ...mapActions(usePlayerStore, ["newSong"]),
