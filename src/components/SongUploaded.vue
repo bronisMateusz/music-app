@@ -184,6 +184,7 @@ import { doc, deleteDoc, getDoc, updateDoc } from "firebase/firestore";
 import { mapActions } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
 import usePlayerStore from "@/stores/player";
+
 export default {
   props: {
     song: {

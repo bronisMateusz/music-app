@@ -95,11 +95,9 @@ export default defineStore("player", {
         return;
       }
 
-      if (this.randomPlay) {
-        this.playRandom();
-      } else {
-        this.updateCurrentSongIndex(indexModifier);
-      }
+      this.randomPlay
+        ? this.playRandom()
+        : this.updateCurrentSongIndex(indexModifier);
     },
 
     changeVolume(event) {
