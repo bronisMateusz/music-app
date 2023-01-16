@@ -147,7 +147,6 @@ export default {
     };
   },
   async created() {
-    console.log(this.userId);
     // Get list of user songs
     const songsQuery = query(
       collection(db, "songs"),

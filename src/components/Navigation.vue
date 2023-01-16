@@ -14,11 +14,6 @@
         </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'library' }" title="Library">
-          <eva-icon name="folder-outline" height="32" width="32" />
-        </router-link>
-      </li>
-      <li>
         <router-link :to="{ name: 'discover' }" title="Discover">
           <eva-icon name="compass-outline" height="32" width="32" />
         </router-link>
