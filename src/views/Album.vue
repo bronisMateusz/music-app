@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { db } from "@/includes/firebase";
+import { auth, db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import Song from "@/components/Song.vue";
 import { mapActions, mapWritableState } from "pinia";
@@ -62,6 +62,7 @@ export default {
   },
   components: { Song },
   async created() {
+    // Get the album document
     const albumRef = doc(db, "albums", this.$route.params.id);
     const albumSnap = await getDoc(albumRef);
 
@@ -72,11 +73,19 @@ export default {
 
     this.addAlbum(albumSnap);
 
+    // Get user's favorites songs
+    const favoritesRef = doc(db, "favorites", auth.currentUser.uid);
+    const favoritesSnapshot = await getDoc(favoritesRef);
+
+    // Get favorite songs from the snapshot or create empty array
+    const favoriteSongs =
+      (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
+
     const songs = this.album.songs;
     for (let i = 0; i < songs.length; i++) {
       const songRef = doc(db, "songs", songs[i].id);
       const songSnap = await getDoc(songRef);
-      this.addSong(songSnap);
+      this.addSong(songSnap, favoriteSongs);
     }
   },
   computed: {
@@ -97,10 +106,12 @@ export default {
       };
     },
 
-    addSong(doc) {
+    addSong(doc, favoriteSongs) {
       const song = {
         ...doc.data(),
         id: doc.id,
+        // Check if the song id is found in the favoriteSongs array
+        inFavorites: favoriteSongs.some((favSong) => favSong.id === doc.id),
       };
       this.songs.push(song);
     },

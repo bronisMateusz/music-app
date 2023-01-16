@@ -91,8 +91,15 @@
 <script>
 import AuroraGradient from "@/components/AuroraGradient.vue";
 import Song from "@/components/Song.vue";
-import { db } from "@/includes/firebase";
-import { collection, query, getDocs, limit } from "firebase/firestore";
+import { auth, db } from "@/includes/firebase";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  query,
+} from "firebase/firestore";
 export default {
   data() {
     return {
@@ -102,17 +109,32 @@ export default {
   },
   components: { AuroraGradient, Song },
   async created() {
+    // Query songs collection and get first 7 documents
     const songsQuery = query(collection(db, "songs"), limit(7));
     const songsSnap = await getDocs(songsQuery);
+
+    // Get user's favorites songs
+    const favoritesRef = doc(db, "favorites", auth.currentUser.uid);
+    const favoritesSnapshot = await getDoc(favoritesRef);
+
+    // Get favorite songs from the snapshot or create empty array
+    const favoriteSongs =
+      (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
+
     songsSnap.forEach((doc) => {
-      this.songs.push({
+      const song = {
         id: doc.id,
         ...doc.data(),
-      });
+        // Check if the song id is found in the favoriteSongs array
+        inFavorites: favoriteSongs.some((favSong) => favSong.id === doc.id),
+      };
+      this.songs.push(song);
     });
 
+    // Query genres collection and get first 7 documents
     const genreQuery = query(collection(db, "genres"), limit(7));
     const genreSnap = await getDocs(genreQuery);
+
     genreSnap.forEach((doc) => {
       this.genres.push({
         ...doc.data(),
