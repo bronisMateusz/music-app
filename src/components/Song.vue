@@ -22,7 +22,7 @@
         title="Add to favorites"
         @click.prevent="addToFav(song)"
       >
-        <eva-icon class="options" name="heart-outline" height="28" width="28" />
+        <eva-icon name="heart-outline" height="28" width="28" />
       </button>
       <!-- Remove from favorites Button -->
       <button
@@ -30,31 +30,17 @@
         title="Remove from favorites"
         @click.prevent="removeFromFav(song)"
       >
-        <eva-icon class="options" name="heart" height="28" width="28" />
+        <eva-icon name="heart" height="28" width="28" />
       </button>
       <!-- Options Button -->
       <button>
-        <eva-icon
-          class="options"
-          name="more-horizontal-outline"
-          height="28"
-          width="28"
-        />
+        <eva-icon name="more-horizontal-outline" height="28" width="28" />
       </button>
     </li>
   </ul>
 </template>
 
 <script>
-import { db } from "@/includes/firebase";
-import {
-  arrayRemove,
-  arrayUnion,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
 import { mapActions, mapState, mapWritableState } from "pinia";
 import usePlayerStore from "@/stores/player";
 import useUserStore from "@/stores/user";
@@ -67,38 +53,13 @@ export default {
     ...mapWritableState(usePlayerStore, ["currentSongIndex", "songsQueue"]),
   },
   methods: {
-    ...mapActions(usePlayerStore, ["newSong"]),
+    ...mapActions(usePlayerStore, ["addToFav", "removeFromFav", "newSong"]),
 
     addSongs(song, index) {
       this.songsQueue = this.songs;
       this.currentSongIndex = index;
       this.newSong(song);
       this.$emit("albumId", song.album_id);
-    },
-
-    async addToFav(song) {
-      const favoritesRef = doc(db, "favorites", this.userId);
-      const favoritesSnapshot = await getDoc(favoritesRef);
-
-      if (favoritesSnapshot.exists()) {
-        await updateDoc(favoritesRef, {
-          songs: arrayUnion({ id: song.id }),
-        });
-      } else {
-        await setDoc(favoritesRef, {
-          songs: [{ id: song.id }],
-        });
-      }
-
-      song.inFavorites = true;
-    },
-
-    async removeFromFav(song) {
-      await updateDoc(doc(db, "favorites", this.userId), {
-        songs: arrayRemove({ id: song.id }),
-      });
-
-      song.inFavorites = false;
     },
   },
 };

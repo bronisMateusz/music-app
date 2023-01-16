@@ -15,8 +15,20 @@
       </button>
       <div class="options-group">
         <!-- Add to favorites Button -->
-        <button title="Add to favorites">
+        <button
+          v-if="!currentSong.inFavorites"
+          title="Add to favorites"
+          @click.prevent="addToFav(currentSong)"
+        >
           <eva-icon name="heart-outline" height="28" width="28" />
+        </button>
+        <!-- Remove from favorites Button -->
+        <button
+          v-else
+          title="Remove from favorites"
+          @click.prevent="removeFromFav(currentSong)"
+        >
+          <eva-icon name="heart" height="28" width="28" />
         </button>
         <!-- Share Button -->
         <button title="Share" @click.prevent="copyLink">
@@ -155,7 +167,7 @@ export default {
     ]),
   },
   methods: {
-    ...mapActions(usePlayerStore, ["newSong"]),
+    ...mapActions(usePlayerStore, ["addToFav", "removeFromFav", "newSong"]),
     ...mapActions(useNotificationsStore, ["setNotification"]),
 
     goBack() {
