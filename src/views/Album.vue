@@ -30,8 +30,26 @@
             width="72"
           />
         </button>
-        <button title="favorites">
-          <eva-icon name="heart-outline" height="48" width="48"></eva-icon>
+        <!-- Add to favorites Button -->
+        <button
+          v-if="!album.inFavorites"
+          title="Add to favorites"
+          @click.prevent="addToFav"
+        >
+          <eva-icon
+            class="options"
+            name="heart-outline"
+            height="48"
+            width="48"
+          />
+        </button>
+        <!-- Remove from favorites Button -->
+        <button
+          v-else
+          title="Remove from favorites"
+          @click.prevent="removeFromFav"
+        >
+          <eva-icon class="options" name="heart" height="48" width="48" />
         </button>
         <button title="favorites">
           <eva-icon
@@ -48,7 +66,14 @@
 
 <script>
 import { db } from "@/includes/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  arrayUnion,
+  arrayRemove,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { mapActions, mapState, mapWritableState } from "pinia";
 import Song from "@/components/Song.vue";
 import usePlayerStore from "@/stores/player";
@@ -67,16 +92,17 @@ export default {
     const albumRef = doc(db, "albums", this.$route.params.id);
     const albumSnap = await getDoc(albumRef);
 
+    // Get user's favorites songs
+    const favoritesRef = doc(db, "favorites", this.userId);
+    const favoritesSnapshot = await getDoc(favoritesRef);
+
     if (!albumSnap.exists()) {
       this.$router.push({ name: "home" });
       return;
     }
-
-    this.addAlbum(albumSnap);
-
-    // Get user's favorites songs
-    const favoritesRef = doc(db, "favorites", this.userId);
-    const favoritesSnapshot = await getDoc(favoritesRef);
+    const favoriteAlbums =
+      (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
+    this.addAlbum(albumSnap, favoriteAlbums);
 
     // Get favorite songs from the snapshot or create empty array
     const favoriteSongs =
@@ -101,10 +127,11 @@ export default {
   methods: {
     ...mapActions(usePlayerStore, ["newSong", "toggleAudio"]),
 
-    addAlbum(doc) {
+    addAlbum(doc, favoriteAlbums) {
       this.album = {
         ...doc.data(),
         id: doc.id,
+        inFavorites: favoriteAlbums.some((favAlbum) => favAlbum.id === doc.id),
       };
     },
 
@@ -118,6 +145,23 @@ export default {
       this.songs.push(song);
     },
 
+    async addToFav() {
+      const favoritesRef = doc(db, "favorites", this.userId);
+      const favoritesSnapshot = await getDoc(favoritesRef);
+
+      if (favoritesSnapshot.exists()) {
+        await updateDoc(favoritesRef, {
+          albums: arrayUnion({ id: this.album.id }),
+        });
+      } else {
+        await setDoc(favoritesRef, {
+          songs: [{ id: this.album.id }],
+        });
+      }
+
+      this.album.inFavorites = true;
+    },
+
     playAlbum() {
       if (!(this.playing && this.album.id === this.currentSong.albumId)) {
         this.songsQueue = this.songs;
@@ -127,6 +171,14 @@ export default {
       }
 
       this.toggleAudio();
+    },
+
+    async removeFromFav() {
+      await updateDoc(doc(db, "favorites", this.userId), {
+        albums: arrayRemove({ id: this.album.id }),
+      });
+
+      this.album.inFavorites = false;
     },
   },
 };

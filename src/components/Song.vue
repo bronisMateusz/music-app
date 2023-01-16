@@ -24,7 +24,7 @@
       >
         <eva-icon class="options" name="heart-outline" height="28" width="28" />
       </button>
-      <!-- Add to favorites Button -->
+      <!-- Remove from favorites Button -->
       <button
         v-else
         title="Remove from favorites"
