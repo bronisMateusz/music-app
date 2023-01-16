@@ -95,11 +95,13 @@ export default {
       this.$router.push({ name: "home" });
       return;
     }
+
+    // Get user's favorites albums
     const favoriteAlbums =
-      (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
+      (favoritesSnapshot.data() && favoritesSnapshot.data().albums) || [];
     this.addAlbum(albumSnap, favoriteAlbums);
 
-    // Get favorite songs from the snapshot or create empty array
+    // Get user's favorites songs
     const favoriteSongs =
       (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
 
@@ -126,6 +128,7 @@ export default {
       this.album = {
         ...doc.data(),
         id: doc.id,
+        // Check if the album id is favoriteAlbum
         inFavorites: favoriteAlbums.some((favAlbum) => favAlbum.id === doc.id),
       };
     },
@@ -134,7 +137,7 @@ export default {
       const song = {
         ...doc.data(),
         id: doc.id,
-        // Check if the song id is found in the favoriteSongs array
+        // Check if the song id is in favoriteSongs
         inFavorites: favoriteSongs.some((favSong) => favSong.id === doc.id),
       };
       this.songs.push(song);
