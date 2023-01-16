@@ -120,13 +120,14 @@
 <script>
 import { db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { mapActions, mapWritableState } from "pinia";
+import { mapActions, mapState, mapWritableState } from "pinia";
 
 import Notification from "@/components/Notification.vue";
 import PlayerDetails from "@/components/PlayerDetails.vue";
 
-import usePlayerStore from "@/stores/player";
 import useNotificationsStore from "@/stores/notifications";
+import usePlayerStore from "@/stores/player";
+import useUserStore from "@/stores/user";
 
 export default {
   components: { Notification, PlayerDetails },
@@ -148,9 +149,20 @@ export default {
         return;
       }
 
+      // Get user's favorites songs
+      const favoritesRef = doc(db, "favorites", this.userId);
+      const favoritesSnapshot = await getDoc(favoritesRef);
+
+      // Get favorite songs from the snapshot or create empty array
+      const favoriteSongs =
+        (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
+
       const song = {
         id: songSnap.id,
         ...songSnap.data(),
+        inFavorites: favoriteSongs.some(
+          (favSong) => favSong.id === songSnap.id
+        ),
       };
 
       await this.newSong(song);
@@ -158,6 +170,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(useUserStore, ["userId"]),
     ...mapWritableState(usePlayerStore, [
       "currentSong",
       "currentSongIndex",

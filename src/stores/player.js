@@ -60,7 +60,6 @@ export default defineStore("player", {
     },
 
     async newSong(song) {
-      console.log(song);
       // If song is playing, return
       if (this.currentSong.id === song.id && this.playing) return;
       // If current song is paused
