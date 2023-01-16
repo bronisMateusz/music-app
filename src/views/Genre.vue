@@ -18,12 +18,7 @@
         </router-link>
         <span class="song-artist">{{ song.artist }}</span>
       </div>
-      <eva-icon
-        class="options"
-        name="more-horizontal-outline"
-        height="28"
-        width="28"
-      />
+      <eva-icon name="more-horizontal-outline" height="28" width="28" />
     </li>
   </ul>
 </template>

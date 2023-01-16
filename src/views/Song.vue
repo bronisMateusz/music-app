@@ -15,8 +15,20 @@
       </button>
       <div class="options-group">
         <!-- Add to favorites Button -->
-        <button title="Add to favorites">
+        <button
+          v-if="!currentSong.inFavorites"
+          title="Add to favorites"
+          @click.prevent="addToFav(currentSong)"
+        >
           <eva-icon name="heart-outline" height="28" width="28" />
+        </button>
+        <!-- Remove from favorites Button -->
+        <button
+          v-else
+          title="Remove from favorites"
+          @click.prevent="removeFromFav(currentSong)"
+        >
+          <eva-icon name="heart" height="28" width="28" />
         </button>
         <!-- Share Button -->
         <button title="Share" @click.prevent="copyLink">
@@ -108,13 +120,14 @@
 <script>
 import { db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { mapActions, mapWritableState } from "pinia";
+import { mapActions, mapState, mapWritableState } from "pinia";
 
 import Notification from "@/components/Notification.vue";
 import PlayerDetails from "@/components/PlayerDetails.vue";
 
-import usePlayerStore from "@/stores/player";
 import useNotificationsStore from "@/stores/notifications";
+import usePlayerStore from "@/stores/player";
+import useUserStore from "@/stores/user";
 
 export default {
   components: { Notification, PlayerDetails },
@@ -136,9 +149,21 @@ export default {
         return;
       }
 
+      // Get favorites doc
+      const favoritesRef = doc(db, "favorites", this.userId);
+      const favoritesSnapshot = await getDoc(favoritesRef);
+
+      // Get favorites songs
+      const favoriteSongs =
+        (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
+
       const song = {
         id: songSnap.id,
         ...songSnap.data(),
+        // Check if the song id is favoriteSongs
+        inFavorites: favoriteSongs.some(
+          (favSong) => favSong.id === songSnap.id
+        ),
       };
 
       await this.newSong(song);
@@ -146,6 +171,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(useUserStore, ["userId"]),
     ...mapWritableState(usePlayerStore, [
       "currentSong",
       "currentSongIndex",
@@ -155,7 +181,7 @@ export default {
     ]),
   },
   methods: {
-    ...mapActions(usePlayerStore, ["newSong"]),
+    ...mapActions(usePlayerStore, ["addToFav", "removeFromFav", "newSong"]),
     ...mapActions(useNotificationsStore, ["setNotification"]),
 
     goBack() {

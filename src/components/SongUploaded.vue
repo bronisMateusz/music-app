@@ -194,7 +194,7 @@
 </template>
 
 <script>
-import { auth, db, storage } from "@/includes/firebase";
+import { db, storage } from "@/includes/firebase";
 import { ref, deleteObject } from "firebase/storage";
 import {
   collection,
@@ -206,9 +206,10 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 import useNotificationsStore from "@/stores/notifications";
 import usePlayerStore from "@/stores/player";
+import useUserStore from "@/stores/user";
 
 export default {
   props: {
@@ -256,6 +257,9 @@ export default {
       },
     };
   },
+  computed: {
+    ...mapState(useUserStore, ["userId"]),
+  },
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),
     ...mapActions(usePlayerStore, ["newSong"]),
@@ -266,7 +270,7 @@ export default {
       try {
         const songRef = ref(
           storage,
-          `songs/${auth.currentUser.uid}/${this.song.file_name}`
+          `songs/${this.userId}/${this.song.file_name}`
         );
 
         // Delete song from Storage

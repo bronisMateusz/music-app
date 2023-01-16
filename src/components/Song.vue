@@ -16,28 +16,44 @@
         </button>
         <span class="song-artist">{{ song.artist }}</span>
       </div>
-      <eva-icon
-        class="options"
-        name="more-horizontal-outline"
-        height="28"
-        width="28"
-      />
+      <!-- Add to favorites Button -->
+      <button
+        v-if="!song.inFavorites"
+        title="Add to favorites"
+        @click.prevent="addToFav(song)"
+      >
+        <eva-icon name="heart-outline" height="28" width="28" />
+      </button>
+      <!-- Remove from favorites Button -->
+      <button
+        v-else
+        title="Remove from favorites"
+        @click.prevent="removeFromFav(song)"
+      >
+        <eva-icon name="heart" height="28" width="28" />
+      </button>
+      <!-- Options Button -->
+      <button>
+        <eva-icon name="more-horizontal-outline" height="28" width="28" />
+      </button>
     </li>
   </ul>
 </template>
 
 <script>
-import { mapActions, mapWritableState } from "pinia";
+import { mapActions, mapState, mapWritableState } from "pinia";
 import usePlayerStore from "@/stores/player";
+import useUserStore from "@/stores/user";
 
 export default {
   props: ["songs"],
   emits: ["albumId"],
   computed: {
+    ...mapState(useUserStore, ["userId"]),
     ...mapWritableState(usePlayerStore, ["currentSongIndex", "songsQueue"]),
   },
   methods: {
-    ...mapActions(usePlayerStore, ["newSong"]),
+    ...mapActions(usePlayerStore, ["addToFav", "removeFromFav", "newSong"]),
 
     addSongs(song, index) {
       this.songsQueue = this.songs;

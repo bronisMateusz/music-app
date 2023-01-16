@@ -26,12 +26,25 @@
                 ? 'arrow-right-outline'
                 : 'pause-circle-outline'
             "
-            height="48"
-            width="48"
+            height="72"
+            width="72"
           />
         </button>
-        <button title="favorites">
-          <eva-icon name="heart-outline" height="48" width="48"></eva-icon>
+        <!-- Add to favorites Button -->
+        <button
+          v-if="!album.inFavorites"
+          title="Add to favorites"
+          @click.prevent="addToFav"
+        >
+          <eva-icon name="heart-outline" height="48" width="48" />
+        </button>
+        <!-- Remove from favorites Button -->
+        <button
+          v-else
+          title="Remove from favorites"
+          @click.prevent="removeFromFav"
+        >
+          <eva-icon name="heart" height="48" width="48" />
         </button>
         <button title="favorites">
           <eva-icon
@@ -48,10 +61,18 @@
 
 <script>
 import { db } from "@/includes/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  arrayUnion,
+  arrayRemove,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { mapActions, mapState, mapWritableState } from "pinia";
 import Song from "@/components/Song.vue";
-import { mapActions, mapWritableState } from "pinia";
 import usePlayerStore from "@/stores/player";
+import useUserStore from "@/stores/user";
 
 export default {
   data() {
@@ -62,24 +83,37 @@ export default {
   },
   components: { Song },
   async created() {
+    // Get album doc
     const albumRef = doc(db, "albums", this.$route.params.id);
     const albumSnap = await getDoc(albumRef);
+
+    // Get favorites doc
+    const favoritesRef = doc(db, "favorites", this.userId);
+    const favoritesSnapshot = await getDoc(favoritesRef);
 
     if (!albumSnap.exists()) {
       this.$router.push({ name: "home" });
       return;
     }
 
-    this.addAlbum(albumSnap);
+    // Get favorites albums
+    const favoriteAlbums =
+      (favoritesSnapshot.data() && favoritesSnapshot.data().albums) || [];
+    this.addAlbum(albumSnap, favoriteAlbums);
+
+    // Get favorites songs
+    const favoriteSongs =
+      (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
 
     const songs = this.album.songs;
     for (let i = 0; i < songs.length; i++) {
       const songRef = doc(db, "songs", songs[i].id);
       const songSnap = await getDoc(songRef);
-      this.addSong(songSnap);
+      this.addSong(songSnap, favoriteSongs);
     }
   },
   computed: {
+    ...mapState(useUserStore, ["userId"]),
     ...mapWritableState(usePlayerStore, [
       "currentSong",
       "currentSongIndex",
@@ -90,19 +124,40 @@ export default {
   methods: {
     ...mapActions(usePlayerStore, ["newSong", "toggleAudio"]),
 
-    addAlbum(doc) {
+    addAlbum(doc, favoriteAlbums) {
       this.album = {
         ...doc.data(),
         id: doc.id,
+        // Check if the album id is favoriteAlbum
+        inFavorites: favoriteAlbums.some((favAlbum) => favAlbum.id === doc.id),
       };
     },
 
-    addSong(doc) {
+    addSong(doc, favoriteSongs) {
       const song = {
         ...doc.data(),
         id: doc.id,
+        // Check if the song id is in favoriteSongs
+        inFavorites: favoriteSongs.some((favSong) => favSong.id === doc.id),
       };
       this.songs.push(song);
+    },
+
+    async addToFav() {
+      const favoritesRef = doc(db, "favorites", this.userId);
+      const favoritesSnapshot = await getDoc(favoritesRef);
+
+      if (favoritesSnapshot.exists()) {
+        await updateDoc(favoritesRef, {
+          albums: arrayUnion({ id: this.album.id }),
+        });
+      } else {
+        await setDoc(favoritesRef, {
+          songs: [{ id: this.album.id }],
+        });
+      }
+
+      this.album.inFavorites = true;
     },
 
     playAlbum() {
@@ -114,6 +169,14 @@ export default {
       }
 
       this.toggleAudio();
+    },
+
+    async removeFromFav() {
+      await updateDoc(doc(db, "favorites", this.userId), {
+        albums: arrayRemove({ id: this.album.id }),
+      });
+
+      this.album.inFavorites = false;
     },
   },
 };
@@ -161,6 +224,10 @@ export default {
         height: 64px;
         padding: 0;
         width: 64px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
     @media (min-width: 992px) {
