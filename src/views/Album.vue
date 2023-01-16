@@ -36,12 +36,7 @@
           title="Add to favorites"
           @click.prevent="addToFav"
         >
-          <eva-icon
-            class="options"
-            name="heart-outline"
-            height="48"
-            width="48"
-          />
+          <eva-icon name="heart-outline" height="48" width="48" />
         </button>
         <!-- Remove from favorites Button -->
         <button
@@ -49,7 +44,7 @@
           title="Remove from favorites"
           @click.prevent="removeFromFav"
         >
-          <eva-icon class="options" name="heart" height="48" width="48" />
+          <eva-icon name="heart" height="48" width="48" />
         </button>
         <button title="favorites">
           <eva-icon
