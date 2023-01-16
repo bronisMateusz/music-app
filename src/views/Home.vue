@@ -89,9 +89,7 @@
 </template>
 
 <script>
-import AuroraGradient from "@/components/AuroraGradient.vue";
-import Song from "@/components/Song.vue";
-import { auth, db } from "@/includes/firebase";
+import { db } from "@/includes/firebase";
 import {
   collection,
   doc,
@@ -100,6 +98,11 @@ import {
   limit,
   query,
 } from "firebase/firestore";
+import { mapState } from "pinia";
+import AuroraGradient from "@/components/AuroraGradient.vue";
+import Song from "@/components/Song.vue";
+import useUserStore from "@/stores/user";
+
 export default {
   data() {
     return {
@@ -114,7 +117,7 @@ export default {
     const songsSnap = await getDocs(songsQuery);
 
     // Get user's favorites songs
-    const favoritesRef = doc(db, "favorites", auth.currentUser.uid);
+    const favoritesRef = doc(db, "favorites", this.userId);
     const favoritesSnapshot = await getDoc(favoritesRef);
 
     // Get favorite songs from the snapshot or create empty array
@@ -140,6 +143,9 @@ export default {
         ...doc.data(),
       });
     });
+  },
+  computed: {
+    ...mapState(useUserStore, ["userId"]),
   },
 };
 </script>

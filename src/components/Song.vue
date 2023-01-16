@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { auth, db } from "@/includes/firebase";
+import { db } from "@/includes/firebase";
 import {
   arrayRemove,
   arrayUnion,
@@ -55,19 +55,15 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { mapActions, mapWritableState } from "pinia";
+import { mapActions, mapState, mapWritableState } from "pinia";
 import usePlayerStore from "@/stores/player";
+import useUserStore from "@/stores/user";
 
 export default {
   props: ["songs"],
   emits: ["albumId"],
-  async created() {
-    const favoritesRef = doc(db, "favorites", auth.currentUser.uid);
-    const favoritesSnapshot = await getDoc(favoritesRef);
-
-    console.log(favoritesSnapshot);
-  },
   computed: {
+    ...mapState(useUserStore, ["userId"]),
     ...mapWritableState(usePlayerStore, ["currentSongIndex", "songsQueue"]),
   },
   methods: {
@@ -81,7 +77,7 @@ export default {
     },
 
     async addToFav(song) {
-      const favoritesRef = doc(db, "favorites", auth.currentUser.uid);
+      const favoritesRef = doc(db, "favorites", this.userId);
       const favoritesSnapshot = await getDoc(favoritesRef);
 
       if (favoritesSnapshot.exists()) {
@@ -98,7 +94,7 @@ export default {
     },
 
     async removeFromFav(song) {
-      await updateDoc(doc(db, "favorites", auth.currentUser.uid), {
+      await updateDoc(doc(db, "favorites", this.userId), {
         songs: arrayRemove({ id: song.id }),
       });
 

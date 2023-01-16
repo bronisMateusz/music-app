@@ -47,11 +47,12 @@
 </template>
 
 <script>
-import { auth, db } from "@/includes/firebase";
+import { db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { mapActions, mapState, mapWritableState } from "pinia";
 import Song from "@/components/Song.vue";
-import { mapActions, mapWritableState } from "pinia";
 import usePlayerStore from "@/stores/player";
+import useUserStore from "@/stores/user";
 
 export default {
   data() {
@@ -74,7 +75,7 @@ export default {
     this.addAlbum(albumSnap);
 
     // Get user's favorites songs
-    const favoritesRef = doc(db, "favorites", auth.currentUser.uid);
+    const favoritesRef = doc(db, "favorites", this.userId);
     const favoritesSnapshot = await getDoc(favoritesRef);
 
     // Get favorite songs from the snapshot or create empty array
@@ -89,6 +90,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(useUserStore, ["userId"]),
     ...mapWritableState(usePlayerStore, [
       "currentSong",
       "currentSongIndex",

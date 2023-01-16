@@ -116,7 +116,8 @@
   </div>
 </template>
 <script>
-import { auth, db, storage } from "@/includes/firebase";
+import jsmediatags from "jsmediatags";
+import { db, storage } from "@/includes/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import {
   addDoc,
@@ -129,10 +130,10 @@ import {
   getDoc,
   updateDoc,
 } from "firebase/firestore";
-import { mapActions } from "pinia";
-import useNotificationsStore from "@/stores/notifications";
+import { mapActions, mapState } from "pinia";
 import SongUploaded from "@/components/SongUploaded.vue";
-import jsmediatags from "jsmediatags";
+import useNotificationsStore from "@/stores/notifications";
+import useUserStore from "@/stores/user";
 
 export default {
   components: { SongUploaded },
@@ -146,10 +147,11 @@ export default {
     };
   },
   async created() {
+    console.log(this.userId);
     // Get list of user songs
     const songsQuery = query(
       collection(db, "songs"),
-      where("user_id", "==", auth.currentUser.uid)
+      where("user_id", "==", this.userId)
     );
     const songsSnapshot = await getDocs(songsQuery);
     songsSnapshot.forEach(this.addSong);
@@ -157,10 +159,13 @@ export default {
     // Get list of user albums
     const albumsQuery = query(
       collection(db, "albums"),
-      where("user_id", "==", auth.currentUser.uid)
+      where("user_id", "==", this.userId)
     );
     const albumsSnapshot = await getDocs(albumsQuery);
     albumsSnapshot.forEach(this.addAlbum);
+  },
+  computed: {
+    ...mapState(useUserStore, ["userId"]),
   },
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),
@@ -196,10 +201,7 @@ export default {
         const metadata = await this.getMetadata(file);
 
         // Create song ref
-        const songRef = ref(
-          storage,
-          `songs/${auth.currentUser.uid}/${file.name}`
-        );
+        const songRef = ref(storage, `songs/${this.userId}/${file.name}`);
 
         //Upload song to Storage
         const task = uploadBytesResumable(songRef, file, metadata);
@@ -236,7 +238,7 @@ export default {
               artist_id: await this.getDocId("artists", metadata.artist),
               file_name: file.name,
               genre_id: await this.getDocId("genres", metadata.genre),
-              user_id: auth.currentUser.uid,
+              user_id: this.userId,
               url: await getDownloadURL(task.snapshot.ref),
             };
             const songRef = await addDoc(collection(db, "songs"), song);
@@ -298,7 +300,7 @@ export default {
           name: metadata.album,
           picture: metadata.picture,
           songs: [{ id: songSnapshot.id }],
-          user_id: auth.currentUser.uid,
+          user_id: this.userId,
         });
         this.addAlbum(await getDoc(albumDoc));
       }
