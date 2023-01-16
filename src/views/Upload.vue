@@ -499,23 +499,7 @@ export default {
   }
 
   #uploaded-albums {
-    @include hidden-list-marks;
-
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-
-    li {
-      width: 260px;
-
-      .album-cover {
-        @include album-cover;
-      }
-    }
-
-    a {
-      line-height: 1.5rem;
-    }
+    @include albums-list;
   }
 }
 </style>

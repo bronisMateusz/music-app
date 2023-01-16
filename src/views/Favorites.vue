@@ -3,7 +3,7 @@
     <!-- Uploaded albums -->
     <section v-if="albums.length">
       <h2>Favorites albums</h2>
-      <ul id="uploaded-albums">
+      <ul id="favorites-albums">
         <li v-for="album in albums" :key="album.name">
           <router-link :to="{ name: 'album', params: { id: album.id } }">
             <div
@@ -93,3 +93,14 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+#favorites {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+#favorites-albums {
+  @include albums-list;
+}
+</style>
