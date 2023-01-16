@@ -26,8 +26,8 @@
                 ? 'arrow-right-outline'
                 : 'pause-circle-outline'
             "
-            height="48"
-            width="48"
+            height="72"
+            width="72"
           />
         </button>
         <button title="favorites">
@@ -161,6 +161,10 @@ export default {
         height: 64px;
         padding: 0;
         width: 64px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
     @media (min-width: 992px) {
