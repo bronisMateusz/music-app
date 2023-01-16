@@ -16,12 +16,19 @@
         </button>
         <span class="song-artist">{{ song.artist }}</span>
       </div>
-      <eva-icon
-        class="options"
-        name="more-horizontal-outline"
-        height="28"
-        width="28"
-      />
+      <!-- Favorites Button -->
+      <button>
+        <eva-icon class="options" name="heart-outline" height="28" width="28" />
+      </button>
+      <!-- Options Button -->
+      <button>
+        <eva-icon
+          class="options"
+          name="more-horizontal-outline"
+          height="28"
+          width="28"
+        />
+      </button>
     </li>
   </ul>
 </template>
