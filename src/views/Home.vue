@@ -116,11 +116,11 @@ export default {
     const songsQuery = query(collection(db, "songs"), limit(7));
     const songsSnap = await getDocs(songsQuery);
 
-    // Get user's favorites songs
+    // Get favorites
     const favoritesRef = doc(db, "favorites", this.userId);
     const favoritesSnapshot = await getDoc(favoritesRef);
 
-    // Get favorite songs from the snapshot or create empty array
+    // Get favorites songs
     const favoriteSongs =
       (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
 
@@ -128,7 +128,7 @@ export default {
       const song = {
         id: doc.id,
         ...doc.data(),
-        // Check if the song id is found in the favoriteSongs array
+        // Check if the song id is favoriteSongs
         inFavorites: favoriteSongs.some((favSong) => favSong.id === doc.id),
       };
       this.songs.push(song);

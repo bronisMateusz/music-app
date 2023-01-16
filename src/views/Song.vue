@@ -149,17 +149,18 @@ export default {
         return;
       }
 
-      // Get user's favorites songs
+      // Get favorites doc
       const favoritesRef = doc(db, "favorites", this.userId);
       const favoritesSnapshot = await getDoc(favoritesRef);
 
-      // Get favorite songs from the snapshot or create empty array
+      // Get favorites songs
       const favoriteSongs =
         (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
 
       const song = {
         id: songSnap.id,
         ...songSnap.data(),
+        // Check if the song id is favoriteSongs
         inFavorites: favoriteSongs.some(
           (favSong) => favSong.id === songSnap.id
         ),

@@ -83,11 +83,11 @@ export default {
   },
   components: { Song },
   async created() {
-    // Get the album document
+    // Get album doc
     const albumRef = doc(db, "albums", this.$route.params.id);
     const albumSnap = await getDoc(albumRef);
 
-    // Get user's favorites songs
+    // Get favorites doc
     const favoritesRef = doc(db, "favorites", this.userId);
     const favoritesSnapshot = await getDoc(favoritesRef);
 
@@ -96,12 +96,12 @@ export default {
       return;
     }
 
-    // Get user's favorites albums
+    // Get favorites albums
     const favoriteAlbums =
       (favoritesSnapshot.data() && favoritesSnapshot.data().albums) || [];
     this.addAlbum(albumSnap, favoriteAlbums);
 
-    // Get user's favorites songs
+    // Get favorites songs
     const favoriteSongs =
       (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
 

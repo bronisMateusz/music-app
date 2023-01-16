@@ -43,29 +43,29 @@ export default {
     };
   },
   async created() {
-    // Get the document of the user's favorite songs and albums from the Firebase database
+    // Get favorites doc
     const favoritesRef = doc(db, "favorites", this.userId);
     const favoritesSnapshot = await getDoc(favoritesRef);
 
-    // Get user's favorites albums
+    // Get favorites albums
     const favoriteAlbums =
       (favoritesSnapshot.data() && favoritesSnapshot.data().albums) || [];
 
-    // Get user's favorites songs
+    // Get favorites songs
     const favoriteSongs =
       (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
 
-    // Iterate through the array of favorite songs and retrieve the corresponding song from the Firebase database
-    for (let i = 0; i < favoriteSongs.length; i++) {
-      const songRef = doc(db, "songs", favoriteSongs[i].id);
-      const songSnap = await getDoc(songRef);
-      this.addToArray(songSnap, favoriteSongs, this.songs);
-    }
-    // Iterate through the array of favorite albums and retrieve the corresponding album from the Firebase database
+    // Retrieve favorites albums
     for (let i = 0; i < favoriteAlbums.length; i++) {
       const albumRef = doc(db, "albums", favoriteAlbums[i].id);
       const albumSnap = await getDoc(albumRef);
       this.addToArray(albumSnap, favoriteSongs, this.albums);
+    }
+    // Retrieve favorites songs
+    for (let i = 0; i < favoriteSongs.length; i++) {
+      const songRef = doc(db, "songs", favoriteSongs[i].id);
+      const songSnap = await getDoc(songRef);
+      this.addToArray(songSnap, favoriteSongs, this.songs);
     }
   },
   components: { Song },
