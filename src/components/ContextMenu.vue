@@ -1,5 +1,5 @@
 <template>
-  <div id="context-menu" ref="contextMenu">
+  <div class="context-menu" ref="contextMenu">
     <slot />
   </div>
 </template>
@@ -21,21 +21,18 @@ export default {
       const target = event.target;
       const contextMenu = this.$refs.contextMenu;
 
-      if (
-        !contextMenu.contains(target) &&
-        target !== contextMenu.parentElement.firstElementChild
-      )
-        this.closeMenu();
+      if (!contextMenu.parentElement.contains(target)) this.closeMenu();
     },
   },
 };
 </script>
 
 <style lang="scss">
-#context-menu {
+.context-menu {
   position: absolute;
   right: 0;
-  top: calc(100%);
+  top: -50%;
+  transform: translateY(-50%);
 
   &::after {
     @include blurred-bg($color-element);
@@ -66,22 +63,6 @@ export default {
     }
     button {
       font-size: 1rem;
-    }
-  }
-
-  @media (min-width: 992px) {
-    left: 0;
-    right: unset;
-    top: calc(100% + 12px);
-
-    ul {
-      text-align: left;
-
-      a,
-      button {
-        padding-left: 24px;
-        padding-right: 48px;
-      }
     }
   }
 }
