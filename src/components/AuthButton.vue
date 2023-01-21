@@ -89,5 +89,26 @@ export default {
       @include user-photo;
     }
   }
+
+  .context-menu {
+    top: 100%;
+    transform: unset;
+
+    @media (min-width: 992px) {
+      left: 0;
+      right: unset;
+      top: calc(100% + 12px);
+
+      ul {
+        text-align: left;
+
+        a,
+        button {
+          padding-left: 24px;
+          padding-right: 48px;
+        }
+      }
+    }
+  }
 }
 </style>
