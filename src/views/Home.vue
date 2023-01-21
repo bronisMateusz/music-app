@@ -46,7 +46,7 @@
     <section id="genres">
       <h2>Genres</h2>
       <ul>
-        <li v-for="genre in genres" :key="genre.name">
+        <li v-for="genre in filteredGenres" :key="genre.name">
           <router-link :to="{ name: 'genre', params: { name: genre.name } }">
             {{ genre.name }}
           </router-link>
@@ -115,6 +115,10 @@ export default {
   },
   computed: {
     ...mapState(useUserStore, ["userId"]),
+    filteredGenres() {
+      // Don't return genres with empty name
+      return this.genres.filter((genre) => genre.name);
+    },
   },
   methods: {
     addGenre(doc) {
