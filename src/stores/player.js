@@ -34,31 +34,6 @@ export default defineStore("player", {
     volume: 100,
   }),
   actions: {
-    async addToFav(song) {
-      const favoritesRef = doc(db, "favorites", auth.currentUser.uid);
-      const favoritesSnapshot = await getDoc(favoritesRef);
-
-      if (favoritesSnapshot.exists()) {
-        await updateDoc(favoritesRef, {
-          songs: arrayUnion({ id: song.id }),
-        });
-      } else {
-        await setDoc(favoritesRef, {
-          songs: [{ id: song.id }],
-        });
-      }
-
-      song.inFavorites = true;
-    },
-
-    async removeFromFav(song) {
-      await updateDoc(doc(db, "favorites", auth.currentUser.uid), {
-        songs: arrayRemove({ id: song.id }),
-      });
-
-      song.inFavorites = false;
-    },
-
     async newSong(song) {
       // If song is playing, return
       if (this.currentSong.id === song.id && this.playing) return;
