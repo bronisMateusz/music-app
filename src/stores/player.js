@@ -1,13 +1,4 @@
 import { defineStore } from "pinia";
-import { auth, db } from "@/includes/firebase";
-import {
-  arrayRemove,
-  arrayUnion,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
 import { Howl } from "howler";
 import helper from "@/includes/helper";
 
