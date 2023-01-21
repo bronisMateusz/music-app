@@ -149,23 +149,7 @@ export default {
         return;
       }
 
-      // Get favorites doc
-      const favoritesRef = doc(db, "favorites", this.userId);
-      const favoritesSnapshot = await getDoc(favoritesRef);
-
-      // Get favorites songs
-      const favoriteSongs =
-        (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
-
-      const song = {
-        id: songSnap.id,
-        ...songSnap.data(),
-        // Check if the song id is favoriteSongs
-        inFavorites: favoriteSongs.some(
-          (favSong) => favSong.id === songSnap.id
-        ),
-      };
-
+      const song = await this.getSong(songSnap);
       await this.newSong(song);
       this.sound.pause();
     }
@@ -183,6 +167,27 @@ export default {
   methods: {
     ...mapActions(usePlayerStore, ["addToFav", "removeFromFav", "newSong"]),
     ...mapActions(useNotificationsStore, ["setNotification"]),
+
+    async getFavorites() {
+      const favoritesRef = doc(db, "favorites", this.userId);
+      const favoritesSnapshot = await getDoc(favoritesRef);
+
+      // Get favorites songs
+      return (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
+    },
+
+    async getSong(songSnap) {
+      const favoriteSongs = await this.getFavorites();
+
+      return {
+        ...songSnap.data(),
+        id: songSnap.id,
+        // Check if the song id is favoriteSongs
+        inFavorites: favoriteSongs.some(
+          (favSong) => favSong.id === songSnap.id
+        ),
+      };
+    },
 
     goBack() {
       const router = this.$router;
