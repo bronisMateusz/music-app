@@ -1,17 +1,6 @@
 <template>
   <div id="user-menu" ref="userMenu">
-    <ul>
-      <li>
-        <router-link :to="{ name: 'user' }" @click.prevent="closeMenu">
-          Settings
-        </router-link>
-      </li>
-      <li>
-        <button title="Logout" @click.prevent="logout(), closeMenu()">
-          Logout
-        </button>
-      </li>
-    </ul>
+    <slot />
   </div>
 </template>
 
@@ -21,10 +10,10 @@ import useUserStore from "@/stores/user";
 
 export default {
   mounted() {
-    document.addEventListener("mousedown", this.onClickOutside);
+    document.addEventListener("mouseup", this.onClickOutside);
   },
   unmounted() {
-    document.removeEventListener("mousedown", this.onClickOutside);
+    document.removeEventListener("mouseup", this.onClickOutside);
   },
   computed: {
     ...mapState(useUserStore, ["userId"]),
@@ -44,7 +33,7 @@ export default {
         !userMenu.contains(target) &&
         target !== userMenu.parentElement.firstElementChild
       )
-        this.closeMenu();
+        this.$emit("closeMenu");
     },
   },
 };

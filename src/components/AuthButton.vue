@@ -8,7 +8,20 @@
       <eva-icon v-if="!photoURL" name="people-outline" height="28" width="28" />
       <img v-else :src="photoURL" alt="user photo" />
     </button>
-    <user-menu v-if="isUserMenuOpen" @closeMenu="isUserMenuOpen = false" />
+    <context-menu v-if="isUserMenuOpen" @closeMenu="isUserMenuOpen = false">
+      <ul>
+        <li>
+          <router-link :to="{ name: 'user' }" @click.prevent="toggleUserMenu">
+            Settings
+          </router-link>
+        </li>
+        <li>
+          <button title="Logout" @click.prevent="logout(), toggleUserMenu()">
+            Logout
+          </button>
+        </li>
+      </ul>
+    </context-menu>
   </div>
 </template>
 
@@ -16,7 +29,7 @@
 import { mapState, mapWritableState } from "pinia";
 import useAuthModalStore from "@/stores/auth-modal";
 import useUserStore from "@/stores/user";
-import UserMenu from "@/components/UserMenu.vue";
+import ContextMenu from "@/components/ContextMenu.vue";
 
 export default {
   data() {
@@ -24,7 +37,7 @@ export default {
       isUserMenuOpen: false,
     };
   },
-  components: { UserMenu },
+  components: { ContextMenu },
   computed: {
     ...mapWritableState(useAuthModalStore, ["isOpen"]),
     ...mapState(useUserStore, ["photoURL", "userLoggedIn"]),
@@ -59,7 +72,8 @@ export default {
       color: $text-primary;
     }
 
-    svg {
+    svg,
+    img {
       pointer-events: none;
     }
 
