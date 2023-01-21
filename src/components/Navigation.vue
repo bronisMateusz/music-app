@@ -8,7 +8,7 @@
           <eva-icon name="home-outline" height="32" width="32" />
         </router-link>
       </li>
-      <li>
+      <li v-if="userLoggedIn">
         <router-link :to="{ name: 'favorites' }" title="Favorites">
           <eva-icon name="heart-outline" height="32" width="32" />
         </router-link>
@@ -18,7 +18,7 @@
           <eva-icon name="compass-outline" height="32" width="32" />
         </router-link>
       </li>
-      <li>
+      <li v-if="accountType">
         <router-link :to="{ name: 'upload' }" title="Upload">
           <eva-icon name="cloud-upload-outline" height="32" width="32" />
         </router-link>
@@ -29,9 +29,14 @@
 
 <script>
 import AuthButton from "@/components/AuthButton.vue";
+import { mapState } from "pinia";
+import useUserStore from "@/stores/user";
 
 export default {
   components: { AuthButton },
+  computed: {
+    ...mapState(useUserStore, ["accountType", "userLoggedIn"]),
+  },
 };
 </script>
 <style lang="scss">

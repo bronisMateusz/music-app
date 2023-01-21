@@ -151,6 +151,10 @@ export default {
     };
   },
   async created() {
+    if (!this.accountType) {
+      this.$router.push({ name: "home" });
+      return;
+    }
     await this.getUserData();
   },
   beforeRouteLeave(to, from, next) {
@@ -166,7 +170,7 @@ export default {
     this.cancelUpload();
   },
   computed: {
-    ...mapState(useUserStore, ["userId"]),
+    ...mapState(useUserStore, ["accountType", "userId"]),
   },
   methods: {
     ...mapActions(useNotificationsStore, ["setNotification"]),

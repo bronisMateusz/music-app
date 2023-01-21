@@ -10,39 +10,17 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { doc, updateDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
 
 export default defineStore("user", {
   state: () => ({
+    accountType: "",
     displayName: "",
     photoURL: "",
     userLoggedIn: false,
     userId: "",
   }),
   actions: {
-    async register(values) {
-      // Create user
-      const userCred = await createUserWithEmailAndPassword(
-        auth,
-        values.email,
-        values.password
-      );
-
-      // Set user profile in firebase
-      await updateProfile(userCred.user, {
-        displayName: values.name,
-      });
-
-      // Set user data in firestore
-      await setDoc(doc(db, "users", userCred.user.uid), {
-        displayName: values.name,
-        email: values.email,
-      });
-
-      // Set store details
-      this.setStoreDetails(userCred.user);
-    },
-
     async login(values) {
       // Closing the window would clear any existing state even if a user forgets to sign out.
       !values.remember
@@ -66,8 +44,39 @@ export default defineStore("user", {
       window.location.reload();
     },
 
+    async register(values) {
+      // Create user
+      const userCred = await createUserWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      );
+
+      // Set user profile in firebase
+      await updateProfile(userCred.user, {
+        displayName: values.name,
+      });
+
+      // Set user data in firestore
+      await setDoc(doc(db, "users", userCred.user.uid), {
+        accountType: parseInt(values.accountType) || 0,
+        displayName: values.name,
+        email: values.email,
+        photoURL: "",
+      });
+
+      // Set store details
+      this.setStoreDetails(userCred.user);
+    },
+
     async resetPassword(email) {
       await sendPasswordResetEmail(auth, email);
+    },
+
+    async setAccountType() {
+      const userRef = doc(db, "users", this.userId);
+      const userSnapshot = await getDoc(userRef);
+      this.accountType = userSnapshot.data().accountType;
     },
 
     setStoreDetails(user) {
@@ -75,6 +84,7 @@ export default defineStore("user", {
       this.photoURL = user.photoURL;
       this.userId = user.uid;
       this.userLoggedIn = true;
+      this.setAccountType();
     },
 
     async updateProfile(user) {

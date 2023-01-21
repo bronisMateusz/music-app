@@ -83,7 +83,7 @@
     </div>
     <div class="form-group">
       <label>
-        <vee-field type="checkbox" name="artist" value="true" />
+        <vee-field type="checkbox" name="accountType" value="1" />
         I request an account for artists
       </label>
     </div>
