@@ -76,10 +76,16 @@
     <!-- TOS -->
     <div class="form-group">
       <label>
-        <vee-field type="checkbox" name="tos" value="1" />
+        <vee-field type="checkbox" name="tos" value="true" />
         Accept terms of service
       </label>
       <ErrorMessage name="tos" />
+    </div>
+    <div class="form-group">
+      <label>
+        <vee-field type="checkbox" name="accountType" value="1" />
+        I request an account for artists
+      </label>
     </div>
     <button type="submit" title="Create account">Create account</button>
     <div class="form-group">
@@ -91,8 +97,8 @@
 
 <script>
 import { mapActions } from "pinia";
-import useUserStore from "@/stores/user";
 import useNotificationsStore from "@/stores/notifications";
+import useUserStore from "@/stores/user";
 
 export default {
   data() {

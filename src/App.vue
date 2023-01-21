@@ -4,7 +4,8 @@
 
 <script>
 import { mapActions, mapWritableState } from "pinia";
-import { auth } from "@/includes/firebase";
+import { auth, db } from "@/includes/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 import useFavoritesStore from "@/stores/favorites";
 import useUserStore from "@/stores/user";
@@ -21,10 +22,7 @@ export default {
   async created() {
     const currentUser = auth.currentUser;
     if (currentUser) {
-      this.displayName = currentUser.displayName;
-      this.photoURL = currentUser.photoURL;
-      this.userLoggedIn = true;
-      this.userId = currentUser.uid;
+      this.setStoreDetails(currentUser);
       this.getFavorites(this.userId);
     }
   },
@@ -33,6 +31,7 @@ export default {
       return this.$route.meta.template;
     },
     ...mapWritableState(useUserStore, [
+      "accountType",
       "displayName",
       "photoURL",
       "userLoggedIn",
@@ -41,6 +40,7 @@ export default {
   },
   methods: {
     ...mapActions(useFavoritesStore, ["getFavorites"]),
+    ...mapActions(useUserStore, ["setStoreDetails"]),
   },
 };
 </script>
