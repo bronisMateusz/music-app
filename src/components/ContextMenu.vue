@@ -1,13 +1,10 @@
 <template>
-  <div id="user-menu" ref="userMenu">
+  <div id="context-menu" ref="contextMenu">
     <slot />
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from "pinia";
-import useUserStore from "@/stores/user";
-
 export default {
   mounted() {
     document.addEventListener("mouseup", this.onClickOutside);
@@ -15,32 +12,27 @@ export default {
   unmounted() {
     document.removeEventListener("mouseup", this.onClickOutside);
   },
-  computed: {
-    ...mapState(useUserStore, ["userId"]),
-  },
   methods: {
-    ...mapActions(useUserStore, ["logout"]),
-
     closeMenu() {
       this.$emit("closeMenu");
     },
 
     onClickOutside(event) {
       const target = event.target;
-      const userMenu = this.$refs.userMenu;
+      const contextMenu = this.$refs.contextMenu;
 
       if (
-        !userMenu.contains(target) &&
-        target !== userMenu.parentElement.firstElementChild
+        !contextMenu.contains(target) &&
+        target !== contextMenu.parentElement.firstElementChild
       )
-        this.$emit("closeMenu");
+        this.closeMenu();
     },
   },
 };
 </script>
 
 <style lang="scss">
-#user-menu {
+#context-menu {
   position: absolute;
   right: 0;
   top: calc(100%);
