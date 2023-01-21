@@ -191,7 +191,7 @@ export default {
       const querySnapshot = await getDocs(q);
 
       // If doc doesn't exist create doc
-      if (!querySnapshot.docs.length > 0) {
+      if (!querySnapshot.docs.length) {
         await addDoc(collection(db, collectionName), {
           name: name,
         });
