@@ -1,31 +1,20 @@
 <template>
-  <ul id="genre">
-    <li v-for="song in songs" :key="song.id">
-      <div
-        class="song-cover"
-        :style="{
-          'background-image': song.picture
-            ? `url(${song.picture})`
-            : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
-        }"
-      />
-      <div class="song-details">
-        <router-link
-          :to="{ name: 'song', params: { id: song.id } }"
-          class="song-title"
-        >
-          {{ song.title }}
-        </router-link>
-        <span class="song-artist">{{ song.artist }}</span>
-      </div>
-      <eva-icon name="more-horizontal-outline" height="28" width="28" />
-    </li>
-  </ul>
+  <song :songs="songs" />
 </template>
 
 <script>
 import { db } from "@/includes/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import { mapState } from "pinia";
+import Song from "@/components/Song.vue";
+import useUserStore from "@/stores/user";
 
 export default {
   data() {
@@ -33,24 +22,42 @@ export default {
       songs: [],
     };
   },
+  components: { Song },
   async created() {
-    const songsQuery = query(
-      collection(db, "songs"),
-      where("genre", "==", this.$route.params.name)
-    );
-    const songsSnap = await getDocs(songsQuery);
-
-    if (!songsSnap.docs.length) {
-      this.$router.push({ name: "home" });
-      return;
-    }
-
-    songsSnap.forEach((doc) => {
+    await this.getSongs();
+  },
+  computed: {
+    ...mapState(useUserStore, ["userId"]),
+  },
+  methods: {
+    addSong(doc, favoriteSongs) {
       this.songs.push({
         ...doc.data(),
         id: doc.id,
+        // Check if the song id is favoriteSongs
+        inFavorites: favoriteSongs.some((favSong) => favSong.id === doc.id),
       });
-    });
+    },
+    async getFavorites() {
+      const favoritesRef = doc(db, "favorites", this.userId);
+      const favoritesSnapshot = await getDoc(favoritesRef);
+
+      // Get favorites songs
+      return (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
+    },
+
+    async getSongs() {
+      // Query songs collection and get first 7 documents
+      const songsQuery = query(
+        collection(db, "songs"),
+        where("genre", "==", this.$route.params.name)
+      );
+      const songsSnap = await getDocs(songsQuery);
+
+      // Get favorites
+      const favoriteSongs = await this.getFavorites();
+      songsSnap.forEach((doc) => this.addSong(doc, favoriteSongs));
+    },
   },
 };
 </script>
