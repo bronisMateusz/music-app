@@ -90,7 +90,7 @@
                   : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
               }"
             />
-            <p>{{ album.name }}</p>
+            <p>{{ album.name || "Undefined" }}</p>
           </router-link>
         </li>
       </ul>
@@ -188,18 +188,16 @@ export default {
         where("name", "==", name),
         limit(1)
       );
-
       const querySnapshot = await getDocs(q);
-      let docRef = querySnapshot.docs[0];
 
-      // If doc doesn't exist create it and return id
-      if (!doc) {
-        docRef = await addDoc(collection(db, collectionName), {
+      // If doc doesn't exist create doc
+      if (!querySnapshot.docs.length > 0) {
+        await addDoc(collection(db, collectionName), {
           name: name,
         });
       }
 
-      return docRef.data().name;
+      return name;
     },
 
     async getUserData() {
@@ -239,31 +237,31 @@ export default {
             // Convert TPOS to disc info
             const tposData = metadata.TPOS
               ? metadata.TPOS.data.split("/")
-              : ["", ""];
+              : [0, 0];
 
             // Convert track to track info
-            const trackData = metadata.track ? metadata.track.split("/") : "";
+            const trackData = metadata.track
+              ? metadata.track.split("/")
+              : [0, 0];
 
             // If year is store in TDRC, get only year
             // else get just year
             const yearData = metadata.TDRC
               ? metadata.TDRC.data.slice(0, 4)
-              : metadata.year
-              ? metadata.year
-              : "";
+              : parseInt(metadata.year) || 0;
 
             resolve({
               album: metadata.album || "",
-              artist: await this.getDocName("artists", metadata.artist),
-              author: metadata.TCOM.data || "",
-              disc: tposData[0],
-              discTotal: tposData[1],
-              genre: await this.getDocName("genres", metadata.genre),
+              artist: await this.getDocName("artists", metadata.artist || ""),
+              author: metadata.TCOM ? metadata.TCOM.data : "",
+              disc: parseInt(tposData[0]),
+              discTotal: parseInt(tposData[1]),
+              genre: await this.getDocName("genres", metadata.genre || ""),
               lyrics: "",
               picture: pictureData,
-              title: metadata.title,
-              track: trackData[0],
-              trackTotal: trackData[1],
+              title: metadata.title || "",
+              track: parseInt(trackData[0]),
+              trackTotal: parseInt(trackData[1]),
               year: yearData,
             });
           },
