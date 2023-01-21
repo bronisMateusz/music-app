@@ -72,7 +72,7 @@ export default defineStore("player", {
 
       // Store song details from Firebase
       this.currentSong = {
-        albumId: song.album_id,
+        albumId: song.albumId,
         artist: song.artist,
         id: song.id,
         inFavorites: song.inFavorites,

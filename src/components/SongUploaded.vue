@@ -270,7 +270,7 @@ export default {
       try {
         const songRef = ref(
           storage,
-          `songs/${this.userId}/${this.song.file_name}`
+          `songs/${this.userId}/${this.song.fileName}`
         );
 
         // Delete song from Storage
@@ -280,7 +280,7 @@ export default {
         await deleteDoc(doc(db, "songs", this.song.id));
 
         // Remove the song from the album's songs array
-        const albumRef = doc(db, "albums", this.song.album_id);
+        const albumRef = doc(db, "albums", this.song.albumId);
         const albumSnap = await getDoc(albumRef);
         let data = albumSnap.data();
         data.songs = data.songs.filter((song) => song.id !== this.song.id);
@@ -289,8 +289,8 @@ export default {
         if (data.songs.length) {
           await updateDoc(albumRef, data);
         } else {
-          await deleteDoc(doc(db, "albums", this.song.album_id));
-          this.removeAlbum(this.song.album_id);
+          await deleteDoc(doc(db, "albums", this.song.albumId));
+          this.removeAlbum(this.song.albumId);
         }
 
         this.removeSong(this.index);
@@ -365,7 +365,7 @@ export default {
 
         const songsQuery = query(
           collection(db, "songs"),
-          where("album_id", "==", this.song.album_id)
+          where("albumId", "==", this.song.albumId)
         );
         const songsSnapshot = await getDocs(songsQuery);
 
@@ -382,10 +382,10 @@ export default {
         await Promise.all(songsPromises);
 
         // Update album picture
-        await updateDoc(doc(db, "albums", this.song.album_id), {
+        await updateDoc(doc(db, "albums", this.song.albumId), {
           picture: pictureBase64,
         });
-        this.updateAlbumPicture(this.song.album_id, pictureBase64);
+        this.updateAlbumPicture(this.song.albumId, pictureBase64);
 
         this.setNotification("success", "Success", "Cover updated!");
       } catch (error) {

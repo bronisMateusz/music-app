@@ -150,7 +150,7 @@ export default {
     // Get list of user songs
     const songsQuery = query(
       collection(db, "songs"),
-      where("user_id", "==", this.userId)
+      where("userId", "==", this.userId)
     );
     const songsSnapshot = await getDocs(songsQuery);
     songsSnapshot.forEach(this.addSong);
@@ -158,7 +158,7 @@ export default {
     // Get list of user albums
     const albumsQuery = query(
       collection(db, "albums"),
-      where("user_id", "==", this.userId)
+      where("userId", "==", this.userId)
     );
     const albumsSnapshot = await getDocs(albumsQuery);
     albumsSnapshot.forEach(this.addAlbum);
@@ -234,10 +234,10 @@ export default {
           async () => {
             const song = {
               ...metadata,
-              artist_id: await this.getDocId("artists", metadata.artist),
-              file_name: file.name,
-              genre_id: await this.getDocId("genres", metadata.genre),
-              user_id: this.userId,
+              artistId: await this.getDocId("artists", metadata.artist),
+              fileName: file.name,
+              genreId: await this.getDocId("genres", metadata.genre),
+              userId: this.userId,
               url: await getDownloadURL(task.snapshot.ref),
             };
             const songRef = await addDoc(collection(db, "songs"), song);
@@ -299,14 +299,14 @@ export default {
           name: metadata.album,
           picture: metadata.picture,
           songs: [{ id: songSnapshot.id }],
-          user_id: this.userId,
+          userId: this.userId,
         });
         this.addAlbum(await getDoc(albumDoc));
       }
 
-      // Add album_id to uploaded song
+      // Add albumId to uploaded song
       await updateDoc(doc(db, "songs", songSnapshot.id), {
-        album_id: albumDoc.id,
+        albumId: albumDoc.id,
       });
     },
 
