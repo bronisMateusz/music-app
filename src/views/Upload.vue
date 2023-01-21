@@ -103,9 +103,12 @@
           v-for="(song, index) in songs"
           :key="song.id"
           :index="index"
+          :addAlbum="addAlbum"
           :removeAlbum="removeAlbum"
           :removeSong="removeSong"
           :song="song"
+          :updateAlbumDoc="updateAlbumDoc"
+          :updateArtistDoc="updateArtistDoc"
           :updateAlbumPicture="updateAlbumPicture"
           :updateSongDetails="updateSongDetails"
           :updateSongPicture="updateSongPicture"
@@ -309,6 +312,36 @@ export default {
       await updateDoc(doc(db, "songs", songSnapshot.id), {
         albumId: albumDoc.id,
       });
+
+      return albumDoc.id;
+    },
+
+    async updateArtistDoc(metadata, songSnapshot) {
+      const artistQuery = query(
+        collection(db, "artists"),
+        where("name", "==", metadata.artist),
+        limit(1)
+      );
+
+      const artistSnapshot = await getDocs(artistQuery);
+      let artistDoc = artistSnapshot.docs[0];
+      if (artistDoc) {
+        // If album with artist and name exist add new song
+        await updateDoc(doc(db, "artists", artistDoc.id), {
+          songs: arrayUnion({ id: songSnapshot.id }),
+        });
+      } else {
+        // If doesn't exist create new document
+        artistDoc = await addDoc(collection(db, "artists"), {
+          name: metadata.artist,
+          songs: [{ id: songSnapshot.id }],
+        });
+      }
+
+      // Add artistId to uploaded song
+      await updateDoc(doc(db, "songs", songSnapshot.id), {
+        artistId: artistDoc.id,
+      });
     },
 
     updateAlbumPicture(albumId, picture) {
@@ -416,6 +449,7 @@ export default {
 
             this.addSong(songSnapshot);
             this.updateAlbumDoc(metadata, songSnapshot);
+            this.updateArtistDoc(metadata, songSnapshot);
 
             this.setNotification(
               "success",
