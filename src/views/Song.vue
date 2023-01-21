@@ -16,7 +16,7 @@
       <div class="options-group">
         <!-- Add to favorites Button -->
         <button
-          v-if="!currentSong.inFavorites"
+          v-if="userLoggedIn && !currentSong.inFavorites"
           title="Add to favorites"
           @click.prevent="addToFavorites('songs', currentSong)"
         >
@@ -24,7 +24,7 @@
         </button>
         <!-- Remove from favorites Button -->
         <button
-          v-else
+          v-if="userLoggedIn && currentSong.inFavorites"
           title="Remove from favorites"
           @click.prevent="removeFromFavorites('songs', currentSong)"
         >
@@ -162,7 +162,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(useUserStore, ["userId"]),
+    ...mapState(useUserStore, ["userId", "userLoggedIn"]),
     ...mapState(useFavoritesStore, ["favSongs"]),
     ...mapWritableState(usePlayerStore, [
       "currentSong",

@@ -18,7 +18,7 @@
       </div>
       <!-- Add to favorites Button -->
       <button
-        v-if="!song.inFavorites"
+        v-if="userLoggedIn && !song.inFavorites"
         title="Add to favorites"
         @click.prevent="addToFavorites('songs', song)"
       >
@@ -26,7 +26,7 @@
       </button>
       <!-- Remove from favorites Button -->
       <button
-        v-else
+        v-if="userLoggedIn && song.inFavorites"
         title="Remove from favorites"
         @click.prevent="removeFromFavorites('songs', song)"
       >
@@ -51,7 +51,7 @@ export default {
   props: ["songs"],
   emits: ["albumId"],
   computed: {
-    ...mapState(useUserStore, ["userId"]),
+    ...mapState(useUserStore, ["userId", "userLoggedIn"]),
     ...mapWritableState(usePlayerStore, ["currentSongIndex", "songsQueue"]),
   },
   methods: {

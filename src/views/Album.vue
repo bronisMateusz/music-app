@@ -32,7 +32,7 @@
         </button>
         <!-- Add to favorites Button -->
         <button
-          v-if="!album.inFavorites"
+          v-if="userLoggedIn && !album.inFavorites"
           title="Add to favorites"
           @click.prevent="addToFavorites('albums', album)"
         >
@@ -40,7 +40,7 @@
         </button>
         <!-- Remove from favorites Button -->
         <button
-          v-else
+          v-if="userLoggedIn && album.inFavorites"
           title="Remove from favorites"
           @click.prevent="removeFromFavorites('albums', album)"
         >
@@ -71,13 +71,13 @@ import usePlayerStore from "@/stores/player";
 import useUserStore from "@/stores/user";
 
 export default {
+  components: { Song },
   data() {
     return {
       album: {},
       songs: [],
     };
   },
-  components: { Song },
   async created() {
     // Get album doc
     const albumRef = doc(db, "albums", this.$route.params.id);
@@ -92,7 +92,7 @@ export default {
     await this.getSongs();
   },
   computed: {
-    ...mapState(useUserStore, ["userId"]),
+    ...mapState(useUserStore, ["userId", "userLoggedIn"]),
     ...mapState(useFavoritesStore, ["favSongs", "favAlbums"]),
     ...mapWritableState(usePlayerStore, [
       "currentSong",
