@@ -4,8 +4,7 @@
 
 <script>
 import { mapActions, mapWritableState } from "pinia";
-import { auth, db } from "@/includes/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { auth } from "@/includes/firebase";
 
 import useFavoritesStore from "@/stores/favorites";
 import useUserStore from "@/stores/user";
