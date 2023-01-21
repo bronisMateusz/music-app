@@ -9,8 +9,8 @@
             : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
         }"
       />
-      <h2 class="title">{{ album.name }}</h2>
-      <a class="artist" href="#">{{ album.artist }}</a>
+      <h2 class="title">{{ album.name || "Undefined" }}</h2>
+      <a class="artist" href="#">{{ album.artist || "Undefined" }}</a>
       <p class="songs-quantity">{{ songs.length }} songs</p>
       <div class="actions">
         <!-- Play/Pause Button -->
@@ -87,30 +87,16 @@ export default {
     const albumRef = doc(db, "albums", this.$route.params.id);
     const albumSnap = await getDoc(albumRef);
 
-    // Get favorites doc
-    const favoritesRef = doc(db, "favorites", this.userId);
-    const favoritesSnapshot = await getDoc(favoritesRef);
-
     if (!albumSnap.exists()) {
       this.$router.push({ name: "home" });
       return;
     }
 
     // Get favorites albums
-    const favoriteAlbums =
-      (favoritesSnapshot.data() && favoritesSnapshot.data().albums) || [];
+    const favoriteAlbums = await this.getFavorites("albums");
     this.addAlbum(albumSnap, favoriteAlbums);
 
-    // Get favorites songs
-    const favoriteSongs =
-      (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
-
-    const songs = this.album.songs;
-    for (let i = 0; i < songs.length; i++) {
-      const songRef = doc(db, "songs", songs[i].id);
-      const songSnap = await getDoc(songRef);
-      this.addSong(songSnap, favoriteSongs);
-    }
+    await this.getSongs();
   },
   computed: {
     ...mapState(useUserStore, ["userId"]),
@@ -134,13 +120,12 @@ export default {
     },
 
     addSong(doc, favoriteSongs) {
-      const song = {
+      this.songs.push({
         ...doc.data(),
         id: doc.id,
         // Check if the song id is in favoriteSongs
         inFavorites: favoriteSongs.some((favSong) => favSong.id === doc.id),
-      };
-      this.songs.push(song);
+      });
     },
 
     async addToFav() {
@@ -158,6 +143,25 @@ export default {
       }
 
       this.album.inFavorites = true;
+    },
+
+    async getFavorites(type) {
+      const favoritesRef = doc(db, "favorites", this.userId);
+      const favoritesSnapshot = await getDoc(favoritesRef);
+
+      // Get favorites of the specified type
+      return (favoritesSnapshot.data() && favoritesSnapshot.data()[type]) || [];
+    },
+
+    async getSongs() {
+      // Get favorites songs
+      const favoriteSongs = await this.getFavorites("songs");
+
+      for (const song of this.album.songs) {
+        const songRef = doc(db, "songs", song.id);
+        const songSnap = await getDoc(songRef);
+        this.addSong(songSnap, favoriteSongs);
+      }
     },
 
     playAlbum() {
