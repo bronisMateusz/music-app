@@ -37,7 +37,6 @@
     <register-form
       v-if="tab === 'register'"
       :tab="tab"
-      :reg_show_alert="reg_show_alert"
       @tab-change="tab = $event"
       @close-modal="isOpen = false"
     />
