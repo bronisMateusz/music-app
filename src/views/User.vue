@@ -37,7 +37,7 @@
         <label>
           User name
           <vee-field
-            v-model="user.displayName"
+            v-model="displayName"
             type="text"
             name="displayName"
             placeholder="User name"
@@ -69,26 +69,16 @@ import useUserStore from "@/stores/user";
 export default {
   beforeRouteEnter(to, from, next) {
     const userStore = useUserStore();
-    if (userStore.userLoggedIn) {
-      next();
-    } else {
-      next({ name: "home" });
-    }
+    userStore.userLoggedIn ? next() : next({ name: "home" });
   },
+  props: ["user"],
   data() {
     return {
       isDragover: false,
-      user: {
-        // Exists only because of validation.
-        displayName: "",
-      },
       userSchema: {
         displayName: "required|min:3|max:100|alphaSpaces",
       },
     };
-  },
-  async created() {
-    this.user.displayName = this.displayName;
   },
   computed: {
     ...mapWritableState(useUserStore, ["displayName", "photoURL"]),
@@ -107,7 +97,7 @@ export default {
     async updateDetails() {
       try {
         await this.updateProfile({
-          displayName: this.user.displayName,
+          displayName: this.displayName,
           photoURL: this.photoURL,
         });
       } catch (error) {
@@ -134,7 +124,14 @@ export default {
         ? [...event.dataTransfer.files][0]
         : [...event.target.files][0];
 
-      if (file.type !== "image/jpeg") return;
+      if (file.type !== "image/jpeg") {
+        this.setNotification(
+          "error",
+          "Wrong file format",
+          "You can only upload jpeg files"
+        );
+        return;
+      }
 
       try {
         await this.uploadPhoto(file);
