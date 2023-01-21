@@ -11,9 +11,9 @@
     />
     <div class="song-details" @click.prevent="newSong(song)">
       <button class="song-title">
-        {{ song.title }}
+        {{ song.title || "Undefined" }}
       </button>
-      <span class="song-artist">{{ song.artist }}</span>
+      <span class="song-artist">{{ song.artist || "Undefined" }}</span>
     </div>
     <button @click.prevent="toggleFormVisibility">
       <eva-icon name="more-horizontal-outline" height="28" width="28" />
@@ -87,7 +87,7 @@
           <vee-field
             type="text"
             name="album"
-            placeholder="Enter album name"
+            placeholder="Enter album"
             @input="updateUnsavedFlag(true)"
           />
         </label>
@@ -311,15 +311,14 @@ export default {
           album: values.album,
           artist: values.artist,
           author: values.author,
-          disc: values.disc,
-          discTotal: values.discTotal,
-          format: values.format,
+          disc: parseInt(values.disc),
+          discTotal: parseInt(values.discTotal),
           genre: values.genre,
           lyrics: values.lyrics,
           title: values.title,
-          track: values.track,
-          trackTotal: values.trackTotal,
-          year: values.year,
+          track: parseInt(values.track),
+          trackTotal: parseInt(values.trackTotal),
+          year: parseInt(values.year),
         });
       } catch (error) {
         this.setNotification(
@@ -358,7 +357,14 @@ export default {
         ? [...event.dataTransfer.files][0]
         : [...event.target.files][0];
 
-      if (file.type !== "image/jpeg") return;
+      if (file.type !== "image/jpeg") {
+        this.setNotification(
+          "error",
+          "Wrong file format",
+          "You can only upload jpeg files"
+        );
+        return;
+      }
 
       try {
         const pictureBase64 = await this.getBase64(file);
@@ -372,7 +378,6 @@ export default {
         // Update picture of all songs in album
         const songsPromises = songsSnapshot.docs.map(async (doc) => {
           await updateDoc(doc.ref, {
-            format: "image/jpeg",
             picture: pictureBase64,
           });
           this.updateSongPicture(doc.id, pictureBase64);

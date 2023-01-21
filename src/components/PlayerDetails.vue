@@ -17,8 +17,8 @@
     >
       {{ currentSong.title }}
     </router-link>
-    <p v-else class="song-title">{{ currentSong.title }}</p>
-    <span class="song-artist">{{ currentSong.artist }}</span>
+    <p v-else class="song-title">{{ currentSong.title || "Undefined" }}</p>
+    <span class="song-artist">{{ currentSong.artist || "Undefined" }}</span>
   </div>
   <!-- Progress bar -->
   <div class="progress-bar">

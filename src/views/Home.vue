@@ -88,17 +88,13 @@
 
 <script>
 import { db } from "@/includes/firebase";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  limit,
-  query,
-} from "firebase/firestore";
+import { collection, getDocs, limit, query } from "firebase/firestore";
 import { mapState } from "pinia";
+
 import AuroraGradient from "@/components/AuroraGradient.vue";
 import Song from "@/components/Song.vue";
+
+import useFavoritesStore from "@/stores/favorites";
 import useUserStore from "@/stores/user";
 
 export default {
@@ -115,6 +111,8 @@ export default {
   },
   computed: {
     ...mapState(useUserStore, ["userId"]),
+    ...mapState(useFavoritesStore, ["favSongs"]),
+
     filteredGenres() {
       // Don't return genres with empty name
       return this.genres.filter((genre) => genre.name);
@@ -127,21 +125,13 @@ export default {
       });
     },
 
-    addSong(doc, favoriteSongs) {
+    addSong(doc) {
       this.songs.push({
         ...doc.data(),
         id: doc.id,
         // Check if the song id is favoriteSongs
-        inFavorites: favoriteSongs.some((favSong) => favSong.id === doc.id),
+        inFavorites: this.favSongs.some((favSong) => favSong.id === doc.id),
       });
-    },
-
-    async getFavorites() {
-      const favoritesRef = doc(db, "favorites", this.userId);
-      const favoritesSnapshot = await getDoc(favoritesRef);
-
-      // Get favorites songs
-      return (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
     },
 
     async getLatestGenres() {
@@ -157,9 +147,7 @@ export default {
       const songsQuery = query(collection(db, "songs"), limit(7));
       const songsSnap = await getDocs(songsQuery);
 
-      // Get favorites
-      const favoriteSongs = await this.getFavorites();
-      songsSnap.forEach((doc) => this.addSong(doc, favoriteSongs));
+      songsSnap.forEach(this.addSong);
     },
   },
 };
