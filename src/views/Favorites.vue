@@ -1,5 +1,5 @@
 <template>
-  <div id="favorites">
+  <div v-if="songs.length || albums.length" id="favorites">
     <!-- Uploaded albums -->
     <section v-if="albums.length">
       <h2>Favorites albums</h2>
@@ -25,13 +25,18 @@
       <song :songs="songs" />
     </section>
   </div>
+  <div v-else>
+    <h2>You haven't any favorites yet. :(</h2>
+  </div>
 </template>
 
 <script>
 import { db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { mapActions, mapState, mapWritableState } from "pinia";
+
 import Song from "@/components/Song.vue";
+
 import usePlayerStore from "@/stores/player";
 import useUserStore from "@/stores/user";
 
@@ -43,6 +48,10 @@ export default {
     };
   },
   async created() {
+    if (!this.accountType) {
+      this.$router.push({ name: "home" });
+      return;
+    }
     // Get favorites doc
     const favoritesRef = doc(db, "favorites", this.userId);
     const favoritesSnapshot = await getDoc(favoritesRef);
@@ -70,7 +79,7 @@ export default {
   },
   components: { Song },
   computed: {
-    ...mapState(useUserStore, ["userId"]),
+    ...mapState(useUserStore, ["userId", "userLoggedIn"]),
     ...mapWritableState(usePlayerStore, [
       "currentSong",
       "currentSongIndex",
