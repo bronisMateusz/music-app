@@ -81,9 +81,7 @@
     <!-- Newest songs -->
     <section id="newest-songs">
       <h2>Newest songs</h2>
-      <!-- Playlist -->
       <song :songs="songs" />
-      <!-- .. end Playlist -->
     </section>
   </div>
 </template>
@@ -112,40 +110,53 @@ export default {
   },
   components: { AuroraGradient, Song },
   async created() {
-    // Query songs collection and get first 7 documents
-    const songsQuery = query(collection(db, "songs"), limit(7));
-    const songsSnap = await getDocs(songsQuery);
-
-    // Get favorites
-    const favoritesRef = doc(db, "favorites", this.userId);
-    const favoritesSnapshot = await getDoc(favoritesRef);
-
-    // Get favorites songs
-    const favoriteSongs =
-      (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
-
-    songsSnap.forEach((doc) => {
-      const song = {
-        id: doc.id,
-        ...doc.data(),
-        // Check if the song id is favoriteSongs
-        inFavorites: favoriteSongs.some((favSong) => favSong.id === doc.id),
-      };
-      this.songs.push(song);
-    });
-
-    // Query genres collection and get first 7 documents
-    const genreQuery = query(collection(db, "genres"), limit(7));
-    const genreSnap = await getDocs(genreQuery);
-
-    genreSnap.forEach((doc) => {
-      this.genres.push({
-        ...doc.data(),
-      });
-    });
+    await this.getLatestGenres();
+    await this.getLatestSongs();
   },
   computed: {
     ...mapState(useUserStore, ["userId"]),
+  },
+  methods: {
+    addGenre(doc) {
+      this.genres.push({
+        ...doc.data(),
+      });
+    },
+
+    addSong(doc, favoriteSongs) {
+      this.songs.push({
+        ...doc.data(),
+        id: doc.id,
+        // Check if the song id is favoriteSongs
+        inFavorites: favoriteSongs.some((favSong) => favSong.id === doc.id),
+      });
+    },
+
+    async getFavorites() {
+      const favoritesRef = doc(db, "favorites", this.userId);
+      const favoritesSnapshot = await getDoc(favoritesRef);
+
+      // Get favorites songs
+      return (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
+    },
+
+    async getLatestGenres() {
+      // Query genres collection and get first 7 documents
+      const genreQuery = query(collection(db, "genres"), limit(7));
+      const genreSnap = await getDocs(genreQuery);
+
+      genreSnap.forEach(this.addGenre);
+    },
+
+    async getLatestSongs() {
+      // Query songs collection and get first 7 documents
+      const songsQuery = query(collection(db, "songs"), limit(7));
+      const songsSnap = await getDocs(songsQuery);
+
+      // Get favorites
+      const favoriteSongs = await this.getFavorites();
+      songsSnap.forEach((doc) => this.addSong(doc, favoriteSongs));
+    },
   },
 };
 </script>
