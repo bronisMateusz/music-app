@@ -9,8 +9,8 @@
             : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
         }"
       />
-      <h2 class="title">{{ album.name }}</h2>
-      <a class="artist" href="#">{{ album.artist }}</a>
+      <h2 class="title">{{ album.name || "Undefined" }}</h2>
+      <a class="artist" href="#">{{ album.artist || "Undefined" }}</a>
       <p class="songs-quantity">{{ songs.length }} songs</p>
       <div class="actions">
         <!-- Play/Pause Button -->
@@ -34,7 +34,7 @@
         <button
           v-if="!album.inFavorites"
           title="Add to favorites"
-          @click.prevent="addToFav"
+          @click.prevent="addToFavorites('albums', album)"
         >
           <eva-icon name="heart-outline" height="48" width="48" />
         </button>
@@ -42,7 +42,7 @@
         <button
           v-else
           title="Remove from favorites"
-          @click.prevent="removeFromFav"
+          @click.prevent="removeFromFavorites('albums', album)"
         >
           <eva-icon name="heart" height="48" width="48" />
         </button>
@@ -61,16 +61,12 @@
 
 <script>
 import { db } from "@/includes/firebase";
-import {
-  arrayUnion,
-  arrayRemove,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { arrayRemove, doc, getDoc, updateDoc } from "firebase/firestore";
 import { mapActions, mapState, mapWritableState } from "pinia";
+
 import Song from "@/components/Song.vue";
+
+import useFavoritesStore from "@/stores/favorites";
 import usePlayerStore from "@/stores/player";
 import useUserStore from "@/stores/user";
 
@@ -87,33 +83,17 @@ export default {
     const albumRef = doc(db, "albums", this.$route.params.id);
     const albumSnap = await getDoc(albumRef);
 
-    // Get favorites doc
-    const favoritesRef = doc(db, "favorites", this.userId);
-    const favoritesSnapshot = await getDoc(favoritesRef);
-
     if (!albumSnap.exists()) {
       this.$router.push({ name: "home" });
       return;
     }
 
-    // Get favorites albums
-    const favoriteAlbums =
-      (favoritesSnapshot.data() && favoritesSnapshot.data().albums) || [];
-    this.addAlbum(albumSnap, favoriteAlbums);
-
-    // Get favorites songs
-    const favoriteSongs =
-      (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
-
-    const songs = this.album.songs;
-    for (let i = 0; i < songs.length; i++) {
-      const songRef = doc(db, "songs", songs[i].id);
-      const songSnap = await getDoc(songRef);
-      this.addSong(songSnap, favoriteSongs);
-    }
+    this.addAlbum(albumSnap);
+    await this.getSongs();
   },
   computed: {
     ...mapState(useUserStore, ["userId"]),
+    ...mapState(useFavoritesStore, ["favSongs", "favAlbums"]),
     ...mapWritableState(usePlayerStore, [
       "currentSong",
       "currentSongIndex",
@@ -122,42 +102,33 @@ export default {
     ]),
   },
   methods: {
+    ...mapActions(useFavoritesStore, ["addToFavorites", "removeFromFavorites"]),
     ...mapActions(usePlayerStore, ["newSong", "toggleAudio"]),
 
-    addAlbum(doc, favoriteAlbums) {
+    addAlbum(doc) {
       this.album = {
         ...doc.data(),
         id: doc.id,
         // Check if the album id is favoriteAlbum
-        inFavorites: favoriteAlbums.some((favAlbum) => favAlbum.id === doc.id),
+        inFavorites: this.favAlbums.some((favAlbum) => favAlbum.id === doc.id),
       };
     },
 
-    addSong(doc, favoriteSongs) {
-      const song = {
+    addSong(doc) {
+      this.songs.push({
         ...doc.data(),
         id: doc.id,
         // Check if the song id is in favoriteSongs
-        inFavorites: favoriteSongs.some((favSong) => favSong.id === doc.id),
-      };
-      this.songs.push(song);
+        inFavorites: this.favSongs.some((favSong) => favSong.id === doc.id),
+      });
     },
 
-    async addToFav() {
-      const favoritesRef = doc(db, "favorites", this.userId);
-      const favoritesSnapshot = await getDoc(favoritesRef);
-
-      if (favoritesSnapshot.exists()) {
-        await updateDoc(favoritesRef, {
-          albums: arrayUnion({ id: this.album.id }),
-        });
-      } else {
-        await setDoc(favoritesRef, {
-          songs: [{ id: this.album.id }],
-        });
+    async getSongs() {
+      for (const song of this.album.songs) {
+        const songRef = doc(db, "songs", song.id);
+        const songSnap = await getDoc(songRef);
+        this.addSong(songSnap);
       }
-
-      this.album.inFavorites = true;
     },
 
     playAlbum() {
@@ -169,14 +140,6 @@ export default {
       }
 
       this.toggleAudio();
-    },
-
-    async removeFromFav() {
-      await updateDoc(doc(db, "favorites", this.userId), {
-        albums: arrayRemove({ id: this.album.id }),
-      });
-
-      this.album.inFavorites = false;
     },
   },
 };

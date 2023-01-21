@@ -20,7 +20,7 @@
       <button
         v-if="!song.inFavorites"
         title="Add to favorites"
-        @click.prevent="addToFav(song)"
+        @click.prevent="addToFavorites('songs', song)"
       >
         <eva-icon name="heart-outline" height="28" width="28" />
       </button>
@@ -28,7 +28,7 @@
       <button
         v-else
         title="Remove from favorites"
-        @click.prevent="removeFromFav(song)"
+        @click.prevent="removeFromFavorites('songs', song)"
       >
         <eva-icon name="heart" height="28" width="28" />
       </button>
@@ -42,6 +42,8 @@
 
 <script>
 import { mapActions, mapState, mapWritableState } from "pinia";
+
+import useFavoritesStore from "@/stores/favorites";
 import usePlayerStore from "@/stores/player";
 import useUserStore from "@/stores/user";
 
@@ -53,13 +55,14 @@ export default {
     ...mapWritableState(usePlayerStore, ["currentSongIndex", "songsQueue"]),
   },
   methods: {
-    ...mapActions(usePlayerStore, ["addToFav", "removeFromFav", "newSong"]),
+    ...mapActions(useFavoritesStore, ["addToFavorites", "removeFromFavorites"]),
+    ...mapActions(usePlayerStore, ["newSong"]),
 
     addSongs(song, index) {
       this.songsQueue = this.songs;
       this.currentSongIndex = index;
       this.newSong(song);
-      this.$emit("albumId", song.album_id);
+      this.$emit("albumId", song.albumId);
     },
   },
 };

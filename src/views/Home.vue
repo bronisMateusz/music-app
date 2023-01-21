@@ -46,7 +46,7 @@
     <section id="genres">
       <h2>Genres</h2>
       <ul>
-        <li v-for="genre in genres" :key="genre.name">
+        <li v-for="genre in filteredGenres" :key="genre.name">
           <router-link :to="{ name: 'genre', params: { name: genre.name } }">
             {{ genre.name }}
           </router-link>
@@ -81,26 +81,20 @@
     <!-- Newest songs -->
     <section id="newest-songs">
       <h2>Newest songs</h2>
-      <!-- Playlist -->
       <song :songs="songs" />
-      <!-- .. end Playlist -->
     </section>
   </div>
 </template>
 
 <script>
 import { db } from "@/includes/firebase";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  limit,
-  query,
-} from "firebase/firestore";
+import { collection, getDocs, limit, query } from "firebase/firestore";
 import { mapState } from "pinia";
+
 import AuroraGradient from "@/components/AuroraGradient.vue";
 import Song from "@/components/Song.vue";
+
+import useFavoritesStore from "@/stores/favorites";
 import useUserStore from "@/stores/user";
 
 export default {
@@ -112,40 +106,49 @@ export default {
   },
   components: { AuroraGradient, Song },
   async created() {
-    // Query songs collection and get first 7 documents
-    const songsQuery = query(collection(db, "songs"), limit(7));
-    const songsSnap = await getDocs(songsQuery);
-
-    // Get favorites
-    const favoritesRef = doc(db, "favorites", this.userId);
-    const favoritesSnapshot = await getDoc(favoritesRef);
-
-    // Get favorites songs
-    const favoriteSongs =
-      (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
-
-    songsSnap.forEach((doc) => {
-      const song = {
-        id: doc.id,
-        ...doc.data(),
-        // Check if the song id is favoriteSongs
-        inFavorites: favoriteSongs.some((favSong) => favSong.id === doc.id),
-      };
-      this.songs.push(song);
-    });
-
-    // Query genres collection and get first 7 documents
-    const genreQuery = query(collection(db, "genres"), limit(7));
-    const genreSnap = await getDocs(genreQuery);
-
-    genreSnap.forEach((doc) => {
-      this.genres.push({
-        ...doc.data(),
-      });
-    });
+    await this.getLatestGenres();
+    await this.getLatestSongs();
   },
   computed: {
     ...mapState(useUserStore, ["userId"]),
+    ...mapState(useFavoritesStore, ["favSongs"]),
+
+    filteredGenres() {
+      // Don't return genres with empty name
+      return this.genres.filter((genre) => genre.name);
+    },
+  },
+  methods: {
+    addGenre(doc) {
+      this.genres.push({
+        ...doc.data(),
+      });
+    },
+
+    addSong(doc) {
+      this.songs.push({
+        ...doc.data(),
+        id: doc.id,
+        // Check if the song id is favoriteSongs
+        inFavorites: this.favSongs.some((favSong) => favSong.id === doc.id),
+      });
+    },
+
+    async getLatestGenres() {
+      // Query genres collection and get first 7 documents
+      const genreQuery = query(collection(db, "genres"), limit(7));
+      const genreSnap = await getDocs(genreQuery);
+
+      genreSnap.forEach(this.addGenre);
+    },
+
+    async getLatestSongs() {
+      // Query songs collection and get first 7 documents
+      const songsQuery = query(collection(db, "songs"), limit(7));
+      const songsSnap = await getDocs(songsQuery);
+
+      songsSnap.forEach(this.addSong);
+    },
   },
 };
 </script>

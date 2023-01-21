@@ -18,7 +18,7 @@
         <button
           v-if="!currentSong.inFavorites"
           title="Add to favorites"
-          @click.prevent="addToFav(currentSong)"
+          @click.prevent="addToFavorites('songs', currentSong)"
         >
           <eva-icon name="heart-outline" height="28" width="28" />
         </button>
@@ -26,7 +26,7 @@
         <button
           v-else
           title="Remove from favorites"
-          @click.prevent="removeFromFav(currentSong)"
+          @click.prevent="removeFromFavorites('songs', currentSong)"
         >
           <eva-icon name="heart" height="28" width="28" />
         </button>
@@ -125,6 +125,7 @@ import { mapActions, mapState, mapWritableState } from "pinia";
 import Notification from "@/components/Notification.vue";
 import PlayerDetails from "@/components/PlayerDetails.vue";
 
+import useFavoritesStore from "@/stores/favorites";
 import useNotificationsStore from "@/stores/notifications";
 import usePlayerStore from "@/stores/player";
 import useUserStore from "@/stores/user";
@@ -149,29 +150,20 @@ export default {
         return;
       }
 
-      // Get favorites doc
-      const favoritesRef = doc(db, "favorites", this.userId);
-      const favoritesSnapshot = await getDoc(favoritesRef);
-
-      // Get favorites songs
-      const favoriteSongs =
-        (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
-
-      const song = {
-        id: songSnap.id,
+      await this.newSong({
         ...songSnap.data(),
+        id: songSnap.id,
         // Check if the song id is favoriteSongs
-        inFavorites: favoriteSongs.some(
+        inFavorites: this.favSongs.some(
           (favSong) => favSong.id === songSnap.id
         ),
-      };
-
-      await this.newSong(song);
+      });
       this.sound.pause();
     }
   },
   computed: {
     ...mapState(useUserStore, ["userId"]),
+    ...mapState(useFavoritesStore, ["favSongs"]),
     ...mapWritableState(usePlayerStore, [
       "currentSong",
       "currentSongIndex",
@@ -181,8 +173,17 @@ export default {
     ]),
   },
   methods: {
-    ...mapActions(usePlayerStore, ["addToFav", "removeFromFav", "newSong"]),
+    ...mapActions(useFavoritesStore, ["addToFavorites", "removeFromFavorites"]),
     ...mapActions(useNotificationsStore, ["setNotification"]),
+    ...mapActions(usePlayerStore, ["newSong"]),
+
+    async getFavorites() {
+      const favoritesRef = doc(db, "favorites", this.userId);
+      const favoritesSnapshot = await getDoc(favoritesRef);
+
+      // Get favorites songs
+      return (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
+    },
 
     goBack() {
       const router = this.$router;

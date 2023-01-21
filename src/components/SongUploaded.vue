@@ -11,9 +11,9 @@
     />
     <div class="song-details" @click.prevent="newSong(song)">
       <button class="song-title">
-        {{ song.title }}
+        {{ song.title || "Undefined" }}
       </button>
-      <span class="song-artist">{{ song.artist }}</span>
+      <span class="song-artist">{{ song.artist || "Undefined" }}</span>
     </div>
     <button @click.prevent="toggleFormVisibility">
       <eva-icon name="more-horizontal-outline" height="28" width="28" />
@@ -23,7 +23,11 @@
     </button>
   </li>
   <li v-else>
-    <vee-form :validation-schema="schema" :initial-values="song" @submit="edit">
+    <vee-form
+      :validation-schema="schema"
+      :initial-values="song"
+      @submit="editMetadata"
+    >
       <div class="song-cover-wrapper">
         <div
           class="song-cover"
@@ -36,7 +40,7 @@
           @dragover.prevent.stop="isDragover = true"
           @dragenter.prevent.stop="isDragover = true"
           @dragleave.prevent.stop="isDragover = false"
-          @drop.prevent.stop="updateCover($event)"
+          @drop.prevent.stop="uploadCover($event)"
         >
           <label v-if="!isDragover" for="file-input">browse</label>
           <label v-else for="file-input" class="dragover">
@@ -46,7 +50,7 @@
             id="file-input"
             class="hidden"
             type="file"
-            @change="updateCover($event)"
+            @change="uploadCover($event)"
           />
         </div>
         <div class="song-cover-info">
@@ -87,7 +91,7 @@
           <vee-field
             type="text"
             name="album"
-            placeholder="Enter album name"
+            placeholder="Enter album"
             @input="updateUnsavedFlag(true)"
           />
         </label>
@@ -213,6 +217,10 @@ import useUserStore from "@/stores/user";
 
 export default {
   props: {
+    addAlbum: {
+      type: Function,
+      required: true,
+    },
     index: {
       type: Number,
       required: true,
@@ -226,6 +234,14 @@ export default {
       required: true,
     },
     removeSong: {
+      type: Function,
+      required: true,
+    },
+    updateAlbumDoc: {
+      type: Function,
+      required: true,
+    },
+    updateArtistDoc: {
       type: Function,
       required: true,
     },
@@ -270,30 +286,19 @@ export default {
       try {
         const songRef = ref(
           storage,
-          `songs/${this.userId}/${this.song.file_name}`
+          `songs/${this.userId}/${this.song.fileName}`
         );
 
         // Delete song from Storage
         await deleteObject(songRef);
-
         // Delete song from Firestore
         await deleteDoc(doc(db, "songs", this.song.id));
 
-        // Remove the song from the album's songs array
-        const albumRef = doc(db, "albums", this.song.album_id);
-        const albumSnap = await getDoc(albumRef);
-        let data = albumSnap.data();
-        data.songs = data.songs.filter((song) => song.id !== this.song.id);
-
-        // If any song left in album, update album doc, else remove whole album doc
-        if (data.songs.length) {
-          await updateDoc(albumRef, data);
-        } else {
-          await deleteDoc(doc(db, "albums", this.song.album_id));
-          this.removeAlbum(this.song.album_id);
-        }
-
+        await this.removeSongRelationships("albums", this.song.albumId);
+        await this.removeSongRelationships("artists", this.song.artistId);
+        this.removeAlbum(this.song.albumId);
         this.removeSong(this.index);
+
         this.setNotification("success", "Success!", "Song has been removed");
       } catch (error) {
         this.setNotification(
@@ -304,23 +309,36 @@ export default {
       }
     },
 
-    async edit(values) {
-      const songsRef = doc(db, "songs", this.song.id);
+    async editMetadata(values) {
+      const songRef = doc(db, "songs", this.song.id);
       try {
-        await updateDoc(songsRef, {
+        await updateDoc(songRef, {
           album: values.album,
           artist: values.artist,
           author: values.author,
-          disc: values.disc,
-          discTotal: values.discTotal,
-          format: values.format,
+          disc: parseInt(values.disc),
+          discTotal: parseInt(values.discTotal),
           genre: values.genre,
           lyrics: values.lyrics,
           title: values.title,
-          track: values.track,
-          trackTotal: values.trackTotal,
-          year: values.year,
+          track: parseInt(values.track),
+          trackTotal: parseInt(values.trackTotal),
+          year: parseInt(values.year),
         });
+
+        const songSnapshot = await getDoc(songRef);
+        const data = songSnapshot.data();
+
+        if (this.song.album !== values.album) {
+          await this.removeSongRelationships("albums", this.song.albumId);
+          this.removeAlbum(this.song.albumId);
+          await this.updateAlbumDoc(data, songSnapshot);
+        }
+
+        if (this.song.artist !== values.artist) {
+          await this.removeSongRelationships("artists", this.song.artistId);
+          await this.updateArtistDoc(data, songSnapshot);
+        }
       } catch (error) {
         this.setNotification(
           "error",
@@ -336,6 +354,15 @@ export default {
       this.toggleFormVisibility();
     },
 
+    async getAllSongFromAlbum() {
+      const songsQuery = query(
+        collection(db, "songs"),
+        where("albumId", "==", this.song.albumId)
+      );
+      const songsSnapshot = await getDocs(songsQuery);
+      return songsSnapshot.docs;
+    },
+
     async getBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -345,12 +372,34 @@ export default {
       });
     },
 
+    async removeSongRelationships(collectionName, docId) {
+      // Remove the song from the album's songs array
+      const docRef = doc(db, collectionName, docId);
+      const docSnap = await getDoc(docRef);
+
+      let data = docSnap.data();
+      data.songs = data.songs.filter((song) => song.id !== this.song.id);
+      // If any song left in album, update album doc, else remove whole album doc
+      data.songs.length
+        ? await updateDoc(docRef, data)
+        : await deleteDoc(doc(db, collectionName, docId));
+    },
+
     toggleFormVisibility() {
       this.showForm = !this.showForm;
       this.updateUnsavedFlag(false);
     },
 
-    async updateCover(event) {
+    async updateAllSongsPictures(songsDocs, pictureBase64) {
+      songsDocs.map(async (doc) => {
+        await updateDoc(doc.ref, {
+          picture: pictureBase64,
+        });
+        this.updateSongPicture(doc.id, pictureBase64);
+      });
+    },
+
+    async uploadCover(event) {
       this.isDragover = false;
       this.setNotification("notice", "Please wait", "We're updating cover...");
 
@@ -358,34 +407,27 @@ export default {
         ? [...event.dataTransfer.files][0]
         : [...event.target.files][0];
 
-      if (file.type !== "image/jpeg") return;
+      if (file.type !== "image/jpeg") {
+        this.setNotification(
+          "error",
+          "Wrong file format",
+          "You can only upload jpeg files"
+        );
+        return;
+      }
 
       try {
         const pictureBase64 = await this.getBase64(file);
 
-        const songsQuery = query(
-          collection(db, "songs"),
-          where("album_id", "==", this.song.album_id)
-        );
-        const songsSnapshot = await getDocs(songsQuery);
-
         // Update picture of all songs in album
-        const songsPromises = songsSnapshot.docs.map(async (doc) => {
-          await updateDoc(doc.ref, {
-            format: "image/jpeg",
-            picture: pictureBase64,
-          });
-          this.updateSongPicture(doc.id, pictureBase64);
-        });
-
-        // Wait for all songs update to complete
-        await Promise.all(songsPromises);
+        const songsDocs = await this.getAllSongFromAlbum();
+        await this.updateAllSongsPictures(songsDocs, pictureBase64);
 
         // Update album picture
-        await updateDoc(doc(db, "albums", this.song.album_id), {
+        await updateDoc(doc(db, "albums", this.song.albumId), {
           picture: pictureBase64,
         });
-        this.updateAlbumPicture(this.song.album_id, pictureBase64);
+        this.updateAlbumPicture(this.song.albumId, pictureBase64);
 
         this.setNotification("success", "Success", "Cover updated!");
       } catch (error) {
