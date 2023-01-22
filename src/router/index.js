@@ -5,6 +5,7 @@ import Upload from "@/views/Upload.vue";
 import Song from "@/views/Song.vue";
 import User from "@/views/User.vue";
 import Genre from "@/views/Genre.vue";
+import AllGenres from "@/views/AllGenres.vue";
 import Album from "@/views/Album.vue";
 import NotFound from "@/views/NotFound.vue";
 
@@ -53,6 +54,14 @@ const routes = [
     name: "genre",
     path: "/genre/:name",
     component: Genre,
+    meta: {
+      template: "AppTemplate",
+    },
+  },
+  {
+    name: "all-genres",
+    path: "/all-genres",
+    component: AllGenres,
     meta: {
       template: "AppTemplate",
     },

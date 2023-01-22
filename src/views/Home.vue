@@ -14,7 +14,7 @@
           </router-link>
         </li>
       </ul>
-      <a href="/all-genres">All genres</a>
+      <router-link :to="{ name: 'all-genres' }">All genres</router-link>
     </section>
     <!-- Your playlists -->
     <section v-if="userLoggedIn" id="your-playlists">
