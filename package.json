@@ -15,6 +15,7 @@
     "@stefandesu/eva-icons-vue": "^0.0.2",
     "@vee-validate/rules": "^4.7.3",
     "firebase": "^9.14.0",
+    "firebase-tools": "^11.21.0",
     "howler": "^2.2.3",
     "jsmediatags": "^3.9.7",
     "patch-package": "^6.5.0",
