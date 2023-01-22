@@ -12,7 +12,7 @@
 
 <script>
 import { db } from "@/includes/firebase";
-import { collection, getDocs, limit, query } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 export default {
   data() {
     return {

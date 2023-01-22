@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/Home.vue";
+import Discover from "@/views/Discover.vue";
 import Favorites from "@/views/Favorites.vue";
 import Upload from "@/views/Upload.vue";
 import Song from "@/views/Song.vue";
@@ -14,6 +15,14 @@ const routes = [
     name: "home",
     path: "/",
     component: Home,
+    meta: {
+      template: "AppTemplate",
+    },
+  },
+  {
+    name: "discover",
+    path: "/discover",
+    component: Discover,
     meta: {
       template: "AppTemplate",
     },
