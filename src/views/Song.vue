@@ -49,10 +49,14 @@
               </button>
             </li>
             <li>
-              <button @click.prevent="toggleContextMenu">Next</button>
+              <button @click.prevent="next(currentSong), toggleContextMenu()">
+                Next
+              </button>
             </li>
             <li>
-              <button @click.prevent="toggleContextMenu">Play last</button>
+              <button @click.prevent="last(currentSong), toggleContextMenu()">
+                Play last
+              </button>
             </li>
           </ul>
         </context-menu>
@@ -195,7 +199,7 @@ export default {
   methods: {
     ...mapActions(useFavoritesStore, ["addToFavorites", "removeFromFavorites"]),
     ...mapActions(useNotificationsStore, ["setNotification"]),
-    ...mapActions(usePlayerStore, ["newSong"]),
+    ...mapActions(usePlayerStore, ["last", "next", "newSong"]),
 
     copyLink() {
       navigator.clipboard.writeText(window.location.href).then(

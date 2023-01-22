@@ -60,10 +60,14 @@
               </button>
             </li>
             <li>
-              <button @click.prevent="toggleContextMenu">Next</button>
+              <button @click.prevent="nextAlbum(), toggleContextMenu()">
+                Next
+              </button>
             </li>
             <li>
-              <button @click.prevent="toggleContextMenu">Play last</button>
+              <button @click.prevent="lastAlbum(), toggleContextMenu()">
+                Play last
+              </button>
             </li>
           </ul>
         </context-menu>
@@ -119,7 +123,7 @@ export default {
   },
   methods: {
     ...mapActions(useFavoritesStore, ["addToFavorites", "removeFromFavorites"]),
-    ...mapActions(usePlayerStore, ["newSong", "toggleAudio"]),
+    ...mapActions(usePlayerStore, ["last", "next", "newSong", "toggleAudio"]),
 
     addAlbum(doc) {
       this.album = {
@@ -147,9 +151,17 @@ export default {
       }
     },
 
+    nextAlbum() {
+      this.songsQueue.splice(1, 0, ...this.songs);
+    },
+
+    lastAlbum() {
+      this.songsQueue = [...this.songsQueue, ...this.songs];
+    },
+
     playAlbum() {
-      if (!(this.playing && this.album.id === this.currentSong.albumId)) {
-        this.songsQueue = this.songs;
+      if (this.album.id !== this.currentSong.albumId) {
+        this.songsQueue = [...this.songs];
         this.currentSongIndex = 0;
         this.newSong(this.songs[0]);
         return;

@@ -33,11 +33,14 @@
         <eva-icon name="heart" height="28" width="28" />
       </button>
       <!-- More Button -->
-      <button title="More" @click.prevent="toggleContextMenu">
+      <button
+        title="More"
+        @click.prevent="(contextMenuIndex = index), toggleContextMenu()"
+      >
         <eva-icon name="more-horizontal-outline" height="28" width="28" />
       </button>
       <context-menu
-        v-if="isContextMenuOpen"
+        v-if="isContextMenuOpen && contextMenuIndex === index"
         @closeMenu="isContextMenuOpen = false"
       >
         <ul>
@@ -45,10 +48,14 @@
             <button @click.prevent="toggleContextMenu">Add to playlist</button>
           </li>
           <li>
-            <button @click.prevent="toggleContextMenu">Next</button>
+            <button @click.prevent="next(song), toggleContextMenu()">
+              Next
+            </button>
           </li>
           <li>
-            <button @click.prevent="toggleContextMenu">Play last</button>
+            <button @click.prevent="last(song), toggleContextMenu()">
+              Play last
+            </button>
           </li>
         </ul>
       </context-menu>
@@ -69,6 +76,7 @@ export default {
   components: { ContextMenu },
   data() {
     return {
+      contentMenuIndex: 0,
       isContextMenuOpen: false,
     };
   },
@@ -78,10 +86,10 @@ export default {
   },
   methods: {
     ...mapActions(useFavoritesStore, ["addToFavorites", "removeFromFavorites"]),
-    ...mapActions(usePlayerStore, ["newSong"]),
+    ...mapActions(usePlayerStore, ["last", "next", "newSong"]),
 
     addSongs(song, index) {
-      this.songsQueue = this.songs;
+      this.songsQueue = [...this.songs];
       this.currentSongIndex = index;
       this.newSong(song);
       this.$emit("albumId", song.albumId);
