@@ -1,6 +1,6 @@
 import { setActivePinia, createPinia } from "pinia";
 import useUserStore from "@/stores/user";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test } from "vitest";
 
 describe("stores", () => {
   beforeEach(() => {
@@ -24,8 +24,8 @@ describe("stores", () => {
     expect(store.userLoggedIn).not.toBe(true);
     try {
       await store.login({
-        email: "mateusz.bronis99@gmail.com",
-        password: "SubZero278",
+        email: "example",
+        password: "example",
       });
     } catch (error) {
       console.log(error);
