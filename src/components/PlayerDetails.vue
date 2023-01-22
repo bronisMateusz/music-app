@@ -11,7 +11,7 @@
   <!-- Song details -->
   <div class="song-details">
     <router-link
-      v-if="$route.name !== 'song' && currentSong.id"
+      v-if="currentSong.id"
       :to="{ name: 'song', params: { id: currentSong.id } }"
       class="song-title"
     >
