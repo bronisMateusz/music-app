@@ -79,7 +79,6 @@ export default {
       },
     };
   },
-  props: ["tab"],
   methods: {
     ...mapActions(useUserStore, { authUser: "login" }),
     ...mapActions(useNotificationsStore, ["setNotification"]),
