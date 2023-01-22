@@ -35,9 +35,27 @@
           <eva-icon name="share-outline" height="28" width="28" />
         </button>
         <!-- More Button -->
-        <button title="More">
+        <button title="More" @click.prevent="toggleContextMenu">
           <eva-icon name="more-horizontal-outline" height="28" width="28" />
         </button>
+        <context-menu
+          v-if="isContextMenuOpen"
+          @closeMenu="isContextMenuOpen = false"
+        >
+          <ul>
+            <li>
+              <button @click.prevent="toggleContextMenu">
+                Add to playlist
+              </button>
+            </li>
+            <li>
+              <button @click.prevent="toggleContextMenu">Next</button>
+            </li>
+            <li>
+              <button @click.prevent="toggleContextMenu">Play last</button>
+            </li>
+          </ul>
+        </context-menu>
       </div>
     </div>
     <div class="song-switcher">
@@ -122,6 +140,7 @@ import { db } from "@/includes/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { mapActions, mapState, mapWritableState } from "pinia";
 
+import ContextMenu from "@/components/ContextMenu.vue";
 import Notification from "@/components/Notification.vue";
 import PlayerDetails from "@/components/PlayerDetails.vue";
 
@@ -131,9 +150,10 @@ import usePlayerStore from "@/stores/player";
 import useUserStore from "@/stores/user";
 
 export default {
-  components: { Notification, PlayerDetails },
+  components: { ContextMenu, Notification, PlayerDetails },
   data() {
     return {
+      isContextMenuOpen: false,
       previousViewPath: "",
     };
   },
@@ -177,6 +197,25 @@ export default {
     ...mapActions(useNotificationsStore, ["setNotification"]),
     ...mapActions(usePlayerStore, ["newSong"]),
 
+    copyLink() {
+      navigator.clipboard.writeText(window.location.href).then(
+        () => {
+          this.setNotification(
+            "success",
+            "Link copied",
+            "You can now share this song!"
+          );
+        },
+        () => {
+          this.setNotification(
+            "error",
+            "Sorry",
+            "We couldn't prepare share link"
+          );
+        }
+      );
+    },
+
     async getFavorites() {
       const favoritesRef = doc(db, "favorites", this.userId);
       const favoritesSnapshot = await getDoc(favoritesRef);
@@ -195,23 +234,8 @@ export default {
         : router.push({ name: "home" });
     },
 
-    copyLink() {
-      navigator.clipboard.writeText(window.location.href).then(
-        () => {
-          this.setNotification(
-            "success",
-            "Link copied",
-            "You can now share this song!"
-          );
-        },
-        () => {
-          this.setNotification(
-            "error",
-            "Sorry",
-            "We couldn't prepare share link"
-          );
-        }
-      );
+    toggleContextMenu() {
+      this.isContextMenuOpen = !this.isContextMenuOpen;
     },
   },
 };
@@ -240,6 +264,13 @@ export default {
     display: flex;
     justify-content: space-between;
     padding: 24px;
+    position: relative;
+
+    .context-menu {
+      top: calc(100% - 12px);
+      transform: unset;
+      right: 24px;
+    }
   }
 
   .song-switcher {
