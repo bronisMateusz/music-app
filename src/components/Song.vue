@@ -1,6 +1,6 @@
 <template>
   <ul class="songs">
-    <li v-for="(song, index) in songs" :key="song.id">
+    <li v-for="(song, index) in songs" :key="song.id" class="song">
       <div
         class="song-cover"
         :style="{
@@ -32,17 +32,40 @@
       >
         <eva-icon name="heart" height="28" width="28" />
       </button>
-      <!-- Options Button -->
-      <button>
+      <!-- More Button -->
+      <button
+        title="More"
+        @click.prevent="(contextMenuIndex = index), toggleContextMenu()"
+      >
         <eva-icon name="more-horizontal-outline" height="28" width="28" />
       </button>
+      <context-menu
+        v-if="isContextMenuOpen && contextMenuIndex === index"
+        @closeMenu="isContextMenuOpen = false"
+      >
+        <ul>
+          <li>
+            <button @click.prevent="toggleContextMenu">Add to playlist</button>
+          </li>
+          <li>
+            <button @click.prevent="next(song), toggleContextMenu()">
+              Next
+            </button>
+          </li>
+          <li>
+            <button @click.prevent="last(song), toggleContextMenu()">
+              Play last
+            </button>
+          </li>
+        </ul>
+      </context-menu>
     </li>
   </ul>
 </template>
 
 <script>
 import { mapActions, mapState, mapWritableState } from "pinia";
-
+import ContextMenu from "@/components/ContextMenu.vue";
 import useFavoritesStore from "@/stores/favorites";
 import usePlayerStore from "@/stores/player";
 import useUserStore from "@/stores/user";
@@ -50,19 +73,30 @@ import useUserStore from "@/stores/user";
 export default {
   props: ["songs"],
   emits: ["albumId"],
+  components: { ContextMenu },
+  data() {
+    return {
+      contentMenuIndex: 0,
+      isContextMenuOpen: false,
+    };
+  },
   computed: {
     ...mapState(useUserStore, ["userId", "userLoggedIn"]),
     ...mapWritableState(usePlayerStore, ["currentSongIndex", "songsQueue"]),
   },
   methods: {
     ...mapActions(useFavoritesStore, ["addToFavorites", "removeFromFavorites"]),
-    ...mapActions(usePlayerStore, ["newSong"]),
+    ...mapActions(usePlayerStore, ["last", "next", "newSong"]),
 
     addSongs(song, index) {
-      this.songsQueue = this.songs;
+      this.songsQueue = [...this.songs];
       this.currentSongIndex = index;
       this.newSong(song);
       this.$emit("albumId", song.albumId);
+    },
+
+    toggleContextMenu() {
+      this.isContextMenuOpen = !this.isContextMenuOpen;
     },
   },
 };
@@ -71,6 +105,10 @@ export default {
 <style lang="scss">
 .songs {
   @include songs-list;
+
+  .song {
+    position: relative;
+  }
 
   .song-details {
     @include song-details;

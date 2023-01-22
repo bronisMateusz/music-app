@@ -50,8 +50,8 @@
     justify-content: space-between;
     padding: 12px;
 
-    .options {
-      align-self: center;
+    svg {
+      pointer-events: none;
     }
   }
 }

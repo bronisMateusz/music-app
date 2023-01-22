@@ -46,13 +46,31 @@
         >
           <eva-icon name="heart" height="48" width="48" />
         </button>
-        <button title="favorites">
-          <eva-icon
-            name="more-horizontal-outline"
-            height="48"
-            width="48"
-          ></eva-icon>
+        <button title="More" @click.prevent="toggleContextMenu">
+          <eva-icon name="more-horizontal-outline" height="48" width="48" />
         </button>
+        <context-menu
+          v-if="isContextMenuOpen"
+          @closeMenu="isContextMenuOpen = false"
+        >
+          <ul>
+            <li>
+              <button @click.prevent="toggleContextMenu">
+                Add to playlist
+              </button>
+            </li>
+            <li>
+              <button @click.prevent="nextAlbum(), toggleContextMenu()">
+                Next
+              </button>
+            </li>
+            <li>
+              <button @click.prevent="lastAlbum(), toggleContextMenu()">
+                Play last
+              </button>
+            </li>
+          </ul>
+        </context-menu>
       </div>
     </div>
     <song :songs="songs" @album-id="isAlbumPlaying = album.id === $event" />
@@ -61,9 +79,10 @@
 
 <script>
 import { db } from "@/includes/firebase";
-import { arrayRemove, doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { mapActions, mapState, mapWritableState } from "pinia";
 
+import ContextMenu from "@/components/ContextMenu.vue";
 import Song from "@/components/Song.vue";
 
 import useFavoritesStore from "@/stores/favorites";
@@ -71,10 +90,11 @@ import usePlayerStore from "@/stores/player";
 import useUserStore from "@/stores/user";
 
 export default {
-  components: { Song },
+  components: { ContextMenu, Song },
   data() {
     return {
       album: {},
+      isContextMenuOpen: false,
       songs: [],
     };
   },
@@ -103,7 +123,7 @@ export default {
   },
   methods: {
     ...mapActions(useFavoritesStore, ["addToFavorites", "removeFromFavorites"]),
-    ...mapActions(usePlayerStore, ["newSong", "toggleAudio"]),
+    ...mapActions(usePlayerStore, ["last", "next", "newSong", "toggleAudio"]),
 
     addAlbum(doc) {
       this.album = {
@@ -131,15 +151,27 @@ export default {
       }
     },
 
+    nextAlbum() {
+      this.songsQueue.splice(1, 0, ...this.songs);
+    },
+
+    lastAlbum() {
+      this.songsQueue = [...this.songsQueue, ...this.songs];
+    },
+
     playAlbum() {
-      if (!(this.playing && this.album.id === this.currentSong.albumId)) {
-        this.songsQueue = this.songs;
+      if (this.album.id !== this.currentSong.albumId) {
+        this.songsQueue = [...this.songs];
         this.currentSongIndex = 0;
         this.newSong(this.songs[0]);
         return;
       }
 
       this.toggleAudio();
+    },
+
+    toggleContextMenu() {
+      this.isContextMenuOpen = !this.isContextMenuOpen;
     },
   },
 };
@@ -182,8 +214,9 @@ export default {
       display: flex;
       gap: 24px;
       justify-content: center;
+      position: relative;
 
-      button {
+      > button {
         height: 64px;
         padding: 0;
         width: 64px;
@@ -191,6 +224,11 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+      }
+
+      .context-menu {
+        top: -100%;
+        right: 36px;
       }
     }
     @media (min-width: 992px) {
@@ -229,6 +267,10 @@ export default {
       .actions {
         align-self: flex-end;
         justify-content: flex-start;
+
+        .context-menu {
+          right: calc(100% - 240px);
+        }
       }
     }
   }

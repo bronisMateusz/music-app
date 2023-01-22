@@ -26,8 +26,6 @@ export default defineStore("player", {
   }),
   actions: {
     async newSong(song) {
-      // If song is playing, return
-      if (this.currentSong.id === song.id && this.playing) return;
       // If current song is paused
       if (this.currentSong.id === song.id && !this.playing) {
         this.toggleAudio();
@@ -134,6 +132,14 @@ export default defineStore("player", {
     clearSeekInterval() {
       clearInterval(this.interval);
       this.interval = null;
+    },
+
+    last(song) {
+      this.songsQueue.push(song);
+    },
+
+    next(song) {
+      this.songsQueue.splice(1, 0, song);
     },
 
     playAgain() {

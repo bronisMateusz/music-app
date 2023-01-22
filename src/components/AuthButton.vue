@@ -3,39 +3,60 @@
     <button
       class="auth-btn"
       :title="!userLoggedIn ? 'Login / Register' : 'User menu'"
-      @click.prevent="!userLoggedIn ? toggleAuthModal() : toggleUserMenu()"
+      @click.prevent="!userLoggedIn ? toggleAuthModal() : toggleContextMenu()"
     >
       <eva-icon v-if="!photoURL" name="people-outline" height="28" width="28" />
       <img v-else :src="photoURL" alt="user photo" />
     </button>
-    <user-menu v-if="isUserMenuOpen" @closeMenu="isUserMenuOpen = false" />
+    <context-menu
+      v-if="isContextMenuOpen"
+      @closeMenu="isContextMenuOpen = false"
+    >
+      <ul>
+        <li>
+          <router-link
+            :to="{ name: 'user' }"
+            @click.prevent="toggleContextMenu"
+          >
+            Settings
+          </router-link>
+        </li>
+        <li>
+          <button title="Logout" @click.prevent="logout(), toggleContextMenu()">
+            Logout
+          </button>
+        </li>
+      </ul>
+    </context-menu>
   </div>
 </template>
 
 <script>
-import { mapState, mapWritableState } from "pinia";
+import { mapActions, mapState, mapWritableState } from "pinia";
+import ContextMenu from "@/components/ContextMenu.vue";
 import useAuthModalStore from "@/stores/auth-modal";
 import useUserStore from "@/stores/user";
-import UserMenu from "@/components/UserMenu.vue";
 
 export default {
   data() {
     return {
-      isUserMenuOpen: false,
+      isContextMenuOpen: false,
     };
   },
-  components: { UserMenu },
+  components: { ContextMenu },
   computed: {
     ...mapWritableState(useAuthModalStore, ["isOpen"]),
-    ...mapState(useUserStore, ["photoURL", "userLoggedIn"]),
+    ...mapState(useUserStore, ["photoURL", "userId", "userLoggedIn"]),
   },
   methods: {
+    ...mapActions(useUserStore, ["logout"]),
+
     toggleAuthModal() {
       this.isOpen = !this.isOpen;
     },
 
-    toggleUserMenu() {
-      this.isUserMenuOpen = !this.isUserMenuOpen;
+    toggleContextMenu() {
+      this.isContextMenuOpen = !this.isContextMenuOpen;
     },
   },
 };
@@ -59,12 +80,34 @@ export default {
       color: $text-primary;
     }
 
-    svg {
+    svg,
+    img {
       pointer-events: none;
     }
 
     img {
       @include user-photo;
+    }
+  }
+
+  .context-menu {
+    top: 100%;
+    transform: unset;
+
+    @media (min-width: 992px) {
+      left: 0;
+      right: unset;
+      top: calc(100% + 12px);
+
+      ul {
+        text-align: left;
+
+        a,
+        button {
+          padding-left: 24px;
+          padding-right: 48px;
+        }
+      }
     }
   }
 }

@@ -48,7 +48,7 @@ export default {
     };
   },
   async created() {
-    if (!this.accountType) {
+    if (!this.userLoggedIn) {
       this.$router.push({ name: "home" });
       return;
     }
