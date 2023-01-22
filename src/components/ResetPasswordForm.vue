@@ -41,7 +41,6 @@ export default {
       },
     };
   },
-  props: ["tab"],
   methods: {
     ...mapActions(useUserStore, ["resetPassword"]),
     ...mapActions(useNotificationsStore, ["setNotification"]),

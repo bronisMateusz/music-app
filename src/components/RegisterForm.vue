@@ -114,7 +114,6 @@ export default {
       },
     };
   },
-  props: ["tab"],
   methods: {
     ...mapActions(useUserStore, { createUser: "register" }),
     ...mapActions(useNotificationsStore, ["setNotification"]),
