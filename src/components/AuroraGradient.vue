@@ -10,31 +10,43 @@
 <script>
 export default {
   props: {
-    colorFirst: {
-      type: String,
-      default: "#00ffe3",
-    },
-    colorSecond: {
-      type: String,
-      default: "#66ff00",
-    },
-    colorThird: {
-      type: String,
-      default: "#ffb800",
-    },
-    colorFourth: {
-      type: String,
-      default: "#ff8bce",
+    variant: {
+      type: Number,
+      default: 0,
     },
   },
   computed: {
     cssVars() {
-      return {
-        "--color-first": this.colorFirst,
-        "--color-second": this.colorSecond,
-        "--color-third": this.colorThird,
-        "--color-fourth": this.colorFourth,
-      };
+      switch (this.variant) {
+        case 0:
+          return {
+            "--color-first": "#00ffe3",
+            "--color-second": "#66ff00",
+            "--color-third": "#ffb800",
+            "--color-fourth": "#ff8bce",
+          };
+        case 1:
+          return {
+            "--color-first": "#FF6A37",
+            "--color-second": "#FFD31F",
+            "--color-third": "#FF3969",
+            "--color-fourth": "#FF2528",
+          };
+        case 2:
+          return {
+            "--color-first": "#BBC0FF",
+            "--color-second": "#00DDFF",
+            "--color-third": "#79E9FF",
+            "--color-fourth": "#327DF6",
+          };
+        case 3:
+          return {
+            "--color-first": "#F8CC7D",
+            "--color-second": "#E85668",
+            "--color-third": "#CD4B59",
+            "--color-fourth": "#EBA572",
+          };
+      }
     },
   },
 };

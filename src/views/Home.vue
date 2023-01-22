@@ -2,45 +2,7 @@
   <div id="content">
     <!-- Latest albums -->
     <section id="latest-albums">
-      <ul>
-        <li>
-          <article class="album">
-            <aurora-gradient />
-            <section>
-              <h3>₪₪₪ MadeHewraGreatForever ₪₪₪</h3>
-              <p>New Album by <strong>HEWRA</strong></p>
-            </section>
-          </article>
-        </li>
-        <li>
-          <article class="album">
-            <aurora-gradient
-              colorFirst="#FF6A37"
-              colorSecond="#FFD31F"
-              colorThird="#FF3969"
-              colorFourth="#FF2528"
-            />
-            <section>
-              <h3>Cock.0z Mixtape</h3>
-              <p>New Album by <strong>Kaz Bałagane</strong></p>
-            </section>
-          </article>
-        </li>
-        <li>
-          <article class="album">
-            <aurora-gradient
-              colorFirst="#BBC0FF"
-              colorSecond="#00DDFF"
-              colorThird="#79E9FF"
-              colorFourth="#327DF6"
-            />
-            <section>
-              <h3>Mobbyn</h3>
-              <p>New Album by <strong>Mobbyn</strong></p>
-            </section>
-          </article>
-        </li>
-      </ul>
+      <latest-albums :albums="albums" />
     </section>
     <!-- Genres -->
     <section id="genres">
@@ -52,27 +14,22 @@
           </router-link>
         </li>
       </ul>
-      <a href="/all-genres">All genres</a>
+      <router-link :to="{ name: 'all-genres' }">All genres</router-link>
     </section>
     <!-- Your playlists -->
-    <section id="your-playlists">
+    <section v-if="userLoggedIn" id="your-playlists">
       <h2>Your playlists</h2>
       <ul>
         <li>
           <a href="#">
-            <aurora-gradient />
+            <aurora-gradient :variant="0" />
             <p>Top 100 Europa</p>
           </a>
         </li>
         <li>
           <a href="#">
-            <aurora-gradient
-              colorFirst="#FF6A37"
-              colorSecond="#FFD31F"
-              colorThird="#FF3969"
-              colorFourth="#FF2528"
-            />
-            <p>Diho - essentials</p></a
+            <aurora-gradient :variant="1" />
+            <p>My playlist</p></a
           >
         </li>
       </ul>
@@ -92,6 +49,7 @@ import { collection, getDocs, limit, query } from "firebase/firestore";
 import { mapState } from "pinia";
 
 import AuroraGradient from "@/components/AuroraGradient.vue";
+import LatestAlbums from "@/components/LatestAlbums.vue";
 import Song from "@/components/Song.vue";
 
 import useFavoritesStore from "@/stores/favorites";
@@ -100,17 +58,19 @@ import useUserStore from "@/stores/user";
 export default {
   data() {
     return {
+      albums: [],
       genres: [],
       songs: [],
     };
   },
-  components: { AuroraGradient, Song },
+  components: { AuroraGradient, LatestAlbums, Song },
   async created() {
+    await this.getLatestAlbums();
     await this.getLatestGenres();
     await this.getLatestSongs();
   },
   computed: {
-    ...mapState(useUserStore, ["userId"]),
+    ...mapState(useUserStore, ["userId", "userLoggedIn"]),
     ...mapState(useFavoritesStore, ["favSongs"]),
 
     filteredGenres() {
@@ -119,6 +79,13 @@ export default {
     },
   },
   methods: {
+    addAlbums(doc) {
+      this.albums.push({
+        ...doc.data(),
+        id: doc.id,
+      });
+    },
+
     addGenre(doc) {
       this.genres.push({
         ...doc.data(),
@@ -134,12 +101,20 @@ export default {
       });
     },
 
+    async getLatestAlbums() {
+      // Query genres collection and get first 7 documents
+      const albumsQuery = query(collection(db, "albums"), limit(4));
+      const albumsSnap = await getDocs(albumsQuery);
+
+      albumsSnap.forEach(this.addAlbums);
+    },
+
     async getLatestGenres() {
       // Query genres collection and get first 7 documents
-      const genreQuery = query(collection(db, "genres"), limit(7));
-      const genreSnap = await getDocs(genreQuery);
+      const genresQuery = query(collection(db, "genres"), limit(7));
+      const genresSnap = await getDocs(genresQuery);
 
-      genreSnap.forEach(this.addGenre);
+      genresSnap.forEach(this.addGenre);
     },
 
     async getLatestSongs() {
@@ -205,8 +180,10 @@ body {
     }
 
     #latest-albums {
-      overflow-x: hidden;
+      overflow-x: scroll;
       width: calc(100% + 24px);
+      @include hidden-scrollbar;
+      // margin-right: 24px;
 
       ul {
         @include hidden-list-marks;
@@ -214,6 +191,7 @@ body {
         gap: 24px;
 
         .album {
+          display: block;
           height: 186px;
           width: 275px;
           position: relative;
@@ -239,6 +217,10 @@ body {
               font-size: 0.75rem;
             }
           }
+        }
+
+        li:last-of-type article {
+          margin-right: 24px;
         }
       }
     }

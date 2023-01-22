@@ -13,11 +13,6 @@
           <eva-icon name="heart-outline" height="32" width="32" />
         </router-link>
       </li>
-      <li>
-        <router-link :to="{ name: 'discover' }" title="Discover">
-          <eva-icon name="compass-outline" height="32" width="32" />
-        </router-link>
-      </li>
       <li v-if="accountType">
         <router-link :to="{ name: 'upload' }" title="Upload">
           <eva-icon name="cloud-upload-outline" height="32" width="32" />
