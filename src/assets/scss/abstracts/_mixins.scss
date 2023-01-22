@@ -30,6 +30,15 @@
   scrollbar-color: $color-scrollbar-thumb $color-scrollbar-track;
 }
 
+@mixin hidden-scrollbar($border-color: $color-canvas) {
+
+  // For Chrome & Safari
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+
 @mixin blurred-bg($bg-color) {
   background-color: rgba($color: $bg-color, $alpha: 0.5);
   backdrop-filter: blur(15px);
