@@ -183,7 +183,6 @@ body {
       overflow-x: scroll;
       width: calc(100% + 24px);
       @include hidden-scrollbar;
-      // margin-right: 24px;
 
       ul {
         @include hidden-list-marks;
@@ -219,7 +218,7 @@ body {
           }
         }
 
-        li:last-of-type article {
+        li:last-of-type a {
           margin-right: 24px;
         }
       }
