@@ -22,7 +22,7 @@
     <!-- Uploaded albums -->
     <section v-if="songs.length">
       <h2>Favorites songs</h2>
-      <song :songs="songs" />
+      <songs-list :songs="songs" />
     </section>
   </div>
   <div v-else>
@@ -35,7 +35,7 @@ import { db } from '@/includes/firebase'
 import { doc, getDoc } from 'firebase/firestore'
 import { mapActions, mapState, mapWritableState } from 'pinia'
 
-import Song from '@/components/Song.vue'
+import SongsList from '@/components/SongsList.vue'
 
 import usePlayerStore from '@/stores/player'
 import useUserStore from '@/stores/user'
@@ -75,7 +75,7 @@ export default {
       this.addToArray(songSnap, favoriteSongs, this.songs)
     }
   },
-  components: { Song },
+  components: { SongsList },
   computed: {
     ...mapState(useUserStore, ['userId', 'userLoggedIn']),
     ...mapWritableState(usePlayerStore, [

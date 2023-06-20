@@ -86,23 +86,21 @@
     <!-- Uploaded songs -->
     <section v-if="songs.length">
       <h2>Uploaded songs</h2>
-      <ul id="uploaded-songs">
-        <song-uploaded
-          v-for="(song, index) in songs"
-          :key="song.id"
-          :index="index"
-          :addAlbum="addAlbum"
-          :removeAlbum="removeAlbum"
-          :removeSong="removeSong"
-          :song="song"
-          :updateAlbumDoc="updateAlbumDoc"
-          :updateArtistDoc="updateArtistDoc"
-          :updateAlbumPicture="updateAlbumPicture"
-          :updateSongDetails="updateSongDetails"
-          :updateSongPicture="updateSongPicture"
-          :updateUnsavedFlag="updateUnsavedFlag"
-        />
-      </ul>
+      <uploaded-songs-list
+        v-for="(song, index) in songs"
+        :key="song.id"
+        :index="index"
+        :addAlbum="addAlbum"
+        :removeAlbum="removeAlbum"
+        :removeSong="removeSong"
+        :song="song"
+        :updateAlbumDoc="updateAlbumDoc"
+        :updateArtistDoc="updateArtistDoc"
+        :updateAlbumPicture="updateAlbumPicture"
+        :updateSongDetails="updateSongDetails"
+        :updateSongPicture="updateSongPicture"
+        :updateUnsavedFlag="updateUnsavedFlag"
+      />
     </section>
   </div>
 </template>
@@ -123,12 +121,12 @@ import {
   where
 } from 'firebase/firestore'
 import { mapActions, mapState } from 'pinia'
-import SongUploaded from '@/components/SongUploaded.vue'
+import UploadedSongsList from '@/components/UploadedSongsList.vue'
 import useNotificationsStore from '@/stores/notifications'
 import useUserStore from '@/stores/user'
 
 export default {
-  components: { SongUploaded },
+  components: { UploadedSongsList },
   data() {
     return {
       albums: [],

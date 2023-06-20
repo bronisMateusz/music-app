@@ -1,181 +1,188 @@
 <template>
-  <li v-if="!showForm">
-    <div
-      class="song-cover"
-      :style="{
-        'background-image': song.picture
-          ? `url(${song.picture})`
-          : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)'
-      }"
-      @click.prevent="newSong(song)"
-    />
-    <div class="song-details" @click.prevent="newSong(song)">
-      <button class="song-title">
-        {{ song.title || 'Undefined' }}
+  <ul id="uploaded-songs">
+    <li v-if="!showForm">
+      <div
+        class="song-cover"
+        :style="{
+          'background-image': song.picture
+            ? `url(${song.picture})`
+            : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)'
+        }"
+        @click.prevent="newSong(song)"
+      />
+      <div class="song-details" @click.prevent="newSong(song)">
+        <button class="song-title">
+          {{ song.title || 'Undefined' }}
+        </button>
+        <span class="song-artist">{{ song.artist || 'Undefined' }}</span>
+      </div>
+      <button @click.prevent="toggleFormVisibility">
+        <eva-icon name="more-horizontal-outline" height="28" width="28" />
       </button>
-      <span class="song-artist">{{ song.artist || 'Undefined' }}</span>
-    </div>
-    <button @click.prevent="toggleFormVisibility">
-      <eva-icon name="more-horizontal-outline" height="28" width="28" />
-    </button>
-    <button @click.prevent="deleteSong">
-      <eva-icon name="close-outline" height="28" width="28" />
-    </button>
-  </li>
-  <li v-else>
-    <vee-form :validation-schema="schema" :initial-values="song" @submit="editMetadata">
-      <div class="song-cover-wrapper">
-        <div
-          class="song-cover"
-          :style="{
-            'background-image': song.picture
-              ? `url(${song.picture})`
-              : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)'
-          }"
-          @dragend.prevent.stop="isDragover = false"
-          @dragover.prevent.stop="isDragover = true"
-          @dragenter.prevent.stop="isDragover = true"
-          @dragleave.prevent.stop="isDragover = false"
-          @drop.prevent.stop="uploadCover($event)"
-        >
-          <label v-if="!isDragover" for="file-input">browse</label>
-          <label v-else for="file-input" class="dragover">
-            <eva-icon name="cloud-upload-outline" height="72" width="72" />
-          </label>
-          <input id="file-input" class="hidden" type="file" @change="uploadCover($event)" />
+      <button @click.prevent="deleteSong">
+        <eva-icon name="close-outline" height="28" width="28" />
+      </button>
+    </li>
+    <li v-else>
+      <vee-form :validation-schema="schema" :initial-values="song" @submit="editMetadata">
+        <div class="song-cover-wrapper">
+          <div
+            class="song-cover"
+            :style="{
+              'background-image': song.picture
+                ? `url(${song.picture})`
+                : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)'
+            }"
+            @dragend.prevent.stop="isDragover = false"
+            @dragover.prevent.stop="isDragover = true"
+            @dragenter.prevent.stop="isDragover = true"
+            @dragleave.prevent.stop="isDragover = false"
+            @drop.prevent.stop="uploadCover($event)"
+          >
+            <label v-if="!isDragover" for="file-input">browse</label>
+            <label v-else for="file-input" class="dragover">
+              <eva-icon name="cloud-upload-outline" height="72" width="72" />
+            </label>
+            <input id="file-input" class="hidden" type="file" @change="uploadCover($event)" />
+          </div>
+          <div class="song-cover-info">
+            <p>Image guidelines</p>
+            <ul>
+              <li><p>Square, at least 800x800px.</p></li>
+              <li><p>File formats: JPEG or PNG.</p></li>
+            </ul>
+          </div>
         </div>
-        <div class="song-cover-info">
-          <p>Image guidelines</p>
-          <ul>
-            <li><p>Square, at least 800x800px.</p></li>
-            <li><p>File formats: JPEG or PNG.</p></li>
-          </ul>
-        </div>
-      </div>
-      <div>
-        <label>
-          Title
-          <vee-field
-            type="text"
-            name="title"
-            placeholder="Enter title"
-            @input="updateUnsavedFlag(true)"
-          />
-        </label>
-        <ErrorMessage name="title" />
-      </div>
-      <div>
-        <label>
-          Artist
-          <vee-field
-            type="text"
-            name="artist"
-            placeholder="Enter artist"
-            @input="updateUnsavedFlag(true)"
-          />
-        </label>
-        <ErrorMessage name="artist" />
-      </div>
-      <div>
-        <label>
-          Album
-          <vee-field
-            type="text"
-            name="album"
-            placeholder="Enter album"
-            @input="updateUnsavedFlag(true)"
-          />
-        </label>
-        <ErrorMessage name="album" />
-      </div>
-      <div>
-        <label>
-          Author
-          <vee-field
-            type="text"
-            name="author"
-            placeholder="Enter author"
-            @input="updateUnsavedFlag(true)"
-          />
-        </label>
-        <ErrorMessage name="artist" />
-      </div>
-      <div>
-        <label>
-          Genre
-          <vee-field
-            type="text"
-            name="genre"
-            placeholder="Enter genre"
-            @input="updateUnsavedFlag(true)"
-          />
-        </label>
-        <ErrorMessage name="genre" />
-      </div>
-      <div>
-        <label>
-          Year
-          <vee-field
-            type="number"
-            name="year"
-            placeholder="Enter year"
-            @input="updateUnsavedFlag(true)"
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Track
-          <vee-field type="number" name="track" placeholder="0" @input="updateUnsavedFlag(true)" />
-        </label>
-      </div>
-      <div>
-        <label>
-          From
-          <vee-field
-            type="number"
-            name="trackTotal"
-            placeholder="0"
-            @input="updateUnsavedFlag(true)"
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Disc number
-          <vee-field type="number" name="disc" placeholder="0" @input="updateUnsavedFlag(true)" />
-        </label>
-      </div>
-      <div>
-        <label>
-          From
-          <vee-field
-            type="number"
-            name="discTotal"
-            placeholder="0"
-            @input="updateUnsavedFlag(true)"
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Lyrics
-          <vee-field v-slot="{ field }" name="lyrics">
-            <textarea
-              v-bind="field"
-              placeholder="Enter lyrics"
-              rows="1"
+        <div>
+          <label>
+            Title
+            <vee-field
+              type="text"
+              name="title"
+              placeholder="Enter title"
               @input="updateUnsavedFlag(true)"
             />
-          </vee-field>
-        </label>
-      </div>
-      <div class="form-group">
-        <button @click.prevent="toggleFormVisibility">Cancel</button>
-        <button type="submit">Save</button>
-      </div>
-    </vee-form>
-  </li>
+          </label>
+          <ErrorMessage name="title" />
+        </div>
+        <div>
+          <label>
+            Artist
+            <vee-field
+              type="text"
+              name="artist"
+              placeholder="Enter artist"
+              @input="updateUnsavedFlag(true)"
+            />
+          </label>
+          <ErrorMessage name="artist" />
+        </div>
+        <div>
+          <label>
+            Album
+            <vee-field
+              type="text"
+              name="album"
+              placeholder="Enter album"
+              @input="updateUnsavedFlag(true)"
+            />
+          </label>
+          <ErrorMessage name="album" />
+        </div>
+        <div>
+          <label>
+            Author
+            <vee-field
+              type="text"
+              name="author"
+              placeholder="Enter author"
+              @input="updateUnsavedFlag(true)"
+            />
+          </label>
+          <ErrorMessage name="artist" />
+        </div>
+        <div>
+          <label>
+            Genre
+            <vee-field
+              type="text"
+              name="genre"
+              placeholder="Enter genre"
+              @input="updateUnsavedFlag(true)"
+            />
+          </label>
+          <ErrorMessage name="genre" />
+        </div>
+        <div>
+          <label>
+            Year
+            <vee-field
+              type="number"
+              name="year"
+              placeholder="Enter year"
+              @input="updateUnsavedFlag(true)"
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Track
+            <vee-field
+              type="number"
+              name="track"
+              placeholder="0"
+              @input="updateUnsavedFlag(true)"
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            From
+            <vee-field
+              type="number"
+              name="trackTotal"
+              placeholder="0"
+              @input="updateUnsavedFlag(true)"
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Disc number
+            <vee-field type="number" name="disc" placeholder="0" @input="updateUnsavedFlag(true)" />
+          </label>
+        </div>
+        <div>
+          <label>
+            From
+            <vee-field
+              type="number"
+              name="discTotal"
+              placeholder="0"
+              @input="updateUnsavedFlag(true)"
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Lyrics
+            <vee-field v-slot="{ field }" name="lyrics">
+              <textarea
+                v-bind="field"
+                placeholder="Enter lyrics"
+                rows="1"
+                @input="updateUnsavedFlag(true)"
+              />
+            </vee-field>
+          </label>
+        </div>
+        <div class="form-group">
+          <button @click.prevent="toggleFormVisibility">Cancel</button>
+          <button type="submit">Save</button>
+        </div>
+      </vee-form>
+    </li>
+  </ul>
 </template>
 
 <script>

@@ -2,7 +2,7 @@
   <div id="content">
     <!-- Latest albums -->
     <section id="latest-albums">
-      <latest-albums :albums="albums" />
+      <albums-list :albums="albums" />
     </section>
     <!-- Genres -->
     <section id="genres">
@@ -14,7 +14,7 @@
           </router-link>
         </li>
       </ul>
-      <router-link :to="{ name: 'all-genres' }">All genres</router-link>
+      <router-link :to="{ name: 'genres' }">All genres</router-link>
     </section>
     <!-- Your playlists -->
     <section v-if="userLoggedIn" id="your-playlists">
@@ -33,12 +33,12 @@
           >
         </li>
       </ul>
-      <a href="/all-genres">All playlists</a>
+      <!-- <a href="/all-genres">All playlists</a> -->
     </section>
     <!-- Newest songs -->
     <section id="newest-songs">
       <h2>Newest songs</h2>
-      <song :songs="songs" />
+      <songs-list :songs="songs" />
     </section>
   </div>
 </template>
@@ -49,8 +49,8 @@ import { collection, getDocs, limit, query } from 'firebase/firestore'
 import { mapState } from 'pinia'
 
 import AuroraGradient from '@/components/AuroraGradient.vue'
-import LatestAlbums from '@/components/LatestAlbums.vue'
-import Song from '@/components/Song.vue'
+import AlbumsList from '@/components/AlbumsList.vue'
+import SongsList from '@/components/SongsList.vue'
 
 import useFavoritesStore from '@/stores/favorites'
 import useUserStore from '@/stores/user'
@@ -63,7 +63,7 @@ export default {
       songs: []
     }
   },
-  components: { AuroraGradient, LatestAlbums, Song },
+  components: { AuroraGradient, AlbumsList, SongsList },
   async created() {
     await this.getLatestAlbums()
     await this.getLatestGenres()

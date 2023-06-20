@@ -1,6 +1,6 @@
 <template>
   <div id="song">
-    <notification />
+    <app-notification />
     <div
       class="song-bg"
       :style="{
@@ -126,7 +126,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { mapActions, mapState, mapWritableState } from 'pinia'
 
 import ContextMenu from '@/components/ContextMenu.vue'
-import Notification from '@/components/Notification.vue'
+import AppNotification from '@/components/AppNotification.vue'
 import PlayerDetails from '@/components/PlayerDetails.vue'
 
 import useFavoritesStore from '@/stores/favorites'
@@ -135,7 +135,7 @@ import usePlayerStore from '@/stores/player'
 import useUserStore from '@/stores/user'
 
 export default {
-  components: { ContextMenu, Notification, PlayerDetails },
+  components: { ContextMenu, AppNotification, PlayerDetails },
   data() {
     return {
       isContextMenuOpen: false,

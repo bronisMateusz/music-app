@@ -1,12 +1,12 @@
 <template>
-  <song :songs="songs" />
+  <songs-list :songs="songs" />
 </template>
 
 <script>
 import { db } from '@/includes/firebase'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { mapState } from 'pinia'
-import Song from '@/components/Song.vue'
+import SongsList from '@/components/SongsList.vue'
 import useFavoritesStore from '@/stores/favorites'
 import useUserStore from '@/stores/user'
 
@@ -16,7 +16,7 @@ export default {
       songs: []
     }
   },
-  components: { Song },
+  components: { SongsList },
   async created() {
     await this.getSongs()
   },

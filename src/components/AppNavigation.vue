@@ -19,7 +19,7 @@
         </router-link>
       </li>
       <li v-if="accountType">
-        <router-link :to="{ name: 'upload' }" title="Upload">
+        <router-link :to="{ name: 'uploads' }" title="Upload">
           <eva-icon name="cloud-upload-outline" height="32" width="32" />
         </router-link>
       </li>

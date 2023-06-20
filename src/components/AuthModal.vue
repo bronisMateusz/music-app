@@ -73,6 +73,7 @@ export default {
 
 <style lang="scss">
 #auth-modal {
+  display: grid;
   position: fixed;
   right: 0;
   bottom: 0;
@@ -81,7 +82,8 @@ export default {
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
   border-radius: 20px 20px 0 0;
   background-color: $color-element;
-  max-height: calc(100% - 96px);
+  height: calc(100% - 96px);
+  max-height: 570px;
   overflow: hidden;
 
   header {

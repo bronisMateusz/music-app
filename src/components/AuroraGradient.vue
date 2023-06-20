@@ -18,13 +18,6 @@ export default {
   computed: {
     cssVars() {
       switch (this.variant) {
-        case 0:
-          return {
-            '--color-first': '#00ffe3',
-            '--color-second': '#66ff00',
-            '--color-third': '#ffb800',
-            '--color-fourth': '#ff8bce'
-          }
         case 1:
           return {
             '--color-first': '#FF6A37',
@@ -45,6 +38,13 @@ export default {
             '--color-second': '#E85668',
             '--color-third': '#CD4B59',
             '--color-fourth': '#EBA572'
+          }
+        default:
+          return {
+            '--color-first': '#00ffe3',
+            '--color-second': '#66ff00',
+            '--color-third': '#ffb800',
+            '--color-fourth': '#ff8bce'
           }
       }
     }

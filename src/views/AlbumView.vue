@@ -62,7 +62,7 @@
         </context-menu>
       </div>
     </div>
-    <song :songs="songs" @album-id="isAlbumPlaying = album.id === $event" />
+    <songs-list :songs="songs" @album-id="isAlbumPlaying = album.id === $event" />
   </div>
 </template>
 
@@ -72,14 +72,14 @@ import { doc, getDoc } from 'firebase/firestore'
 import { mapActions, mapState, mapWritableState } from 'pinia'
 
 import ContextMenu from '@/components/ContextMenu.vue'
-import Song from '@/components/Song.vue'
+import SongsList from '@/components/SongsList.vue'
 
 import useFavoritesStore from '@/stores/favorites'
 import usePlayerStore from '@/stores/player'
 import useUserStore from '@/stores/user'
 
 export default {
-  components: { ContextMenu, Song },
+  components: { ContextMenu, SongsList },
   data() {
     return {
       album: {},

@@ -11,16 +11,16 @@
       <auth-button />
     </div>
     <!-- Notification -->
-    <notification />
+    <app-notification />
   </header>
 </template>
 
 <script>
 import AuthButton from '@/components/AuthButton.vue'
-import Notification from '@/components/Notification.vue'
+import AppNotification from '@/components/AppNotification.vue'
 
 export default {
-  components: { AuthButton, Notification }
+  components: { AuthButton, AppNotification }
 }
 </script>
 
