@@ -509,7 +509,7 @@ export default {
       justify-content: flex-end;
     }
 
-    @media (min-width: 767px) {
+    @media (min-width: $md) {
       grid-template-columns: 1fr 1fr;
 
       .song-cover-wrapper,

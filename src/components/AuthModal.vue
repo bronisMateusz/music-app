@@ -188,7 +188,7 @@ export default {
     }
   }
 
-  @media (min-width: 992px) {
+  @media (min-width: $lg) {
     bottom: 50%;
     border-radius: 20px;
     left: 50%;

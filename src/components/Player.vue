@@ -44,7 +44,7 @@ export default {
     }
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: $md) {
     grid-template-columns: 70px auto 240px;
     grid-template-rows: repeat(2, 1fr);
 
@@ -79,7 +79,7 @@ export default {
     }
   }
 
-  @media (min-width: 992px) {
+  @media (min-width: $lg) {
     bottom: 24px;
     grid-template-columns: 240px 70px auto 200px;
     left: 24px;

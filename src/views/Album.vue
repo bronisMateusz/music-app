@@ -231,7 +231,7 @@ export default {
         right: 36px;
       }
     }
-    @media (min-width: 992px) {
+    @media (min-width: $lg) {
       column-gap: 24px;
       grid-template-columns: 260px 1fr;
       margin-top: -128px;

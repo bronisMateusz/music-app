@@ -31,7 +31,7 @@
     }
   }
 
-  @media (min-width: 992px) {
+  @media (min-width: $lg) {
     margin-left: 100px;
     min-height: 214px;
   }

@@ -45,7 +45,7 @@ export default {
     margin: 24px 0;
   }
 }
-@media (min-width: 992px) {
+@media (min-width: $lg) {
   #main {
     margin-left: 100px;
     padding-top: 103px;

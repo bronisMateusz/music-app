@@ -280,7 +280,7 @@ body {
     }
   }
 
-  @media (min-width: 992px) {
+  @media (min-width: $lg) {
     #app {
       #content {
         display: grid;
@@ -328,7 +328,7 @@ body {
     }
   }
 
-  @media (min-width: 1200px) {
+  @media (min-width: $xl) {
     #app {
       #content {
         grid-template-columns: 552px auto;
