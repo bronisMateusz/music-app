@@ -4,12 +4,12 @@
 
   <!-- Main Content -->
   <main id="main">
-    <navigation />
+    <app-navigation />
     <router-view />
   </main>
 
   <!-- Player -->
-  <player />
+  <app-player />
 
   <!-- Auth Modal -->
   <auth-modal />
@@ -19,21 +19,21 @@
 </template>
 
 <script>
-import AppHeader from "@/components/Header.vue";
-import Navigation from "@/components/Navigation.vue";
-import Player from "@/components/Player.vue";
-import AuthModal from "@/components/AuthModal.vue";
-import AppFooter from "@/components/Footer.vue";
+import AppHeader from '@/components/AppHeader.vue'
+import AppNavigation from '@/components/AppNavigation.vue'
+import AppPlayer from '@/components/AppPlayer.vue'
+import AuthModal from '@/components/AuthModal.vue'
+import AppFooter from '@/components/AppFooter.vue'
 
 export default {
   components: {
     AppHeader,
-    Navigation,
-    Player,
+    AppNavigation,
+    AppPlayer,
     AuthModal,
-    AppFooter,
-  },
-};
+    AppFooter
+  }
+}
 </script>
 
 <style lang="scss">
@@ -45,7 +45,7 @@ export default {
     margin: 24px 0;
   }
 }
-@media (min-width: 992px) {
+@media (min-width: $lg) {
   #main {
     margin-left: 100px;
     padding-top: 103px;

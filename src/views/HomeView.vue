@@ -2,7 +2,7 @@
   <div id="content">
     <!-- Latest albums -->
     <section id="latest-albums">
-      <latest-albums :albums="albums" />
+      <albums-list :albums="albums" />
     </section>
     <!-- Genres -->
     <section id="genres">
@@ -14,7 +14,7 @@
           </router-link>
         </li>
       </ul>
-      <router-link :to="{ name: 'all-genres' }">All genres</router-link>
+      <router-link :to="{ name: 'genres' }">All genres</router-link>
     </section>
     <!-- Your playlists -->
     <section v-if="userLoggedIn" id="your-playlists">
@@ -33,63 +33,63 @@
           >
         </li>
       </ul>
-      <a href="/all-genres">All playlists</a>
+      <!-- <a href="/all-genres">All playlists</a> -->
     </section>
     <!-- Newest songs -->
     <section id="newest-songs">
       <h2>Newest songs</h2>
-      <song :songs="songs" />
+      <songs-list :songs="songs" />
     </section>
   </div>
 </template>
 
 <script>
-import { db } from "@/includes/firebase";
-import { collection, getDocs, limit, query } from "firebase/firestore";
-import { mapState } from "pinia";
+import { db } from '@/includes/firebase'
+import { collection, getDocs, limit, query } from 'firebase/firestore'
+import { mapState } from 'pinia'
 
-import AuroraGradient from "@/components/AuroraGradient.vue";
-import LatestAlbums from "@/components/LatestAlbums.vue";
-import Song from "@/components/Song.vue";
+import AuroraGradient from '@/components/AuroraGradient.vue'
+import AlbumsList from '@/components/AlbumsList.vue'
+import SongsList from '@/components/SongsList.vue'
 
-import useFavoritesStore from "@/stores/favorites";
-import useUserStore from "@/stores/user";
+import useFavoritesStore from '@/stores/favorites'
+import useUserStore from '@/stores/user'
 
 export default {
   data() {
     return {
       albums: [],
       genres: [],
-      songs: [],
-    };
+      songs: []
+    }
   },
-  components: { AuroraGradient, LatestAlbums, Song },
+  components: { AuroraGradient, AlbumsList, SongsList },
   async created() {
-    await this.getLatestAlbums();
-    await this.getLatestGenres();
-    await this.getLatestSongs();
+    await this.getLatestAlbums()
+    await this.getLatestGenres()
+    await this.getLatestSongs()
   },
   computed: {
-    ...mapState(useUserStore, ["userId", "userLoggedIn"]),
-    ...mapState(useFavoritesStore, ["favSongs"]),
+    ...mapState(useUserStore, ['userId', 'userLoggedIn']),
+    ...mapState(useFavoritesStore, ['favSongs']),
 
     filteredGenres() {
       // Don't return genres with empty name
-      return this.genres.filter((genre) => genre.name);
-    },
+      return this.genres.filter((genre) => genre.name)
+    }
   },
   methods: {
     addAlbums(doc) {
       this.albums.push({
         ...doc.data(),
-        id: doc.id,
-      });
+        id: doc.id
+      })
     },
 
     addGenre(doc) {
       this.genres.push({
-        ...doc.data(),
-      });
+        ...doc.data()
+      })
     },
 
     addSong(doc) {
@@ -97,41 +97,41 @@ export default {
         ...doc.data(),
         id: doc.id,
         // Check if the song id is favoriteSongs
-        inFavorites: this.favSongs.some((favSong) => favSong.id === doc.id),
-      });
+        inFavorites: this.favSongs.some((favSong) => favSong.id === doc.id)
+      })
     },
 
     async getLatestAlbums() {
       // Query genres collection and get first 7 documents
-      const albumsQuery = query(collection(db, "albums"), limit(4));
-      const albumsSnap = await getDocs(albumsQuery);
+      const albumsQuery = query(collection(db, 'albums'), limit(4))
+      const albumsSnap = await getDocs(albumsQuery)
 
-      albumsSnap.forEach(this.addAlbums);
+      albumsSnap.forEach(this.addAlbums)
     },
 
     async getLatestGenres() {
       // Query genres collection and get first 7 documents
-      const genresQuery = query(collection(db, "genres"), limit(7));
-      const genresSnap = await getDocs(genresQuery);
+      const genresQuery = query(collection(db, 'genres'), limit(7))
+      const genresSnap = await getDocs(genresQuery)
 
-      genresSnap.forEach(this.addGenre);
+      genresSnap.forEach(this.addGenre)
     },
 
     async getLatestSongs() {
       // Query songs collection and get first 7 documents
-      const songsQuery = query(collection(db, "songs"), limit(7));
-      const songsSnap = await getDocs(songsQuery);
+      const songsQuery = query(collection(db, 'songs'), limit(7))
+      const songsSnap = await getDocs(songsQuery)
 
-      songsSnap.forEach(this.addSong);
-    },
-  },
-};
+      songsSnap.forEach(this.addSong)
+    }
+  }
+}
 </script>
 
 <style lang="scss">
 * {
-  margin: 0;
   box-sizing: border-box;
+  margin: 0;
 }
 
 a {
@@ -148,11 +148,11 @@ a {
 }
 
 button {
-  background-color: transparent;
-  border-style: none;
   cursor: pointer;
+  border-style: none;
+  background-color: transparent;
   color: $text-secondary;
-  font-family: "Josefin Sans", sans-serif;
+  font-family: 'Josefin Sans', sans-serif;
 
   &:hover,
   &.active {
@@ -163,25 +163,25 @@ button {
 body {
   background-color: $color-canvas;
   color: $text-primary;
-  font-family: "Josefin Sans", sans-serif;
   font-weight: 500;
+  font-family: 'Josefin Sans', sans-serif;
 
   @include scrollbar-styles;
 
   #app {
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
 
     #content {
       display: grid;
-      gap: 24px;
       grid-template-columns: 100%;
+      gap: 24px;
     }
 
     #latest-albums {
-      overflow-x: scroll;
       width: calc(100% + 24px);
+      overflow-x: scroll;
       @include hidden-scrollbar;
 
       ul {
@@ -191,24 +191,24 @@ body {
 
         .album {
           display: block;
-          height: 186px;
-          width: 275px;
           position: relative;
+          width: 275px;
+          height: 186px;
 
           section {
-            border-radius: 20px;
-            color: $text-primary-inverted;
             display: flex;
+            position: absolute;
             flex-direction: column-reverse;
             gap: 12px;
             inset: 0;
+            border-radius: 20px;
             padding: 12px;
-            position: absolute;
+            color: $text-primary-inverted;
 
             h3 {
+              margin: 0;
               font-size: 1.375rem;
               line-height: 1.375rem;
-              margin: 0;
               overflow-wrap: break-word;
             }
 
@@ -241,8 +241,8 @@ body {
           a {
             display: block;
             padding: 16px 32px;
-            text-align: center;
             width: 100%;
+            text-align: center;
           }
         }
       }
@@ -265,9 +265,9 @@ body {
         a {
           display: block;
           .aurora-gradient {
-            height: 200px;
             margin-bottom: 8px;
             width: 200px;
+            height: 200px;
           }
         }
       }
@@ -280,7 +280,7 @@ body {
     }
   }
 
-  @media (min-width: 992px) {
+  @media (min-width: $lg) {
     #app {
       #content {
         display: grid;
@@ -290,8 +290,8 @@ body {
       #latest-albums {
         grid-column: 1/3;
         ul .album {
-          height: 372px;
           width: 550px;
+          height: 372px;
 
           section {
             gap: 24px;
@@ -322,13 +322,13 @@ body {
       }
 
       #newest-songs {
-        grid-column: 2;
         grid-row: 2/4;
+        grid-column: 2;
       }
     }
   }
 
-  @media (min-width: 1200px) {
+  @media (min-width: $xl) {
     #app {
       #content {
         grid-template-columns: 552px auto;

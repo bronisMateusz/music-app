@@ -5,7 +5,7 @@
     :style="{
       'background-image': currentSong.picture
         ? `url(${currentSong.picture})`
-        : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+        : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)'
     }"
   />
   <!-- Song details -->
@@ -17,8 +17,8 @@
     >
       {{ currentSong.title }}
     </router-link>
-    <p v-else class="song-title">{{ currentSong.title || "Undefined" }}</p>
-    <span class="song-artist">{{ currentSong.artist || "Undefined" }}</span>
+    <p v-else class="song-title">{{ currentSong.title || 'Undefined' }}</p>
+    <span class="song-artist">{{ currentSong.artist || 'Undefined' }}</span>
   </div>
   <!-- Progress bar -->
   <div class="progress-bar">
@@ -104,57 +104,57 @@
 </template>
 
 <script>
-import { mapActions, mapWritableState } from "pinia";
-import usePlayerStore from "@/stores/player";
+import { mapActions, mapWritableState } from 'pinia'
+import usePlayerStore from '@/stores/player'
 
 export default {
   props: {
     showCover: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
-  emits: ["changeSong"],
+  emits: ['changeSong'],
   computed: {
     ...mapWritableState(usePlayerStore, [
-      "currentSong",
-      "currentSongIndex",
-      "duration",
-      "loopMode",
-      "playing",
-      "randomPlay",
-      "seek",
-      "seekPosition",
-      "volume",
-    ]),
+      'currentSong',
+      'currentSongIndex',
+      'duration',
+      'loopMode',
+      'playing',
+      'randomPlay',
+      'seek',
+      'seekPosition',
+      'volume'
+    ])
   },
   methods: {
     ...mapActions(usePlayerStore, [
-      "changeSeek",
-      "changeSong",
-      "changeVolume",
-      "toggleAudio",
-      "toggleLoop",
-      "updateSeek",
-      "updateVolume",
+      'changeSeek',
+      'changeSong',
+      'changeVolume',
+      'toggleAudio',
+      'toggleLoop',
+      'updateSeek',
+      'updateVolume'
     ]),
 
     changeTrack(indexModifier) {
-      this.changeSong(indexModifier);
+      this.changeSong(indexModifier)
 
-      const currentId = this.currentSong.id;
-      if (currentId) this.$emit("changeSong", currentId);
-    },
-  },
-};
+      const currentId = this.currentSong.id
+      if (currentId) this.$emit('changeSong', currentId)
+    }
+  }
+}
 </script>
 
 <style lang="scss">
 .song-cover {
   border-radius: 15px;
-  height: 70px;
-  min-width: 70px;
   width: 70px;
+  min-width: 70px;
+  height: 70px;
 }
 
 .progress-bar {
@@ -162,25 +162,25 @@ export default {
 }
 
 .control-buttons {
-  align-items: center;
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 12px;
 
   button {
     padding: 0;
-    height: 48px;
     width: 48px;
+    height: 48px;
 
     &.repeat-this {
       position: relative;
 
       &::after {
-        color: $text-primary;
-        content: "1";
-        height: 12px;
-        width: 12px;
         position: absolute;
+        width: 12px;
+        height: 12px;
+        content: '1';
+        color: $text-primary;
       }
     }
   }

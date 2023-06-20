@@ -1,5 +1,5 @@
-import { defineStore } from "pinia";
-import { auth, db, storage } from "@/includes/firebase";
+import { defineStore } from 'pinia'
+import { auth, db, storage } from '@/includes/firebase'
 import {
   browserSessionPersistence,
   createUserWithEmailAndPassword,
@@ -7,18 +7,18 @@ import {
   setPersistence,
   signInWithEmailAndPassword,
   signOut,
-  updateProfile,
-} from "firebase/auth";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
+  updateProfile
+} from 'firebase/auth'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore'
 
-export default defineStore("user", {
+export default defineStore('user', {
   state: () => ({
-    accountType: "",
-    displayName: "",
-    photoURL: "",
+    accountType: '',
+    displayName: '',
+    photoURL: '',
     userLoggedIn: false,
-    userId: "",
+    userId: ''
   }),
   actions: {
     async login(values) {
@@ -26,90 +26,82 @@ export default defineStore("user", {
       !values.remember
         ? await setPersistence(auth, browserSessionPersistence).then(() => {
             // Sign in user
-            return signInWithEmailAndPassword(
-              auth,
-              values.email,
-              values.password
-            );
+            return signInWithEmailAndPassword(auth, values.email, values.password)
           })
-        : await signInWithEmailAndPassword(auth, values.email, values.password);
+        : await signInWithEmailAndPassword(auth, values.email, values.password)
 
       // Set store details
-      this.setStoreDetails(auth.currentUser);
+      this.setStoreDetails(auth.currentUser)
     },
 
     async logout() {
-      signOut(auth);
-      this.userLoggedIn = false;
-      window.location.reload();
+      signOut(auth)
+      this.userLoggedIn = false
+      window.location.reload()
     },
 
     async register(values) {
       // Create user
-      const userCred = await createUserWithEmailAndPassword(
-        auth,
-        values.email,
-        values.password
-      );
+      const userCred = await createUserWithEmailAndPassword(auth, values.email, values.password)
 
       // Set user profile in firebase
       await updateProfile(userCred.user, {
-        displayName: values.name,
-      });
+        displayName: values.name
+      })
 
       // Set user data in firestore
-      await setDoc(doc(db, "users", userCred.user.uid), {
+      await setDoc(doc(db, 'users', userCred.user.uid), {
         accountType: parseInt(values.accountType) || 0,
         displayName: values.name,
         email: values.email,
-        photoURL: "",
-      });
+        photoURL: ''
+      })
 
       // Set store details
-      this.setStoreDetails(userCred.user);
+      this.setStoreDetails(userCred.user)
     },
 
     async resetPassword(email) {
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordResetEmail(auth, email)
     },
 
     async setAccountType() {
-      const userRef = doc(db, "users", this.userId);
-      const userSnapshot = await getDoc(userRef);
-      this.accountType = userSnapshot.data().accountType;
+      const userRef = doc(db, 'users', this.userId)
+      const userSnapshot = await getDoc(userRef)
+      this.accountType = userSnapshot.data().accountType
     },
 
     setStoreDetails(user) {
-      this.displayName = user.displayName;
-      this.photoURL = user.photoURL;
-      this.userId = user.uid;
-      this.userLoggedIn = true;
-      this.setAccountType();
+      this.displayName = user.displayName
+      this.photoURL = user.photoURL
+      this.userId = user.uid
+      this.userLoggedIn = true
+      this.setAccountType()
     },
 
     async updateProfile(user) {
       // Update user profile in firebase
-      await updateProfile(auth.currentUser, user);
+      await updateProfile(auth.currentUser, user)
 
       // Update user data in firestore
-      const userRef = doc(db, "users", this.userId);
-      await updateDoc(userRef, user);
+      const userRef = doc(db, 'users', this.userId)
+      await updateDoc(userRef, user)
 
       // Update store displayName
-      this.displayName = user.displayName;
-      this.photoURL = user.photoURL;
+      this.displayName = user.displayName
+      this.photoURL = user.photoURL
     },
 
     async uploadPhoto(file) {
-      const userPhotosRef = ref(storage, `userPhotos/${this.userId}/photo`);
+      const userPhotosRef = ref(storage, `userPhotos/${this.userId}/photo`)
 
       // Upload photo to Firebase storage
-      await uploadBytes(userPhotosRef, file);
+      await uploadBytes(userPhotosRef, file)
 
       await this.updateProfile({
         displayName: this.displayName,
-        photoURL: await getDownloadURL(userPhotosRef),
-      });
-    },
-  },
-});
+        photoURL: await getDownloadURL(userPhotosRef)
+      })
+    }
+  }
+})

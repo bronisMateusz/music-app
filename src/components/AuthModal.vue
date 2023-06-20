@@ -6,10 +6,7 @@
         class="close-btn"
         value="cancel"
         title="Close"
-        @click.prevent="
-          isOpen = false;
-          tab = 'login';
-        "
+        @click.prevent=";(isOpen = false), (tab = 'login')"
       >
         <eva-icon name="close-outline" height="28" width="28" />
       </button>
@@ -51,51 +48,53 @@
 </template>
 
 <script>
-import { mapWritableState } from "pinia";
-import useAuthModalStore from "@/stores/auth-modal";
-import LoginForm from "@/components/LoginForm.vue";
-import RegisterForm from "@/components/RegisterForm.vue";
-import ResetPasswordForm from "@/components/ResetPasswordForm.vue";
+import { mapWritableState } from 'pinia'
+import useAuthModalStore from '@/stores/auth-modal'
+import LoginForm from '@/components/LoginForm.vue'
+import RegisterForm from '@/components/RegisterForm.vue'
+import ResetPasswordForm from '@/components/ResetPasswordForm.vue'
 
 export default {
   components: {
     LoginForm,
     RegisterForm,
-    ResetPasswordForm,
+    ResetPasswordForm
   },
   data() {
     return {
-      tab: "login",
-    };
+      tab: 'login'
+    }
   },
   computed: {
-    ...mapWritableState(useAuthModalStore, ["isOpen"]),
-  },
-};
+    ...mapWritableState(useAuthModalStore, ['isOpen'])
+  }
+}
 </script>
 
 <style lang="scss">
 #auth-modal {
-  background-color: $color-element;
-  border-radius: 20px 20px 0 0;
-  bottom: 0;
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
-  left: 0;
-  max-height: calc(100% - 96px);
-  overflow: hidden;
+  display: grid;
   position: fixed;
   right: 0;
-  z-index: 1;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
+  border-radius: 20px 20px 0 0;
+  background-color: $color-element;
+  height: calc(100% - 96px);
+  max-height: 570px;
+  overflow: hidden;
 
   header {
-    background-color: $color-element;
-    border-radius: 20px 20px 0 0;
     display: flex;
-    flex-direction: column;
-    padding: 24px 24px 0;
     position: sticky;
     top: 0;
+    flex-direction: column;
     z-index: 1;
+    border-radius: 20px 20px 0 0;
+    background-color: $color-element;
+    padding: 24px 24px 0;
 
     .close-btn {
       align-self: flex-end;
@@ -108,18 +107,18 @@ export default {
     }
 
     .subtitle {
-      color: $text-secondary;
       margin-bottom: 48px;
+      color: $text-secondary;
     }
   }
 
   form {
     @include scrollbar-styles($color-element);
-    overflow-y: auto;
-    padding: 0 24px 48px;
     display: flex;
     flex-direction: column;
     gap: 8px;
+    padding: 0 24px 48px;
+    overflow-y: auto;
 
     > div {
       @include form-element;
@@ -135,8 +134,8 @@ export default {
       }
 
       &.form-group {
-        column-gap: 8px;
         display: flex;
+        column-gap: 8px;
         margin-top: 12px;
 
         &:last-of-type {
@@ -152,9 +151,9 @@ export default {
           color: $text-primary;
 
           input {
-            height: 16px;
-            width: 16px;
             margin-right: 12px;
+            width: 16px;
+            height: 16px;
           }
         }
 
@@ -170,17 +169,17 @@ export default {
       @include form-element-error;
     }
 
-    button[type="submit"] {
-      background-color: $color-canvas;
+    button[type='submit'] {
+      cursor: pointer;
+      margin: 24px 0 12px;
       border-style: none;
       border-radius: 50px;
-      color: $text-primary;
-      cursor: pointer;
-      font-weight: 700;
+      background-color: $color-canvas;
       padding: 16px;
-      text-align: center;
       width: 100%;
-      margin: 24px 0 12px;
+      color: $text-primary;
+      font-weight: 700;
+      text-align: center;
 
       &:hover {
         background-color: darken($color-canvas, 5%);
@@ -188,19 +187,19 @@ export default {
     }
   }
 
-  @media (min-width: 992px) {
-    bottom: 50%;
-    border-radius: 20px;
-    left: 50%;
-    min-width: 600px;
+  @media (min-width: $lg) {
     position: fixed;
     right: unset;
+    bottom: 50%;
+    left: 50%;
     transform: translate(-50%, 50%);
+    border-radius: 20px;
+    min-width: 600px;
 
     header {
       top: unset;
-      border-radius: 20px;
       bottom: 0;
+      border-radius: 20px;
       padding: 48px 48px 0;
     }
 

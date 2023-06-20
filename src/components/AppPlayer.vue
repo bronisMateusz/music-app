@@ -5,26 +5,26 @@
 </template>
 
 <script>
-import PlayerDetails from "@/components/PlayerDetails.vue";
+import PlayerDetails from '@/components/PlayerDetails.vue'
 
 export default {
-  components: { PlayerDetails },
-};
+  components: { PlayerDetails }
+}
 </script>
 
 <style lang="scss">
 #player {
   @include blurred-bg($color-element);
-  align-items: center;
-  border-radius: 20px;
-  bottom: 82px;
-  column-gap: 12px;
   display: grid;
-  grid-template-columns: 70px auto 108px;
-  left: 12px;
-  padding: 12px;
   position: fixed;
   right: 12px;
+  bottom: 82px;
+  left: 12px;
+  grid-template-columns: 70px auto 108px;
+  column-gap: 12px;
+  align-items: center;
+  border-radius: 20px;
+  padding: 12px;
 
   .song-details {
     @include song-details;
@@ -44,9 +44,9 @@ export default {
     }
   }
 
-  @media (min-width: 768px) {
-    grid-template-columns: 70px auto 240px;
+  @media (min-width: $md) {
     grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: 70px auto 240px;
 
     .song-cover,
     .control-buttons {
@@ -79,12 +79,12 @@ export default {
     }
   }
 
-  @media (min-width: 992px) {
-    bottom: 24px;
-    grid-template-columns: 240px 70px auto 200px;
-    left: 24px;
-    margin-left: 100px;
+  @media (min-width: $lg) {
     right: 24px;
+    bottom: 24px;
+    left: 24px;
+    grid-template-columns: 240px 70px auto 200px;
+    margin-left: 100px;
 
     .song-details {
       .song-title {
@@ -102,8 +102,8 @@ export default {
 
     .volume-controls {
       display: flex;
-      grid-column: 4;
       grid-row: 1/3;
+      grid-column: 4;
     }
 
     .control-buttons {

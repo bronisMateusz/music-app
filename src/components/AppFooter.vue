@@ -13,12 +13,12 @@
 
 <style lang="scss">
 #footer {
-  align-items: flex-start;
-  background-color: rgba($color: $color-element, $alpha: 0.25);
   display: flex;
+  align-items: flex-start;
   margin-top: auto;
-  min-height: 273px;
+  background-color: rgba($color: $color-element, $alpha: 0.25);
   padding: 24px 52px;
+  min-height: 273px;
 
   ul {
     @include hidden-list-marks;
@@ -31,7 +31,7 @@
     }
   }
 
-  @media (min-width: 992px) {
+  @media (min-width: $lg) {
     margin-left: 100px;
     min-height: 214px;
   }

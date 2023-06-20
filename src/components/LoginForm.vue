@@ -4,12 +4,7 @@
     <div>
       <label>
         Email
-        <vee-field
-          type="email"
-          name="email"
-          placeholder="Email"
-          autocomplete="email"
-        />
+        <vee-field type="email" name="email" placeholder="Email" autocomplete="email" />
       </label>
       <ErrorMessage name="email" />
     </div>
@@ -42,19 +37,12 @@
       <!-- Password remember -->
       <div>
         <label>
-          <vee-field
-            type="checkbox"
-            name="remember"
-            value="true"
-            modelValue="true"
-          />
+          <vee-field type="checkbox" name="remember" value="true" modelValue="true" />
           Remember me
         </label>
       </div>
       <!-- Forgot password-->
-      <a href="#" id="forgot-password" @click.prevent="tabChange('reset')">
-        Forgot password
-      </a>
+      <a href="#" id="forgot-password" @click.prevent="tabChange('reset')"> Forgot password </a>
     </div>
     <button type="submit" title="Log in">Log in</button>
     <div class="form-group">
@@ -65,42 +53,42 @@
 </template>
 
 <script>
-import { mapActions } from "pinia";
-import useUserStore from "@/stores/user";
-import useNotificationsStore from "@/stores/notifications";
+import { mapActions } from 'pinia'
+import useUserStore from '@/stores/user'
+import useNotificationsStore from '@/stores/notifications'
 
 export default {
   data() {
     return {
       isPasswordVisible: false,
       loginSchema: {
-        email: "required|max:100|email",
-        password: "required|min:8|max:100",
-      },
-    };
+        email: 'required|max:100|email',
+        password: 'required|min:8|max:100'
+      }
+    }
   },
   methods: {
-    ...mapActions(useUserStore, { authUser: "login" }),
-    ...mapActions(useNotificationsStore, ["setNotification"]),
+    ...mapActions(useUserStore, { authUser: 'login' }),
+    ...mapActions(useNotificationsStore, ['setNotification']),
     async login(values) {
       try {
-        await this.authUser(values);
+        await this.authUser(values)
       } catch (error) {
-        this.setNotification("error", "Sorry", "We couldn't log you in");
-        return;
+        this.setNotification('error', 'Sorry', "We couldn't log you in")
+        return
       }
 
-      this.$emit("close-modal");
-      this.setNotification("success", "Success", "You are logged in");
+      this.$emit('close-modal')
+      this.setNotification('success', 'Success', 'You are logged in')
     },
 
     tabChange(targetTab) {
-      this.$emit("tab-change", targetTab);
+      this.$emit('tab-change', targetTab)
     },
 
     togglePasswordVisibility() {
-      this.isPasswordVisible = !this.isPasswordVisible;
-    },
-  },
-};
+      this.isPasswordVisible = !this.isPasswordVisible
+    }
+  }
+}
 </script>

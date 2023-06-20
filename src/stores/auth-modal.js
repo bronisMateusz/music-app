@@ -1,7 +1,7 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
-export default defineStore("authModal", {
+export default defineStore('authModal', {
   state: () => ({
-    isOpen: false,
-  }),
-});
+    isOpen: false
+  })
+})

@@ -7,40 +7,40 @@
 <script>
 export default {
   mounted() {
-    document.addEventListener("mouseup", this.onClickOutside);
+    document.addEventListener('mouseup', this.onClickOutside)
   },
   unmounted() {
-    document.removeEventListener("mouseup", this.onClickOutside);
+    document.removeEventListener('mouseup', this.onClickOutside)
   },
   methods: {
     closeMenu() {
-      this.$emit("closeMenu");
+      this.$emit('closeMenu')
     },
 
     onClickOutside(event) {
-      const target = event.target;
-      const contextMenu = this.$refs.contextMenu;
+      const target = event.target
+      const contextMenu = this.$refs.contextMenu
 
-      if (!contextMenu.parentElement.contains(target)) this.closeMenu();
-    },
-  },
-};
+      if (!contextMenu.parentElement.contains(target)) this.closeMenu()
+    }
+  }
+}
 </script>
 
 <style lang="scss">
 .context-menu {
   position: absolute;
-  right: 0;
   top: -50%;
+  right: 0;
   transform: translateY(-50%);
 
   &::after {
     @include blurred-bg($color-element);
-    content: "";
-    border-radius: 8px;
-    inset: 0;
     position: absolute;
     z-index: -1;
+    inset: 0;
+    border-radius: 8px;
+    content: '';
   }
 
   ul {

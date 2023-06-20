@@ -11,35 +11,35 @@
 </template>
 
 <script>
-import { db } from "@/includes/firebase";
-import { collection, getDocs, query } from "firebase/firestore";
+import { db } from '@/includes/firebase'
+import { collection, getDocs, query } from 'firebase/firestore'
 export default {
   data() {
     return {
-      genres: [],
-    };
+      genres: []
+    }
   },
   async created() {
-    await this.getGenres();
+    await this.getGenres()
   },
   computed: {
     filteredGenres() {
       // Don't return genres with empty name
-      return this.genres.filter((genre) => genre.name);
-    },
+      return this.genres.filter((genre) => genre.name)
+    }
   },
   methods: {
     addGenre(doc) {
       this.genres.push({
-        ...doc.data(),
-      });
+        ...doc.data()
+      })
     },
     async getGenres() {
-      const genresQuery = query(collection(db, "genres"));
-      const genresSnap = await getDocs(genresQuery);
+      const genresQuery = query(collection(db, 'genres'))
+      const genresSnap = await getDocs(genresQuery)
 
-      genresSnap.forEach(this.addGenre);
-    },
-  },
-};
+      genresSnap.forEach(this.addGenre)
+    }
+  }
+}
 </script>

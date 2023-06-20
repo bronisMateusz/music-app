@@ -8,23 +8,15 @@
       <eva-icon v-if="!photoURL" name="people-outline" height="28" width="28" />
       <img v-else :src="photoURL" alt="user photo" />
     </button>
-    <context-menu
-      v-if="isContextMenuOpen"
-      @closeMenu="isContextMenuOpen = false"
-    >
+    <context-menu v-if="isContextMenuOpen" @closeMenu="isContextMenuOpen = false">
       <ul>
         <li>
-          <router-link
-            :to="{ name: 'user' }"
-            @click.prevent="toggleContextMenu"
-          >
+          <router-link :to="{ name: 'user' }" @click.prevent="toggleContextMenu">
             Settings
           </router-link>
         </li>
         <li>
-          <button title="Logout" @click.prevent="logout(), toggleContextMenu()">
-            Logout
-          </button>
+          <button title="Logout" @click.prevent="logout(), toggleContextMenu()">Logout</button>
         </li>
       </ul>
     </context-menu>
@@ -32,34 +24,34 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapWritableState } from "pinia";
-import ContextMenu from "@/components/ContextMenu.vue";
-import useAuthModalStore from "@/stores/auth-modal";
-import useUserStore from "@/stores/user";
+import { mapActions, mapState, mapWritableState } from 'pinia'
+import ContextMenu from '@/components/ContextMenu.vue'
+import useAuthModalStore from '@/stores/auth-modal'
+import useUserStore from '@/stores/user'
 
 export default {
   data() {
     return {
-      isContextMenuOpen: false,
-    };
+      isContextMenuOpen: false
+    }
   },
   components: { ContextMenu },
   computed: {
-    ...mapWritableState(useAuthModalStore, ["isOpen"]),
-    ...mapState(useUserStore, ["photoURL", "userId", "userLoggedIn"]),
+    ...mapWritableState(useAuthModalStore, ['isOpen']),
+    ...mapState(useUserStore, ['photoURL', 'userId', 'userLoggedIn'])
   },
   methods: {
-    ...mapActions(useUserStore, ["logout"]),
+    ...mapActions(useUserStore, ['logout']),
 
     toggleAuthModal() {
-      this.isOpen = !this.isOpen;
+      this.isOpen = !this.isOpen
     },
 
     toggleContextMenu() {
-      this.isContextMenuOpen = !this.isContextMenuOpen;
-    },
-  },
-};
+      this.isContextMenuOpen = !this.isContextMenuOpen
+    }
+  }
+}
 </script>
 
 <style lang="scss">
@@ -67,13 +59,13 @@ export default {
   position: relative;
 
   .auth-btn {
-    background-color: $text-primary;
-    border-radius: 50px;
-    color: $color-canvas;
-    height: 60px;
-    padding: 0;
     position: relative;
+    border-radius: 50px;
+    background-color: $text-primary;
+    padding: 0;
     width: 60px;
+    height: 60px;
+    color: $color-canvas;
 
     &:hover {
       background-color: $color-canvas;
@@ -94,18 +86,18 @@ export default {
     top: 100%;
     transform: unset;
 
-    @media (min-width: 992px) {
-      left: 0;
-      right: unset;
+    @media (min-width: $lg) {
       top: calc(100% + 12px);
+      right: unset;
+      left: 0;
 
       ul {
         text-align: left;
 
         a,
         button {
-          padding-left: 24px;
           padding-right: 48px;
+          padding-left: 24px;
         }
       }
     }
