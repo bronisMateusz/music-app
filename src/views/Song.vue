@@ -255,6 +255,7 @@ export default {
 
   .song-bg {
     filter: blur(150px);
+    transform: translate3d(0, 0, 0);
     inset: 0;
     opacity: 0.7;
     position: absolute;
