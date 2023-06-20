@@ -1,6 +1,7 @@
 {
   "name": "music-app",
   "version": "0.0.0",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -9,7 +10,7 @@
     "test:e2e": "start-server-and-test preview :4173 'cypress run --e2e'",
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' :4173 'cypress open --e2e'",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "postinstall": "patch-package"
+    "format": "prettier --write src/"
   },
   "dependencies": {
     "@stefandesu/eva-icons-vue": "^0.0.2",
@@ -18,7 +19,6 @@
     "firebase-tools": "^12.4.0",
     "howler": "^2.2.3",
     "jsmediatags": "^3.9.7",
-    "patch-package": "^7.0.0",
     "pinia": "^2.1.4",
     "sass": "^1.63.4",
     "vee-validate": "^4.9.6",
@@ -41,5 +41,8 @@
     "vite": "^4.3.9",
     "vitest": "^0.32.2"
   },
-  "packageManager": "yarn@3.6.0"
+  "packageManager": "yarn@3.6.0",
+  "resolutions": {
+    "jsmediatags@^3.9.7": "patch:jsmediatags@npm%3A3.9.7#./.yarn/patches/jsmediatags-npm-3.9.7-a195de3580.patch"
+  }
 }
