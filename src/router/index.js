@@ -1,107 +1,107 @@
-import { createRouter, createWebHistory } from "vue-router";
-import Home from "@/views/Home.vue";
-import Discover from "@/views/Discover.vue";
-import Favorites from "@/views/Favorites.vue";
-import Upload from "@/views/Upload.vue";
-import Song from "@/views/Song.vue";
-import User from "@/views/User.vue";
-import Genre from "@/views/Genre.vue";
-import AllGenres from "@/views/AllGenres.vue";
-import Album from "@/views/Album.vue";
-import NotFound from "@/views/NotFound.vue";
+import { createRouter, createWebHistory } from 'vue-router'
+import Home from '@/views/Home.vue'
+import Discover from '@/views/Discover.vue'
+import Favorites from '@/views/Favorites.vue'
+import Upload from '@/views/Upload.vue'
+import Song from '@/views/Song.vue'
+import User from '@/views/User.vue'
+import Genre from '@/views/Genre.vue'
+import AllGenres from '@/views/AllGenres.vue'
+import Album from '@/views/Album.vue'
+import NotFound from '@/views/NotFound.vue'
 
 const routes = [
   {
-    name: "home",
-    path: "/",
+    name: 'home',
+    path: '/',
     component: Home,
     meta: {
-      template: "AppTemplate",
-    },
+      template: 'AppTemplate'
+    }
   },
   {
-    name: "discover",
-    path: "/discover",
+    name: 'discover',
+    path: '/discover',
     component: Discover,
     meta: {
-      template: "AppTemplate",
-    },
+      template: 'AppTemplate'
+    }
   },
   {
-    name: "favorites",
-    path: "/favorites",
+    name: 'favorites',
+    path: '/favorites',
     component: Favorites,
     meta: {
-      template: "AppTemplate",
-    },
+      template: 'AppTemplate'
+    }
   },
   {
-    name: "upload",
-    path: "/upload",
+    name: 'upload',
+    path: '/upload',
     component: Upload,
     meta: {
-      template: "AppTemplate",
-    },
+      template: 'AppTemplate'
+    }
   },
   {
-    name: "song",
-    path: "/song/:id",
+    name: 'song',
+    path: '/song/:id',
     component: Song,
     meta: {
-      template: "SongTemplate",
-    },
+      template: 'SongTemplate'
+    }
   },
   {
-    name: "user",
-    path: "/user",
+    name: 'user',
+    path: '/user',
     component: User,
     meta: {
-      template: "AppTemplate",
-    },
+      template: 'AppTemplate'
+    }
   },
   {
-    name: "genre",
-    path: "/genre/:name",
+    name: 'genre',
+    path: '/genre/:name',
     component: Genre,
     meta: {
-      template: "AppTemplate",
-    },
+      template: 'AppTemplate'
+    }
   },
   {
-    name: "all-genres",
-    path: "/all-genres",
+    name: 'all-genres',
+    path: '/all-genres',
     component: AllGenres,
     meta: {
-      template: "AppTemplate",
-    },
+      template: 'AppTemplate'
+    }
   },
   {
-    name: "album",
-    path: "/album/:id",
+    name: 'album',
+    path: '/album/:id',
     component: Album,
     meta: {
-      template: "AppTemplate",
-    },
+      template: 'AppTemplate'
+    }
   },
   {
-    path: "/:catchAll(.*)*",
-    redirect: "/404",
+    path: '/:catchAll(.*)*',
+    redirect: '/404',
     meta: {
-      template: "AppTemplate",
-    },
+      template: 'AppTemplate'
+    }
   },
   {
-    path: "/404",
+    path: '/404',
     component: NotFound,
     meta: {
-      template: "AppTemplate",
-    },
-  },
-];
+      template: 'AppTemplate'
+    }
+  }
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
-});
+  routes
+})
 
-export default router;
+export default router

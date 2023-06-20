@@ -16,32 +16,32 @@
 </template>
 
 <script>
-import AuthButton from "@/components/AuthButton.vue";
-import Notification from "@/components/Notification.vue";
+import AuthButton from '@/components/AuthButton.vue'
+import Notification from '@/components/Notification.vue'
 
 export default {
-  components: { AuthButton, Notification },
-};
+  components: { AuthButton, Notification }
+}
 </script>
 
 <style lang="scss">
 #header {
   display: flex;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
   flex-direction: column;
   gap: 8px;
-  left: 0;
-  padding: 24px 24px 12px 24px;
-  position: fixed;
-  right: 0;
-  top: 0;
   z-index: 2;
+  padding: 24px 24px 12px 24px;
 
   &::before {
     @include blurred-bg($color-element);
-    content: "";
-    inset: 0;
     position: absolute;
     z-index: -1;
+    inset: 0;
+    content: '';
   }
 
   #searchbar {
@@ -55,42 +55,42 @@ export default {
       @include blurred-bg($color-element);
       border: 1px solid $color-border-primary;
       border-radius: 50px;
-      color: $text-primary;
-      font-size: 16px;
       padding: 17px 17px 17px 52px;
       width: 100%;
+      color: $text-primary;
+      font-size: 16px;
     }
 
     > svg {
       position: absolute !important;
-      left: 16px;
       top: 50% !important;
+      left: 16px;
       transform: translateY(-50%);
     }
 
     .auth-btn-wrapper {
-      height: 40px;
       position: absolute;
-      right: 6px;
       top: 50%;
+      right: 6px;
       transform: translateY(-50%);
+      height: 40px;
 
       .auth-btn {
-        height: 40px;
         width: 40px;
+        height: 40px;
       }
 
       svg {
-        height: 22px;
         width: 22px;
+        height: 22px;
       }
     }
   }
 
   @media (min-width: $lg) {
-    align-items: center;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     margin-left: 100px;
     padding: 24px;
 

@@ -19,11 +19,11 @@
 </template>
 
 <script>
-import AppHeader from "@/components/Header.vue";
-import Navigation from "@/components/Navigation.vue";
-import Player from "@/components/Player.vue";
-import AuthModal from "@/components/AuthModal.vue";
-import AppFooter from "@/components/Footer.vue";
+import AppHeader from '@/components/Header.vue'
+import Navigation from '@/components/Navigation.vue'
+import Player from '@/components/Player.vue'
+import AuthModal from '@/components/AuthModal.vue'
+import AppFooter from '@/components/Footer.vue'
 
 export default {
   components: {
@@ -31,9 +31,9 @@ export default {
     Navigation,
     Player,
     AuthModal,
-    AppFooter,
-  },
-};
+    AppFooter
+  }
+}
 </script>
 
 <style lang="scss">

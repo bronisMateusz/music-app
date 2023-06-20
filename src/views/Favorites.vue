@@ -11,7 +11,7 @@
               :style="{
                 'background-image': album.picture
                   ? `url(${album.picture})`
-                  : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+                  : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)'
               }"
             />
             <p>{{ album.name }}</p>
@@ -31,76 +31,74 @@
 </template>
 
 <script>
-import { db } from "@/includes/firebase";
-import { doc, getDoc } from "firebase/firestore";
-import { mapActions, mapState, mapWritableState } from "pinia";
+import { db } from '@/includes/firebase'
+import { doc, getDoc } from 'firebase/firestore'
+import { mapActions, mapState, mapWritableState } from 'pinia'
 
-import Song from "@/components/Song.vue";
+import Song from '@/components/Song.vue'
 
-import usePlayerStore from "@/stores/player";
-import useUserStore from "@/stores/user";
+import usePlayerStore from '@/stores/player'
+import useUserStore from '@/stores/user'
 
 export default {
   data() {
     return {
       albums: [],
-      songs: [],
-    };
+      songs: []
+    }
   },
   async created() {
     if (!this.userLoggedIn) {
-      this.$router.push({ name: "home" });
-      return;
+      this.$router.push({ name: 'home' })
+      return
     }
     // Get favorites doc
-    const favoritesRef = doc(db, "favorites", this.userId);
-    const favoritesSnapshot = await getDoc(favoritesRef);
+    const favoritesRef = doc(db, 'favorites', this.userId)
+    const favoritesSnapshot = await getDoc(favoritesRef)
 
     // Get favorites albums
-    const favoriteAlbums =
-      (favoritesSnapshot.data() && favoritesSnapshot.data().albums) || [];
+    const favoriteAlbums = (favoritesSnapshot.data() && favoritesSnapshot.data().albums) || []
 
     // Get favorites songs
-    const favoriteSongs =
-      (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || [];
+    const favoriteSongs = (favoritesSnapshot.data() && favoritesSnapshot.data().songs) || []
 
     // Retrieve favorites albums
     for (let i = 0; i < favoriteAlbums.length; i++) {
-      const albumRef = doc(db, "albums", favoriteAlbums[i].id);
-      const albumSnap = await getDoc(albumRef);
-      this.addToArray(albumSnap, favoriteSongs, this.albums);
+      const albumRef = doc(db, 'albums', favoriteAlbums[i].id)
+      const albumSnap = await getDoc(albumRef)
+      this.addToArray(albumSnap, favoriteSongs, this.albums)
     }
     // Retrieve favorites songs
     for (let i = 0; i < favoriteSongs.length; i++) {
-      const songRef = doc(db, "songs", favoriteSongs[i].id);
-      const songSnap = await getDoc(songRef);
-      this.addToArray(songSnap, favoriteSongs, this.songs);
+      const songRef = doc(db, 'songs', favoriteSongs[i].id)
+      const songSnap = await getDoc(songRef)
+      this.addToArray(songSnap, favoriteSongs, this.songs)
     }
   },
   components: { Song },
   computed: {
-    ...mapState(useUserStore, ["userId", "userLoggedIn"]),
+    ...mapState(useUserStore, ['userId', 'userLoggedIn']),
     ...mapWritableState(usePlayerStore, [
-      "currentSong",
-      "currentSongIndex",
-      "playing",
-      "songsQueue",
-    ]),
+      'currentSong',
+      'currentSongIndex',
+      'playing',
+      'songsQueue'
+    ])
   },
   methods: {
-    ...mapActions(usePlayerStore, ["newSong", "toggleAudio"]),
+    ...mapActions(usePlayerStore, ['newSong', 'toggleAudio']),
 
     addToArray(doc, favoriteItems, array) {
       const item = {
         ...doc.data(),
         id: doc.id,
         // Check if the item id is in favoriteItems
-        inFavorites: favoriteItems.some((favItem) => favItem.id === doc.id),
-      };
-      array.push(item);
-    },
-  },
-};
+        inFavorites: favoriteItems.some((favItem) => favItem.id === doc.id)
+      }
+      array.push(item)
+    }
+  }
+}
 </script>
 
 <style lang="scss">

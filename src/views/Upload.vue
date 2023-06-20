@@ -16,13 +16,7 @@
           <p v-if="!isDragover">
             Drop your file(s) here or
             <label for="files-input">browse</label>
-            <input
-              id="files-input"
-              class="hidden"
-              type="file"
-              multiple
-              @change="upload($event)"
-            />
+            <input id="files-input" class="hidden" type="file" multiple @change="upload($event)" />
           </p>
           <p v-else>Drop your file(s) to upload</p>
           <span>Maximum file size is 25 MB</span>
@@ -39,7 +33,7 @@
             :style="{
               'background-image': upload.picture
                 ? `url(${upload.picture})`
-                : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+                : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)'
             }"
           />
           <div class="song-details" :class="upload.variant">
@@ -48,26 +42,20 @@
             <!-- Progress bar -->
             <div class="progress-bar">
               <div class="bar">
-                <label for="upload-progress" class="hidden">
-                  Upload progress
-                </label>
+                <label for="upload-progress" class="hidden"> Upload progress </label>
                 <input
                   id="upload-progress"
                   v-model="upload.current_progress"
                   type="range"
                   :style="{
-                    'background-size': `${upload.current_progress}% 100%`,
+                    'background-size': `${upload.current_progress}% 100%`
                   }"
                   disabled
                 />
                 <div class="bar-bg"></div>
               </div>
-              <span v-if="upload.variant === 'error'" class="progress-value">
-                error
-              </span>
-              <span v-else class="progress-value">
-                {{ upload.current_progress }}&nbsp;%
-              </span>
+              <span v-if="upload.variant === 'error'" class="progress-value"> error </span>
+              <span v-else class="progress-value"> {{ upload.current_progress }}&nbsp;% </span>
             </div>
           </div>
           <button title="Cancel upload" @click.prevent="cancelUpload">
@@ -87,10 +75,10 @@
               :style="{
                 'background-image': album.picture
                   ? `url(${album.picture})`
-                  : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+                  : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)'
               }"
             />
-            <p>{{ album.name || "Undefined" }}</p>
+            <p>{{ album.name || 'Undefined' }}</p>
           </router-link>
         </li>
       </ul>
@@ -119,9 +107,9 @@
   </div>
 </template>
 <script>
-import jsmediatags from "jsmediatags";
-import { db, storage } from "@/includes/firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import jsmediatags from 'jsmediatags'
+import { db, storage } from '@/includes/firebase'
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 import {
   addDoc,
   arrayUnion,
@@ -132,12 +120,12 @@ import {
   limit,
   query,
   updateDoc,
-  where,
-} from "firebase/firestore";
-import { mapActions, mapState } from "pinia";
-import SongUploaded from "@/components/SongUploaded.vue";
-import useNotificationsStore from "@/stores/notifications";
-import useUserStore from "@/stores/user";
+  where
+} from 'firebase/firestore'
+import { mapActions, mapState } from 'pinia'
+import SongUploaded from '@/components/SongUploaded.vue'
+import useNotificationsStore from '@/stores/notifications'
+import useUserStore from '@/stores/user'
 
 export default {
   components: { SongUploaded },
@@ -147,279 +135,255 @@ export default {
       isDragover: false,
       songs: [],
       unsavedFlag: false,
-      uploads: [],
-    };
+      uploads: []
+    }
   },
   async created() {
     if (!this.accountType) {
-      this.$router.push({ name: "home" });
-      return;
+      this.$router.push({ name: 'home' })
+      return
     }
-    await this.getUserData();
+    await this.getUserData()
   },
   beforeRouteLeave(to, from, next) {
     !this.unsavedFlag
       ? next()
-      : this.setNotification(
-          "notice",
-          "Unsaved changes",
-          "Save or discard changes to song details"
-        );
+      : this.setNotification('notice', 'Unsaved changes', 'Save or discard changes to song details')
   },
   beforeUnmount() {
-    this.cancelUpload();
+    this.cancelUpload()
   },
   computed: {
-    ...mapState(useUserStore, ["accountType", "userId"]),
+    ...mapState(useUserStore, ['accountType', 'userId'])
   },
   methods: {
-    ...mapActions(useNotificationsStore, ["setNotification"]),
+    ...mapActions(useNotificationsStore, ['setNotification']),
 
     addSong(doc) {
       this.songs.push({
         ...doc.data(),
-        id: doc.id,
-      });
+        id: doc.id
+      })
     },
 
     addAlbum(doc) {
       this.albums.push({
         ...doc.data(),
-        id: doc.id,
-      });
+        id: doc.id
+      })
     },
 
     async getDocName(collectionName, name) {
-      const q = query(
-        collection(db, collectionName),
-        where("name", "==", name),
-        limit(1)
-      );
-      const querySnapshot = await getDocs(q);
+      const q = query(collection(db, collectionName), where('name', '==', name), limit(1))
+      const querySnapshot = await getDocs(q)
 
       // If doc doesn't exist create doc
       if (!querySnapshot.docs.length) {
         await addDoc(collection(db, collectionName), {
-          name: name,
-        });
+          name: name
+        })
       }
 
-      return name;
+      return name
     },
 
     async getUserData() {
       // Query albums and songs collections and get only this user items
       const [albumsSnapshot, songsSnapshot] = await Promise.all([
-        getDocs(
-          query(collection(db, "albums"), where("userId", "==", this.userId))
-        ),
-        getDocs(
-          query(collection(db, "songs"), where("userId", "==", this.userId))
-        ),
-      ]);
+        getDocs(query(collection(db, 'albums'), where('userId', '==', this.userId))),
+        getDocs(query(collection(db, 'songs'), where('userId', '==', this.userId)))
+      ])
 
-      albumsSnapshot.forEach(this.addAlbum);
-      songsSnapshot.forEach(this.addSong);
+      albumsSnapshot.forEach(this.addAlbum)
+      songsSnapshot.forEach(this.addSong)
     },
 
     async getMetadata(file) {
       return new Promise((resolve, reject) => {
         jsmediatags.read(file, {
           onSuccess: async (tag) => {
-            const metadata = tag.tags;
+            const metadata = tag.tags
 
-            let pictureData = "";
-            const picture = metadata.picture;
+            let pictureData = ''
+            const picture = metadata.picture
             if (picture) {
               // Convert image data to JPEG file
               const pictureBase64 = picture.data
                 .map((charCode) => String.fromCharCode(charCode))
-                .join("");
+                .join('')
 
-              pictureData = `data:${picture.format};base64,${window.btoa(
-                pictureBase64
-              )}`;
+              pictureData = `data:${picture.format};base64,${window.btoa(pictureBase64)}`
             }
 
             // Convert TPOS to disc info
-            const tposData = metadata.TPOS
-              ? metadata.TPOS.data.split("/")
-              : [0, 0];
+            const tposData = metadata.TPOS ? metadata.TPOS.data.split('/') : [0, 0]
 
             // Convert track to track info
-            const trackData = metadata.track
-              ? metadata.track.split("/")
-              : [0, 0];
+            const trackData = metadata.track ? metadata.track.split('/') : [0, 0]
 
             // If year is store in TDRC, get only year
             // else get just year
             const yearData = metadata.TDRC
               ? metadata.TDRC.data.slice(0, 4)
-              : parseInt(metadata.year) || 0;
+              : parseInt(metadata.year) || 0
 
             resolve({
-              album: metadata.album || "",
-              artist: await this.getDocName("artists", metadata.artist || ""),
-              author: metadata.TCOM ? metadata.TCOM.data : "",
+              album: metadata.album || '',
+              artist: await this.getDocName('artists', metadata.artist || ''),
+              author: metadata.TCOM ? metadata.TCOM.data : '',
               disc: parseInt(tposData[0]),
               discTotal: parseInt(tposData[1]),
-              genre: await this.getDocName("genres", metadata.genre || ""),
-              lyrics: "",
+              genre: await this.getDocName('genres', metadata.genre || ''),
+              lyrics: '',
               picture: pictureData,
-              title: metadata.title || "",
+              title: metadata.title || '',
               track: parseInt(trackData[0]),
               trackTotal: parseInt(trackData[1]),
-              year: yearData,
-            });
+              year: yearData
+            })
           },
           onError: (error) => {
-            reject(error);
-          },
-        });
-      });
+            reject(error)
+          }
+        })
+      })
     },
 
     cancelUpload() {
-      this.uploads.forEach((upload) => upload.task.cancel());
+      this.uploads.forEach((upload) => upload.task.cancel())
     },
 
     async updateAlbumDoc(metadata, songSnapshot) {
       const albumsQuery = query(
-        collection(db, "albums"),
-        where("artist", "==", metadata.artist),
-        where("name", "==", metadata.album),
+        collection(db, 'albums'),
+        where('artist', '==', metadata.artist),
+        where('name', '==', metadata.album),
         limit(1)
-      );
+      )
 
-      const albumsSnapshot = await getDocs(albumsQuery);
-      let albumDoc = albumsSnapshot.docs[0];
+      const albumsSnapshot = await getDocs(albumsQuery)
+      let albumDoc = albumsSnapshot.docs[0]
 
       if (albumDoc) {
         // If album with artist and name exist add new song
-        await updateDoc(doc(db, "albums", albumDoc.id), {
-          songs: arrayUnion({ id: songSnapshot.id }),
-        });
+        await updateDoc(doc(db, 'albums', albumDoc.id), {
+          songs: arrayUnion({ id: songSnapshot.id })
+        })
       } else {
         // If doesn't exist create new document
-        albumDoc = await addDoc(collection(db, "albums"), {
+        albumDoc = await addDoc(collection(db, 'albums'), {
           artist: metadata.artist,
           name: metadata.album,
           picture: metadata.picture,
           songs: [{ id: songSnapshot.id }],
-          userId: this.userId,
-        });
+          userId: this.userId
+        })
 
-        this.addAlbum(await getDoc(albumDoc));
+        this.addAlbum(await getDoc(albumDoc))
       }
 
       // Add albumId to uploaded song
-      await updateDoc(doc(db, "songs", songSnapshot.id), {
-        albumId: albumDoc.id,
-      });
+      await updateDoc(doc(db, 'songs', songSnapshot.id), {
+        albumId: albumDoc.id
+      })
 
-      return albumDoc.id;
+      return albumDoc.id
     },
 
     async updateArtistDoc(metadata, songSnapshot) {
       const artistQuery = query(
-        collection(db, "artists"),
-        where("name", "==", metadata.artist),
+        collection(db, 'artists'),
+        where('name', '==', metadata.artist),
         limit(1)
-      );
+      )
 
-      const artistSnapshot = await getDocs(artistQuery);
-      let artistDoc = artistSnapshot.docs[0];
+      const artistSnapshot = await getDocs(artistQuery)
+      let artistDoc = artistSnapshot.docs[0]
       if (artistDoc) {
         // If album with artist and name exist add new song
-        await updateDoc(doc(db, "artists", artistDoc.id), {
-          songs: arrayUnion({ id: songSnapshot.id }),
-        });
+        await updateDoc(doc(db, 'artists', artistDoc.id), {
+          songs: arrayUnion({ id: songSnapshot.id })
+        })
       } else {
         // If doesn't exist create new document
-        artistDoc = await addDoc(collection(db, "artists"), {
+        artistDoc = await addDoc(collection(db, 'artists'), {
           name: metadata.artist,
-          songs: [{ id: songSnapshot.id }],
-        });
+          songs: [{ id: songSnapshot.id }]
+        })
       }
 
       // Add artistId to uploaded song
-      await updateDoc(doc(db, "songs", songSnapshot.id), {
-        artistId: artistDoc.id,
-      });
+      await updateDoc(doc(db, 'songs', songSnapshot.id), {
+        artistId: artistDoc.id
+      })
     },
 
     updateAlbumPicture(albumId, picture) {
-      const index = this.albums.findIndex((album) => album.id === albumId);
-      this.albums[index].picture = picture;
+      const index = this.albums.findIndex((album) => album.id === albumId)
+      this.albums[index].picture = picture
     },
 
     updateSongDetails(index, values) {
-      this.songs[index].album = values.album;
-      this.songs[index].artist = values.artist;
-      this.songs[index].author = values.author;
-      this.songs[index].disc = values.disc;
-      this.songs[index].discTotal = values.discTotal;
-      this.songs[index].genre = values.genre;
-      this.songs[index].lyrics = values.lyrics;
-      this.songs[index].title = values.title;
-      this.songs[index].track = values.track;
-      this.songs[index].trackTotal = values.trackTotal;
-      this.songs[index].year = values.year;
+      this.songs[index].album = values.album
+      this.songs[index].artist = values.artist
+      this.songs[index].author = values.author
+      this.songs[index].disc = values.disc
+      this.songs[index].discTotal = values.discTotal
+      this.songs[index].genre = values.genre
+      this.songs[index].lyrics = values.lyrics
+      this.songs[index].title = values.title
+      this.songs[index].track = values.track
+      this.songs[index].trackTotal = values.trackTotal
+      this.songs[index].year = values.year
     },
 
     updateSongPicture(songId, picture) {
-      const index = this.songs.findIndex((song) => song.id === songId);
-      this.songs[index].picture = picture;
+      const index = this.songs.findIndex((song) => song.id === songId)
+      this.songs[index].picture = picture
     },
 
     removeAlbum(id) {
       this.albums.forEach((album, index) => {
         if (album.id === id) {
-          this.albums.splice(index, 1);
-          return;
+          this.albums.splice(index, 1)
+          return
         }
-      });
+      })
     },
 
     removeSong(index) {
-      this.songs.splice(index, 1);
+      this.songs.splice(index, 1)
     },
 
     updateProgressBar(snapshot, uploadIndex) {
-      const progress = Math.ceil(
-        (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-      );
-      return (this.uploads[uploadIndex].current_progress = progress);
+      const progress = Math.ceil((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+      return (this.uploads[uploadIndex].current_progress = progress)
     },
 
     updateUnsavedFlag(value) {
-      this.unsavedFlag = value;
+      this.unsavedFlag = value
     },
 
     async upload($event) {
-      this.isDragover = false;
+      this.isDragover = false
 
       // Use destructuring assignment to extract files from the event object
-      const files = [...($event.dataTransfer?.files || $event.target.files)];
+      const files = [...($event.dataTransfer?.files || $event.target.files)]
 
       for (const file of files) {
-        if (file.type !== "audio/mpeg") {
-          this.setNotification(
-            "error",
-            "Wrong file format",
-            "You can only upload mpeg files"
-          );
-          return;
+        if (file.type !== 'audio/mpeg') {
+          this.setNotification('error', 'Wrong file format', 'You can only upload mpeg files')
+          return
         }
 
         // Get file metadata
-        const metadata = await this.getMetadata(file);
+        const metadata = await this.getMetadata(file)
 
         // Create song ref
-        const songRef = ref(storage, `songs/${this.userId}/${file.name}`);
+        const songRef = ref(storage, `songs/${this.userId}/${file.name}`)
 
         //Upload song to Storage
-        const task = uploadBytesResumable(songRef, file, metadata);
+        const task = uploadBytesResumable(songRef, file, metadata)
 
         const uploadIndex =
           this.uploads.push({
@@ -428,44 +392,36 @@ export default {
             picture: metadata.picture,
             task,
             title: metadata.title,
-            variant: "",
-          }) - 1;
+            variant: ''
+          }) - 1
 
         task.on(
-          "state_changed",
+          'state_changed',
           (snapshot) => this.updateProgressBar(snapshot, uploadIndex),
           () => {
-            this.uploads[uploadIndex].variant = "error";
-            this.setNotification(
-              "error",
-              "Something went wrong",
-              "We couldn't upload your files"
-            );
+            this.uploads[uploadIndex].variant = 'error'
+            this.setNotification('error', 'Something went wrong', "We couldn't upload your files")
           },
           async () => {
-            const songRef = await addDoc(collection(db, "songs"), {
+            const songRef = await addDoc(collection(db, 'songs'), {
               ...metadata,
               fileName: file.name,
               userId: this.userId,
-              url: await getDownloadURL(task.snapshot.ref),
-            });
-            const songSnapshot = await getDoc(songRef);
+              url: await getDownloadURL(task.snapshot.ref)
+            })
+            const songSnapshot = await getDoc(songRef)
 
-            this.addSong(songSnapshot);
-            this.updateAlbumDoc(metadata, songSnapshot);
-            this.updateArtistDoc(metadata, songSnapshot);
+            this.addSong(songSnapshot)
+            this.updateAlbumDoc(metadata, songSnapshot)
+            this.updateArtistDoc(metadata, songSnapshot)
 
-            this.setNotification(
-              "success",
-              "Success!",
-              "Your files just landed on the server"
-            );
+            this.setNotification('success', 'Success!', 'Your files just landed on the server')
           }
-        );
+        )
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="scss">
@@ -476,14 +432,14 @@ export default {
 
   #drop-zone {
     @include blurred-bg($color-element);
-    align-items: center;
-    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='20' ry='20' stroke='%2356504D' stroke-width='3' stroke-dasharray='12' stroke-dashoffset='0' stroke-linecap='round'/%3e%3c/svg%3e");
-    border-radius: 20px;
     display: flex;
     flex-direction: column;
-    height: 254px;
     justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='20' ry='20' stroke='%2356504D' stroke-width='3' stroke-dasharray='12' stroke-dashoffset='0' stroke-linecap='round'/%3e%3c/svg%3e");
     padding: 36px;
+    height: 254px;
     text-align: center;
 
     svg,
@@ -496,12 +452,12 @@ export default {
     }
 
     p {
-      font-size: 1.375rem;
       margin-bottom: 12px;
+      font-size: 1.375rem;
 
       label {
-        color: $text-success;
         cursor: pointer;
+        color: $text-success;
 
         &:hover {
           text-decoration: underline;

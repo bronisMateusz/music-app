@@ -3,24 +3,24 @@
 </template>
 
 <script>
-import { db } from "@/includes/firebase";
-import { collection, getDocs, query } from "firebase/firestore";
-import { mapState } from "pinia";
+import { db } from '@/includes/firebase'
+import { collection, getDocs, query } from 'firebase/firestore'
+import { mapState } from 'pinia'
 
-import Song from "@/components/Song.vue";
-import useFavoritesStore from "@/stores/favorites";
+import Song from '@/components/Song.vue'
+import useFavoritesStore from '@/stores/favorites'
 export default {
   data() {
     return {
-      songs: [],
-    };
+      songs: []
+    }
   },
   components: { Song },
   async created() {
-    await this.getSongs();
+    await this.getSongs()
   },
   computed: {
-    ...mapState(useFavoritesStore, ["favSongs"]),
+    ...mapState(useFavoritesStore, ['favSongs'])
   },
   methods: {
     addSong(doc) {
@@ -28,15 +28,15 @@ export default {
         ...doc.data(),
         id: doc.id,
         // Check if the song id is favoriteSongs
-        inFavorites: this.favSongs.some((favSong) => favSong.id === doc.id),
-      });
+        inFavorites: this.favSongs.some((favSong) => favSong.id === doc.id)
+      })
     },
     async getSongs() {
-      const songsQuery = query(collection(db, "songs"));
-      const songsSnap = await getDocs(songsQuery);
+      const songsQuery = query(collection(db, 'songs'))
+      const songsSnap = await getDocs(songsQuery)
 
-      songsSnap.forEach(this.addSong);
-    },
-  },
-};
+      songsSnap.forEach(this.addSong)
+    }
+  }
+}
 </script>

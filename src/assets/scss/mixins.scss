@@ -1,16 +1,17 @@
 @use 'variables.scss' as *;
 
 @mixin visually-hidden {
+  position: absolute;
   clip-path: inset(50%);
+  width: 1px;
   height: 1px;
   overflow: hidden;
-  position: absolute;
   white-space: nowrap;
-  width: 1px;
 }
 
 @mixin scrollbar-styles($border-color: $color-canvas) {
-
+  // Standard version (Firefox only for now)
+  scrollbar-color: $color-scrollbar-thumb $color-scrollbar-track;
   // For Chrome & Safari
   &::-webkit-scrollbar {
     width: 6px;
@@ -18,22 +19,18 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: $color-scrollbar-thumb;
     border-radius: 50px;
+    background: $color-scrollbar-thumb;
   }
 
   &::-webkit-scrollbar-track {
-    background: $color-scrollbar-track;
-    border-radius: 50px;
     border: 1px solid $border-color;
+    border-radius: 50px;
+    background: $color-scrollbar-track;
   }
-
-  // Standard version (Firefox only for now)
-  scrollbar-color: $color-scrollbar-thumb $color-scrollbar-track;
 }
 
 @mixin hidden-scrollbar($border-color: $color-canvas) {
-
   // For Chrome & Safari
   &::-webkit-scrollbar {
     width: 0;
@@ -42,23 +39,23 @@
 }
 
 @mixin blurred-bg($bg-color) {
-  background-color: rgba($color: $bg-color, $alpha: 0.5);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
+  background-color: rgba($color: $bg-color, $alpha: 0.5);
 }
 
 @mixin songs-list {
   @include hidden-list-marks;
   display: flex;
-  flex-direction: column;
   row-gap: 18px;
+  flex-direction: column;
 
   > li {
-    background-color: $color-element;
-    border-radius: 20px;
     display: flex;
-    gap: 12px;
     justify-content: space-between;
+    gap: 12px;
+    border-radius: 20px;
+    background-color: $color-element;
     padding: 12px;
 
     svg {
@@ -70,20 +67,20 @@
 @mixin song-details {
   display: flex;
   flex-direction: column;
-  gap: 4px;
   justify-content: center;
+  gap: 4px;
   width: 100%;
 
   .song-title {
+    padding: 0;
     color: $text-primary;
     font-weight: 700;
-    padding: 0;
     text-align: left;
   }
 
   .song-artist {
     color: $text-secondary;
-    font-size: .75rem;
+    font-size: 0.75rem;
   }
 
   @media (min-width: 992px) {
@@ -98,8 +95,8 @@
 }
 
 @mixin progress-bar {
-  align-items: center;
   display: flex;
+  align-items: center;
   gap: 12px;
   width: 100%;
 
@@ -108,63 +105,63 @@
     width: 100%;
 
     .bar-bg {
-      background-color: $color-scrollbar-track;
-      border-radius: 50px;
-      height: 4px;
-      left: 0;
       position: absolute;
-      right: 0;
       top: 50%;
+      right: 0;
+      left: 0;
       transform: translateY(-50%);
+      border-radius: 50px;
+      background-color: $color-scrollbar-track;
+      height: 4px;
     }
 
     input {
-      background: transparent;
+      position: relative;
+      appearance: none;
+      -webkit-appearance: none;
+      z-index: 1;
       cursor: pointer;
-      height: 8px;
       border-radius: 50px;
+      background: transparent;
       background-image: linear-gradient($color-scrollbar-thumb, $color-scrollbar-thumb);
       background-size: 0% 100%;
       background-repeat: no-repeat;
-      appearance: none;
-      -webkit-appearance: none;
-      position: relative;
       width: 100%;
-      z-index: 1;
+      height: 8px;
 
       /* Input Thumb */
       &::-webkit-slider-thumb {
         appearance: none;
         -webkit-appearance: none;
+        border-radius: 50px;
+        background-color: transparent;
         width: 12px;
         height: 12px;
-        background-color: transparent;
-        border-radius: 50px;
       }
 
       &::-moz-range-thumb {
         appearance: none;
         -webkit-appearance: none;
+        border-radius: 50px;
+        background-color: transparent;
         width: 12px;
         height: 12px;
-        background-color: transparent;
-        border-radius: 50px;
       }
 
       &::-ms-thumb {
         appearance: none;
         -webkit-appearance: none;
+        border-radius: 50px;
+        background-color: transparent;
         width: 12px;
         height: 12px;
-        background-color: transparent;
-        border-radius: 50px;
       }
     }
   }
 
   span {
-    white-space: nowrap;
     min-width: 35px;
+    white-space: nowrap;
 
     &.time-remaining {
       text-align: right;
@@ -173,44 +170,44 @@
 }
 
 @mixin btn-secondary {
-  background-color: $color-element;
-  border-radius: 50px;
   display: block;
+  border-radius: 50px;
+  background-color: $color-element;
   padding: 18px 36px;
   text-align: center;
 }
 
 @mixin hidden-list-marks {
-  list-style: none;
   padding: 0;
+  list-style: none;
 }
 
 @mixin form-element {
   position: relative;
 
   > label {
-    font-size: 0.875rem;
-    color: $text-secondary;
     position: relative;
+    color: $text-secondary;
+    font-size: 0.875rem;
 
     input,
     select,
     textarea {
-      background-color: transparent;
-      border-color: $text-secondary;
-      border-width: 0 0 1px 0;
-      color: $text-primary;
-      font-size: 1rem;
-      padding: 12px 0;
-      color-scheme: dark;
       margin-bottom: 24px;
+      border-width: 0 0 1px 0;
+      border-color: $text-secondary;
+      background-color: transparent;
+      padding: 12px 0;
+      color: $text-primary;
+      color-scheme: dark;
+      font-size: 1rem;
 
       &:not([type='checkbox']) {
         width: 100%;
 
         &:focus {
-          border-color: $text-primary;
           outline: 0;
+          border-color: $text-primary;
 
           &::placeholder {
             opacity: 0;
@@ -227,26 +224,26 @@
 
         &::placeholder {
           color: $text-secondary;
-          font-family: "Josefin Sans", sans-serif;
           font-weight: 500;
+          font-family: 'Josefin Sans', sans-serif;
         }
       }
     }
 
     button {
       position: absolute !important;
-      right: 0;
       top: 1.5rem !important;
+      right: 0;
     }
   }
 }
 
 @mixin form-element-error {
-  span[role="alert"] {
+  span[role='alert'] {
     position: absolute;
     bottom: 0;
-    color: $text-error;
     left: 0;
+    color: $text-error;
 
     &::first-letter {
       text-transform: uppercase;
@@ -256,17 +253,17 @@
 
 @mixin user-photo {
   border-radius: 50%;
+  width: 100%;
   height: 100%;
   object-fit: cover;
-  width: 100%;
 }
 
 @mixin album-cover {
-  border-radius: 20px;
-  height: 260px;
-  background-size: cover;
   margin-bottom: 12px;
+  border-radius: 20px;
+  background-size: cover;
   width: 260px;
+  height: 260px;
 }
 
 @mixin albums-list {

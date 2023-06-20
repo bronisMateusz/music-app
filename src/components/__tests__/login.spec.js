@@ -1,35 +1,35 @@
-import { setActivePinia, createPinia } from "pinia";
-import useUserStore from "@/stores/user";
-import { beforeEach, describe, expect, test } from "vitest";
+import { setActivePinia, createPinia } from 'pinia'
+import useUserStore from '@/stores/user'
+import { beforeEach, describe, expect, test } from 'vitest'
 
-describe("stores", () => {
+describe('stores', () => {
   beforeEach(() => {
-    setActivePinia(createPinia());
-  });
+    setActivePinia(createPinia())
+  })
 
-  test("authenticate user with correct values", async () => {
-    const store = useUserStore();
+  test('authenticate user with correct values', async () => {
+    const store = useUserStore()
 
-    expect(store.userLoggedIn).not.toBe(true);
+    expect(store.userLoggedIn).not.toBe(true)
     await store.login({
-      email: "mateusz.bronis99@gmail.com",
-      password: "SubZero278",
-    });
-    expect(store.userLoggedIn).toBe(true);
-  });
+      email: 'mateusz.bronis99@gmail.com',
+      password: 'SubZero278'
+    })
+    expect(store.userLoggedIn).toBe(true)
+  })
 
-  test("authenticate user with incorrect values", async () => {
-    const store = useUserStore();
+  test('authenticate user with incorrect values', async () => {
+    const store = useUserStore()
 
-    expect(store.userLoggedIn).not.toBe(true);
+    expect(store.userLoggedIn).not.toBe(true)
     try {
       await store.login({
-        email: "example",
-        password: "example",
-      });
+        email: 'example',
+        password: 'example'
+      })
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-    expect(store.userLoggedIn).not.toBe(true);
-  });
-});
+    expect(store.userLoggedIn).not.toBe(true)
+  })
+})

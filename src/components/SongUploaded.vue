@@ -5,15 +5,15 @@
       :style="{
         'background-image': song.picture
           ? `url(${song.picture})`
-          : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+          : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)'
       }"
       @click.prevent="newSong(song)"
     />
     <div class="song-details" @click.prevent="newSong(song)">
       <button class="song-title">
-        {{ song.title || "Undefined" }}
+        {{ song.title || 'Undefined' }}
       </button>
-      <span class="song-artist">{{ song.artist || "Undefined" }}</span>
+      <span class="song-artist">{{ song.artist || 'Undefined' }}</span>
     </div>
     <button @click.prevent="toggleFormVisibility">
       <eva-icon name="more-horizontal-outline" height="28" width="28" />
@@ -23,18 +23,14 @@
     </button>
   </li>
   <li v-else>
-    <vee-form
-      :validation-schema="schema"
-      :initial-values="song"
-      @submit="editMetadata"
-    >
+    <vee-form :validation-schema="schema" :initial-values="song" @submit="editMetadata">
       <div class="song-cover-wrapper">
         <div
           class="song-cover"
           :style="{
             'background-image': song.picture
               ? `url(${song.picture})`
-              : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)',
+              : 'conic-gradient(from 180deg at 50% 50%, #616db9 0deg, #bfc5fc 360deg)'
           }"
           @dragend.prevent.stop="isDragover = false"
           @dragover.prevent.stop="isDragover = true"
@@ -46,12 +42,7 @@
           <label v-else for="file-input" class="dragover">
             <eva-icon name="cloud-upload-outline" height="72" width="72" />
           </label>
-          <input
-            id="file-input"
-            class="hidden"
-            type="file"
-            @change="uploadCover($event)"
-          />
+          <input id="file-input" class="hidden" type="file" @change="uploadCover($event)" />
         </div>
         <div class="song-cover-info">
           <p>Image guidelines</p>
@@ -135,12 +126,7 @@
       <div>
         <label>
           Track
-          <vee-field
-            type="number"
-            name="track"
-            placeholder="0"
-            @input="updateUnsavedFlag(true)"
-          />
+          <vee-field type="number" name="track" placeholder="0" @input="updateUnsavedFlag(true)" />
         </label>
       </div>
       <div>
@@ -157,12 +143,7 @@
       <div>
         <label>
           Disc number
-          <vee-field
-            type="number"
-            name="disc"
-            placeholder="0"
-            @input="updateUnsavedFlag(true)"
-          />
+          <vee-field type="number" name="disc" placeholder="0" @input="updateUnsavedFlag(true)" />
         </label>
       </div>
       <div>
@@ -198,8 +179,8 @@
 </template>
 
 <script>
-import { db, storage } from "@/includes/firebase";
-import { ref, deleteObject } from "firebase/storage";
+import { db, storage } from '@/includes/firebase'
+import { ref, deleteObject } from 'firebase/storage'
 import {
   collection,
   doc,
@@ -208,109 +189,102 @@ import {
   getDocs,
   query,
   updateDoc,
-  where,
-} from "firebase/firestore";
-import { mapActions, mapState } from "pinia";
-import useNotificationsStore from "@/stores/notifications";
-import usePlayerStore from "@/stores/player";
-import useUserStore from "@/stores/user";
+  where
+} from 'firebase/firestore'
+import { mapActions, mapState } from 'pinia'
+import useNotificationsStore from '@/stores/notifications'
+import usePlayerStore from '@/stores/player'
+import useUserStore from '@/stores/user'
 
 export default {
   props: {
     addAlbum: {
       type: Function,
-      required: true,
+      required: true
     },
     index: {
       type: Number,
-      required: true,
+      required: true
     },
     song: {
       type: Object,
-      required: true,
+      required: true
     },
     removeAlbum: {
       type: Function,
-      required: true,
+      required: true
     },
     removeSong: {
       type: Function,
-      required: true,
+      required: true
     },
     updateAlbumDoc: {
       type: Function,
-      required: true,
+      required: true
     },
     updateArtistDoc: {
       type: Function,
-      required: true,
+      required: true
     },
     updateAlbumPicture: {
       type: Function,
-      required: true,
+      required: true
     },
     updateSongDetails: {
       type: Function,
-      required: true,
+      required: true
     },
     updateSongPicture: {
       type: Function,
-      required: true,
+      required: true
     },
     updateUnsavedFlag: {
-      type: Function,
-    },
+      type: Function
+    }
   },
   data() {
     return {
       isDragover: false,
       showForm: false,
       schema: {
-        title: "required",
-        artist: "required",
-        album: "required",
-        genre: "required|min:3|max:100|alphaSpaces",
-      },
-    };
+        title: 'required',
+        artist: 'required',
+        album: 'required',
+        genre: 'required|min:3|max:100|alphaSpaces'
+      }
+    }
   },
   computed: {
-    ...mapState(useUserStore, ["userId"]),
+    ...mapState(useUserStore, ['userId'])
   },
   methods: {
-    ...mapActions(useNotificationsStore, ["setNotification"]),
-    ...mapActions(usePlayerStore, ["newSong"]),
+    ...mapActions(useNotificationsStore, ['setNotification']),
+    ...mapActions(usePlayerStore, ['newSong']),
 
     async deleteSong() {
-      this.setNotification("notice", "Please wait", "We're removing this song");
+      this.setNotification('notice', 'Please wait', "We're removing this song")
 
       try {
-        const songRef = ref(
-          storage,
-          `songs/${this.userId}/${this.song.fileName}`
-        );
+        const songRef = ref(storage, `songs/${this.userId}/${this.song.fileName}`)
 
         // Delete song from Storage
-        await deleteObject(songRef);
+        await deleteObject(songRef)
         // Delete song from Firestore
-        await deleteDoc(doc(db, "songs", this.song.id));
+        await deleteDoc(doc(db, 'songs', this.song.id))
 
-        await this.removeSongRelationships("albums", this.song.albumId);
-        await this.removeSongRelationships("artists", this.song.artistId);
-        this.removeAlbum(this.song.albumId);
-        this.removeSong(this.index);
+        await this.removeSongRelationships('albums', this.song.albumId)
+        await this.removeSongRelationships('artists', this.song.artistId)
+        this.removeAlbum(this.song.albumId)
+        this.removeSong(this.index)
 
-        this.setNotification("success", "Success!", "Song has been removed");
+        this.setNotification('success', 'Success!', 'Song has been removed')
       } catch (error) {
-        this.setNotification(
-          "error",
-          "Something went wrong",
-          "We couldn't remove this song"
-        );
+        this.setNotification('error', 'Something went wrong', "We couldn't remove this song")
       }
     },
 
     async editMetadata(values) {
-      const songRef = doc(db, "songs", this.song.id);
+      const songRef = doc(db, 'songs', this.song.id)
       try {
         await updateDoc(songRef, {
           album: values.album,
@@ -323,123 +297,108 @@ export default {
           title: values.title,
           track: parseInt(values.track),
           trackTotal: parseInt(values.trackTotal),
-          year: parseInt(values.year),
-        });
+          year: parseInt(values.year)
+        })
 
-        const songSnapshot = await getDoc(songRef);
-        const data = songSnapshot.data();
+        const songSnapshot = await getDoc(songRef)
+        const data = songSnapshot.data()
 
         if (this.song.album !== values.album) {
-          await this.removeSongRelationships("albums", this.song.albumId);
-          this.removeAlbum(this.song.albumId);
-          await this.updateAlbumDoc(data, songSnapshot);
+          await this.removeSongRelationships('albums', this.song.albumId)
+          this.removeAlbum(this.song.albumId)
+          await this.updateAlbumDoc(data, songSnapshot)
         }
 
         if (this.song.artist !== values.artist) {
-          await this.removeSongRelationships("artists", this.song.artistId);
-          await this.updateArtistDoc(data, songSnapshot);
+          await this.removeSongRelationships('artists', this.song.artistId)
+          await this.updateArtistDoc(data, songSnapshot)
         }
       } catch (error) {
-        this.setNotification(
-          "error",
-          "Something went wrong",
-          "We couldn't update song details"
-        );
-        return;
+        this.setNotification('error', 'Something went wrong', "We couldn't update song details")
+        return
       }
 
-      this.updateSongDetails(this.index, values);
+      this.updateSongDetails(this.index, values)
 
-      this.setNotification("success", "Success!", "Song details updated");
-      this.toggleFormVisibility();
+      this.setNotification('success', 'Success!', 'Song details updated')
+      this.toggleFormVisibility()
     },
 
     async getAllSongFromAlbum() {
-      const songsQuery = query(
-        collection(db, "songs"),
-        where("albumId", "==", this.song.albumId)
-      );
-      const songsSnapshot = await getDocs(songsQuery);
-      return songsSnapshot.docs;
+      const songsQuery = query(collection(db, 'songs'), where('albumId', '==', this.song.albumId))
+      const songsSnapshot = await getDocs(songsQuery)
+      return songsSnapshot.docs
     },
 
     async getBase64(file) {
       return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-      });
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = (error) => reject(error)
+      })
     },
 
     async removeSongRelationships(collectionName, docId) {
       // Remove the song from the album's songs array
-      const docRef = doc(db, collectionName, docId);
-      const docSnap = await getDoc(docRef);
+      const docRef = doc(db, collectionName, docId)
+      const docSnap = await getDoc(docRef)
 
-      let data = docSnap.data();
-      data.songs = data.songs.filter((song) => song.id !== this.song.id);
+      let data = docSnap.data()
+      data.songs = data.songs.filter((song) => song.id !== this.song.id)
       // If any song left in album, update album doc, else remove whole album doc
       data.songs.length
         ? await updateDoc(docRef, data)
-        : await deleteDoc(doc(db, collectionName, docId));
+        : await deleteDoc(doc(db, collectionName, docId))
     },
 
     toggleFormVisibility() {
-      this.showForm = !this.showForm;
-      this.updateUnsavedFlag(false);
+      this.showForm = !this.showForm
+      this.updateUnsavedFlag(false)
     },
 
     async updateAllSongsPictures(songsDocs, pictureBase64) {
       songsDocs.map(async (doc) => {
         await updateDoc(doc.ref, {
-          picture: pictureBase64,
-        });
-        this.updateSongPicture(doc.id, pictureBase64);
-      });
+          picture: pictureBase64
+        })
+        this.updateSongPicture(doc.id, pictureBase64)
+      })
     },
 
     async uploadCover(event) {
-      this.isDragover = false;
-      this.setNotification("notice", "Please wait", "We're updating cover...");
+      this.isDragover = false
+      this.setNotification('notice', 'Please wait', "We're updating cover...")
 
       const file = event.dataTransfer
         ? [...event.dataTransfer.files][0]
-        : [...event.target.files][0];
+        : [...event.target.files][0]
 
-      if (file.type !== "image/jpeg") {
-        this.setNotification(
-          "error",
-          "Wrong file format",
-          "You can only upload jpeg files"
-        );
-        return;
+      if (file.type !== 'image/jpeg') {
+        this.setNotification('error', 'Wrong file format', 'You can only upload jpeg files')
+        return
       }
 
       try {
-        const pictureBase64 = await this.getBase64(file);
+        const pictureBase64 = await this.getBase64(file)
 
         // Update picture of all songs in album
-        const songsDocs = await this.getAllSongFromAlbum();
-        await this.updateAllSongsPictures(songsDocs, pictureBase64);
+        const songsDocs = await this.getAllSongFromAlbum()
+        await this.updateAllSongsPictures(songsDocs, pictureBase64)
 
         // Update album picture
-        await updateDoc(doc(db, "albums", this.song.albumId), {
-          picture: pictureBase64,
-        });
-        this.updateAlbumPicture(this.song.albumId, pictureBase64);
+        await updateDoc(doc(db, 'albums', this.song.albumId), {
+          picture: pictureBase64
+        })
+        this.updateAlbumPicture(this.song.albumId, pictureBase64)
 
-        this.setNotification("success", "Success", "Cover updated!");
+        this.setNotification('success', 'Success', 'Cover updated!')
       } catch (error) {
-        this.setNotification(
-          "error",
-          "Something went wrong",
-          "We couldn't update cover"
-        );
+        this.setNotification('error', 'Something went wrong', "We couldn't update cover")
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="scss">
@@ -458,19 +417,19 @@ export default {
 
     .song-cover-wrapper {
       display: grid;
-      gap: 12px;
       grid-template-columns: auto 1fr;
+      gap: 12px;
       margin-bottom: 12px;
 
       .song-cover label {
-        align-items: center;
-        border-radius: 15px;
-        color: transparent;
-        cursor: pointer;
         display: flex;
-        height: 70px;
         justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        border-radius: 15px;
         width: 70px;
+        height: 70px;
+        color: transparent;
 
         &.dragover {
           background-color: rgba($text-primary, 0.9);
@@ -482,14 +441,14 @@ export default {
         align-self: center;
 
         ul {
-          color: $text-secondary;
-          list-style: disc;
           margin-top: 8px;
           padding-left: 16px;
+          color: $text-secondary;
+          list-style: disc;
 
           li p {
-            line-height: 1rem;
             font-size: 0.75rem;
+            line-height: 1rem;
           }
         }
       }
@@ -518,8 +477,8 @@ export default {
 
         .song-cover,
         .song-cover label {
-          height: 124px;
           width: 124px;
+          height: 124px;
         }
       }
 

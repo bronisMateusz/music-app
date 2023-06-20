@@ -3,57 +3,57 @@
 </template>
 
 <script>
-import { mapActions, mapWritableState } from "pinia";
-import { auth } from "@/includes/firebase";
+import { mapActions, mapWritableState } from 'pinia'
+import { auth } from '@/includes/firebase'
 
-import useFavoritesStore from "@/stores/favorites";
-import useUserStore from "@/stores/user";
+import useFavoritesStore from '@/stores/favorites'
+import useUserStore from '@/stores/user'
 
-import AppTemplate from "@/templates/AppTemplate.vue";
-import SongTemplate from "@/templates/SongTemplate.vue";
+import AppTemplate from '@/templates/AppTemplate.vue'
+import SongTemplate from '@/templates/SongTemplate.vue'
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     AppTemplate,
-    SongTemplate,
+    SongTemplate
   },
   async created() {
-    const currentUser = auth.currentUser;
+    const currentUser = auth.currentUser
     if (currentUser) {
-      this.setStoreDetails(currentUser);
-      this.getFavorites(this.userId);
+      this.setStoreDetails(currentUser)
+      this.getFavorites(this.userId)
     }
   },
   computed: {
     currentTemplate() {
-      return this.$route.meta.template;
+      return this.$route.meta.template
     },
     ...mapWritableState(useUserStore, [
-      "accountType",
-      "displayName",
-      "photoURL",
-      "userLoggedIn",
-      "userId",
-    ]),
+      'accountType',
+      'displayName',
+      'photoURL',
+      'userLoggedIn',
+      'userId'
+    ])
   },
   methods: {
-    ...mapActions(useFavoritesStore, ["getFavorites"]),
-    ...mapActions(useUserStore, ["setStoreDetails"]),
-  },
-};
+    ...mapActions(useFavoritesStore, ['getFavorites']),
+    ...mapActions(useUserStore, ['setStoreDetails'])
+  }
+}
 </script>
 <style lang="scss">
 // Override Eva icons pause-circle styles
 svg {
-  g[data-name="pause-circle"] {
+  g[data-name='pause-circle'] {
     path:first-of-type {
       display: none;
     }
 
     path:not(:first-of-type) {
-      scale: 1 1.5;
       transform: translateY(-4px);
+      scale: 1 1.5;
     }
   }
 }

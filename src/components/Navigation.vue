@@ -28,24 +28,24 @@
 </template>
 
 <script>
-import AuthButton from "@/components/AuthButton.vue";
-import { mapState } from "pinia";
-import useUserStore from "@/stores/user";
+import AuthButton from '@/components/AuthButton.vue'
+import { mapState } from 'pinia'
+import useUserStore from '@/stores/user'
 
 export default {
   components: { AuthButton },
   computed: {
-    ...mapState(useUserStore, ["accountType", "userLoggedIn"]),
-  },
-};
+    ...mapState(useUserStore, ['accountType', 'userLoggedIn'])
+  }
+}
 </script>
 <style lang="scss">
 #main-nav {
   @include blurred-bg($color-element);
   position: fixed;
-  left: 0;
   right: 0;
   bottom: 0;
+  left: 0;
   z-index: 1;
   padding: 17px;
 
@@ -68,21 +68,21 @@ export default {
   }
 
   @media (min-width: $lg) {
-    padding: 36px 20px;
-    right: inherit;
     top: 0;
+    right: inherit;
+    padding: 36px 20px;
 
     .auth-btn-wrapper {
       display: block;
     }
 
     > ul {
-      align-items: center;
       flex-direction: column;
-      gap: 52px;
-      height: 100%;
       justify-content: center;
+      align-items: center;
+      gap: 52px;
       padding-bottom: 114px;
+      height: 100%;
     }
   }
 }

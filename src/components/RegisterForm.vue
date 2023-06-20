@@ -12,12 +12,7 @@
     <div>
       <label>
         Email
-        <vee-field
-          type="email"
-          name="email"
-          placeholder="Email"
-          autocomplete="email"
-        />
+        <vee-field type="email" name="email" placeholder="Email" autocomplete="email" />
       </label>
       <ErrorMessage name="email" />
     </div>
@@ -63,9 +58,7 @@
           @click.prevent="isConfirmPasswordVisible = !isConfirmPasswordVisible"
         >
           <eva-icon
-            :name="
-              !isConfirmPasswordVisible ? 'eye-outline' : 'eye-off-outline'
-            "
+            :name="!isConfirmPasswordVisible ? 'eye-outline' : 'eye-off-outline'"
             height="18"
             width="18"
           />
@@ -96,9 +89,9 @@
 </template>
 
 <script>
-import { mapActions } from "pinia";
-import useNotificationsStore from "@/stores/notifications";
-import useUserStore from "@/stores/user";
+import { mapActions } from 'pinia'
+import useNotificationsStore from '@/stores/notifications'
+import useUserStore from '@/stores/user'
 
 export default {
   data() {
@@ -106,43 +99,35 @@ export default {
       isPasswordVisible: false,
       isConfirmPasswordVisible: false,
       registrationSchema: {
-        name: "required|min:3|max:100|alphaSpaces",
-        email: "required|max:100|email",
-        password: "required|min:8|max:100",
-        confirm_password: "passwordMismatch:@password",
-        tos: "tos",
-      },
-    };
+        name: 'required|min:3|max:100|alphaSpaces',
+        email: 'required|max:100|email',
+        password: 'required|min:8|max:100',
+        confirm_password: 'passwordMismatch:@password',
+        tos: 'tos'
+      }
+    }
   },
   methods: {
-    ...mapActions(useUserStore, { createUser: "register" }),
-    ...mapActions(useNotificationsStore, ["setNotification"]),
+    ...mapActions(useUserStore, { createUser: 'register' }),
+    ...mapActions(useNotificationsStore, ['setNotification']),
 
     async register(values) {
-      this.setNotification(
-        "notice",
-        "Please wait",
-        "We're creating your account"
-      );
+      this.setNotification('notice', 'Please wait', "We're creating your account")
 
       try {
-        await this.createUser(values);
+        await this.createUser(values)
       } catch (error) {
-        this.setNotification(
-          "error",
-          "Sorry",
-          "We could't create your account"
-        );
-        return;
+        this.setNotification('error', 'Sorry', "We could't create your account")
+        return
       }
 
-      this.$emit("close-modal");
-      this.setNotification("success", "Success", "Your account is ready!");
+      this.$emit('close-modal')
+      this.setNotification('success', 'Success', 'Your account is ready!')
     },
 
     tabChange(targetTab) {
-      this.$emit("tab-change", targetTab);
-    },
-  },
-};
+      this.$emit('tab-change', targetTab)
+    }
+  }
+}
 </script>

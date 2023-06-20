@@ -14,15 +14,15 @@
   </ul>
 </template>
 <script>
-import AuroraGradient from "@/components/AuroraGradient.vue";
+import AuroraGradient from '@/components/AuroraGradient.vue'
 
 export default {
   props: {
     albums: {
       type: Array,
-      required: true,
-    },
+      required: true
+    }
   },
-  components: { AuroraGradient },
-};
+  components: { AuroraGradient }
+}
 </script>

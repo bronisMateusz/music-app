@@ -20,51 +20,45 @@
     </div>
     <div class="form-group">
       <button @click.prevent="tabChange('login')">Back to login</button>
-      <button type="submit" title="Reset password" @click.prevent="reset">
-        Reset password
-      </button>
+      <button type="submit" title="Reset password" @click.prevent="reset">Reset password</button>
     </div>
   </vee-form>
 </template>
 
 <script>
-import { mapActions } from "pinia";
-import useUserStore from "@/stores/user";
-import useNotificationsStore from "@/stores/notifications";
+import { mapActions } from 'pinia'
+import useUserStore from '@/stores/user'
+import useNotificationsStore from '@/stores/notifications'
 
 export default {
   data() {
     return {
-      email: "",
+      email: '',
       resetPasswordSchema: {
-        email: "required|max:100|email",
-      },
-    };
+        email: 'required|max:100|email'
+      }
+    }
   },
   methods: {
-    ...mapActions(useUserStore, ["resetPassword"]),
-    ...mapActions(useNotificationsStore, ["setNotification"]),
+    ...mapActions(useUserStore, ['resetPassword']),
+    ...mapActions(useNotificationsStore, ['setNotification']),
     tabChange(targetTab) {
-      this.$emit("tab-change", targetTab);
+      this.$emit('tab-change', targetTab)
     },
     async reset() {
       try {
-        await this.resetPassword(this.email);
+        await this.resetPassword(this.email)
       } catch (error) {
-        this.setNotification(
-          "error",
-          "Sorry",
-          "We couldn't submit your request"
-        );
-        return;
+        this.setNotification('error', 'Sorry', "We couldn't submit your request")
+        return
       }
 
-      this.$emit("close-modal");
-      this.setNotification("success", "Success", "Reset password email sent");
-      this.tabChange("login");
-    },
-  },
-};
+      this.$emit('close-modal')
+      this.setNotification('success', 'Success', 'Reset password email sent')
+      this.tabChange('login')
+    }
+  }
+}
 </script>
 
 <style lang="scss">
