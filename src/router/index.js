@@ -1,20 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/views/Home.vue'
-import Discover from '@/views/Discover.vue'
-import Favorites from '@/views/Favorites.vue'
-import Upload from '@/views/Upload.vue'
-import Song from '@/views/Song.vue'
-import User from '@/views/User.vue'
-import Genre from '@/views/Genre.vue'
-import AllGenres from '@/views/AllGenres.vue'
-import Album from '@/views/Album.vue'
-import NotFound from '@/views/NotFound.vue'
+
+import AlbumView from '@/views/AlbumView.vue'
+import DiscoverView from '@/views/DiscoverView.vue'
+import GenresView from '@/views/GenresView.vue'
+import GenreView from '@/views/GenreView.vue'
+import HomeView from '@/views/HomeView.vue'
+import NotFoundView from '@/views/NotFoundView.vue'
+import SongView from '@/views/SongView.vue'
+import UserFavoritesView from '@/views/UserFavoritesView.vue'
+import UserProfileView from '@/views/UserProfileView.vue'
+import UserUploadsView from '@/views/UserUploadsView.vue'
 
 const routes = [
   {
-    name: 'home',
-    path: '/',
-    component: Home,
+    name: 'album',
+    path: '/album/:id',
+    component: AlbumView,
     meta: {
       template: 'AppTemplate'
     }
@@ -22,39 +23,15 @@ const routes = [
   {
     name: 'discover',
     path: '/discover',
-    component: Discover,
+    component: DiscoverView,
     meta: {
       template: 'AppTemplate'
     }
   },
   {
-    name: 'favorites',
-    path: '/favorites',
-    component: Favorites,
-    meta: {
-      template: 'AppTemplate'
-    }
-  },
-  {
-    name: 'upload',
-    path: '/upload',
-    component: Upload,
-    meta: {
-      template: 'AppTemplate'
-    }
-  },
-  {
-    name: 'song',
-    path: '/song/:id',
-    component: Song,
-    meta: {
-      template: 'SongTemplate'
-    }
-  },
-  {
-    name: 'user',
-    path: '/user',
-    component: User,
+    name: 'genres',
+    path: '/genres',
+    component: GenresView,
     meta: {
       template: 'AppTemplate'
     }
@@ -62,23 +39,47 @@ const routes = [
   {
     name: 'genre',
     path: '/genre/:name',
-    component: Genre,
+    component: GenreView,
     meta: {
       template: 'AppTemplate'
     }
   },
   {
-    name: 'all-genres',
-    path: '/all-genres',
-    component: AllGenres,
+    name: 'home',
+    path: '/',
+    component: HomeView,
     meta: {
       template: 'AppTemplate'
     }
   },
   {
-    name: 'album',
-    path: '/album/:id',
-    component: Album,
+    name: 'song',
+    path: '/song/:id',
+    component: SongView,
+    meta: {
+      template: 'SongTemplate'
+    }
+  },
+  {
+    name: 'favorites',
+    path: '/favorites',
+    component: UserFavoritesView,
+    meta: {
+      template: 'AppTemplate'
+    }
+  },
+  {
+    name: 'user',
+    path: '/user',
+    component: UserProfileView,
+    meta: {
+      template: 'AppTemplate'
+    }
+  },
+  {
+    name: 'uploads',
+    path: '/uploads',
+    component: UserUploadsView,
     meta: {
       template: 'AppTemplate'
     }
@@ -92,7 +93,7 @@ const routes = [
   },
   {
     path: '/404',
-    component: NotFound,
+    component: NotFoundView,
     meta: {
       template: 'AppTemplate'
     }
