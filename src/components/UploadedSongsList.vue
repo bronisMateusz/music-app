@@ -43,7 +43,7 @@
             <label v-else for="file-input" class="dragover">
               <eva-icon name="cloud-upload-outline" height="72" width="72" />
             </label>
-            <input id="file-input" class="hidden" type="file" @change="uploadCover($event)" />
+            <input id="file-input" type="file" @change="uploadCover($event)" />
           </div>
           <div class="song-cover-info">
             <p>Image guidelines</p>
@@ -497,5 +497,9 @@ export default {
       }
     }
   }
+}
+
+#file-input {
+  @include visually-hidden;
 }
 </style>

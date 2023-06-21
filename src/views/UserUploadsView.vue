@@ -16,7 +16,7 @@
           <p v-if="!isDragover">
             Drop your file(s) here or
             <label for="files-input">browse</label>
-            <input id="files-input" class="hidden" type="file" multiple @change="upload($event)" />
+            <input id="files-input" type="file" multiple @change="upload($event)" />
           </p>
           <p v-else>Drop your file(s) to upload</p>
           <span>Maximum file size is 25 MB</span>
@@ -42,7 +42,7 @@
             <!-- Progress bar -->
             <div class="progress-bar">
               <div class="bar">
-                <label for="upload-progress" class="hidden"> Upload progress </label>
+                <label for="upload-progress"> Upload progress </label>
                 <input
                   id="upload-progress"
                   v-model="upload.current_progress"
@@ -505,6 +505,11 @@ export default {
 
   #uploaded-albums {
     @include albums-list;
+  }
+
+  #files-input,
+  #upload-progress {
+    @include visually-hidden;
   }
 }
 </style>

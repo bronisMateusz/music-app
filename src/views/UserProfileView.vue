@@ -14,7 +14,7 @@
       <label v-else for="file-input" class="dragover">
         <eva-icon name="cloud-upload-outline" height="72" width="72" />
       </label>
-      <input id="file-input" class="hidden" type="file" @change="updatePicture($event)" />
+      <input id="file-input" type="file" @change="updatePicture($event)" />
     </div>
     <h2>{{ displayName }}</h2>
     <vee-form ref="userDetailsForm" :validation-schema="userSchema" :initial-values="user">
@@ -197,5 +197,9 @@ export default {
       flex-direction: row;
     }
   }
+}
+
+#file-input {
+  @include visually-hidden;
 }
 </style>

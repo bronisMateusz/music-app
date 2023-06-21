@@ -24,7 +24,7 @@
   <div class="progress-bar">
     <span class="time-remaining">{{ seek }}</span>
     <div class="bar">
-      <label for="seek" class="hidden">Playback progress</label>
+      <label for="seek">Playback progress</label>
       <input
         id="seek"
         type="range"
@@ -76,16 +76,12 @@
   <div class="volume-controls">
     <!-- Decrease Volume Button -->
     <button title="Decrease volume" @click.prevent="updateVolume('down')">
-      <eva-icon
-        :name="volume ? 'volume-down-outline' : 'volume-mute-outline'"
-        height="24"
-        width="24"
-      />
+      <eva-icon name="volume-mute-outline" height="24" width="24" />
     </button>
     <!-- Progress bar -->
     <div class="progress-bar">
       <div class="bar">
-        <label for="volume" class="hidden">Volume level</label>
+        <label for="volume">Volume level</label>
         <input
           id="volume"
           type="range"
