@@ -1,0 +1,71 @@
+@use 'variables.scss' as *;
+@use 'mixins.scss' as *;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+  &::selection {
+    background: $text-primary;
+    color: $text-primary-inverted;
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: $color-canvas;
+  color: $text-primary;
+  font-weight: 500;
+  font-family: $josefin-sans;
+  text-rendering: optimizeLegibility;
+  @include scrollbar-styles;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+main {
+  flex-grow: 1;
+}
+
+button {
+  cursor: pointer;
+  border-style: none;
+  background-color: transparent;
+  color: $text-secondary;
+  font-family: $josefin-sans;
+
+  &:hover,
+  &.active {
+    color: $text-primary;
+  }
+}
+
+h1,
+h2 {
+  font-size: 2rem;
+  line-height: 2rem;
+}
+
+a {
+  color: $text-primary;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.hidden {
+  display: none;
+}

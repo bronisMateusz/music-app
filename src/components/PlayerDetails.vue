@@ -150,6 +150,9 @@ export default {
 </script>
 
 <style lang="scss">
+@use '@/assets/scss/mixins.scss' as *;
+@use '@/assets/scss/variables.scss' as *;
+
 .song-cover {
   border-radius: 15px;
   width: 70px;

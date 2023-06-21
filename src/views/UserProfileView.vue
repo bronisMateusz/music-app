@@ -125,6 +125,9 @@ export default {
 </script>
 
 <style lang="scss">
+@use '@/assets/scss/mixins.scss' as *;
+@use '@/assets/scss/variables.scss' as *;
+
 #user-details {
   display: flex;
   position: relative;

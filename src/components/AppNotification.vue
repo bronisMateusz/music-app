@@ -75,6 +75,8 @@ export default {
 </script>
 
 <styles lang="scss">
+@use '@/assets/scss/variables.scss' as *;
+
 #notification-wrapper {
   display: flex;
   position: fixed;

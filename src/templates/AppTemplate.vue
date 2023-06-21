@@ -37,6 +37,8 @@ export default {
 </script>
 
 <style lang="scss">
+@use '@/assets/scss/variables.scss' as *;
+
 #main {
   flex-direction: column;
   padding: 164px 24px 48px;

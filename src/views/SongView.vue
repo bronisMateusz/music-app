@@ -217,6 +217,9 @@ export default {
 </script>
 
 <style lang="scss">
+@use '@/assets/scss/mixins.scss' as *;
+@use '@/assets/scss/variables.scss' as *;
+
 #song {
   display: flex;
   position: relative;

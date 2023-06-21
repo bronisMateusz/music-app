@@ -55,6 +55,9 @@ export default {
 </script>
 
 <style lang="scss">
+@use '@/assets/scss/mixins.scss' as *;
+@use '@/assets/scss/variables.scss' as *;
+
 .auth-btn-wrapper {
   position: relative;
 

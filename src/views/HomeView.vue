@@ -129,216 +129,173 @@ export default {
 </script>
 
 <style lang="scss">
-* {
-  box-sizing: border-box;
-  margin: 0;
+@use '@/assets/scss/mixins.scss' as *;
+@use '@/assets/scss/variables.scss' as *;
+
+#content {
+  display: grid;
+  grid-template-columns: 100%;
+  gap: 24px;
 }
 
-a {
-  color: $text-primary;
-  text-decoration: none;
+#latest-albums {
+  width: calc(100% + 24px);
+  overflow-x: scroll;
+  @include hidden-scrollbar;
 
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-.hidden {
-  display: none;
-}
-
-button {
-  cursor: pointer;
-  border-style: none;
-  background-color: transparent;
-  color: $text-secondary;
-  font-family: 'Josefin Sans', sans-serif;
-
-  &:hover,
-  &.active {
-    color: $text-primary;
-  }
-}
-
-body {
-  background-color: $color-canvas;
-  color: $text-primary;
-  font-weight: 500;
-  font-family: 'Josefin Sans', sans-serif;
-
-  @include scrollbar-styles;
-
-  #app {
+  ul {
+    @include hidden-list-marks;
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    gap: 24px;
 
-    #content {
-      display: grid;
-      grid-template-columns: 100%;
-      gap: 24px;
-    }
+    .album {
+      display: block;
+      position: relative;
+      width: 275px;
+      height: 186px;
 
-    #latest-albums {
-      width: calc(100% + 24px);
-      overflow-x: scroll;
-      @include hidden-scrollbar;
-
-      ul {
-        @include hidden-list-marks;
+      section {
         display: flex;
-        gap: 24px;
-
-        .album {
-          display: block;
-          position: relative;
-          width: 275px;
-          height: 186px;
-
-          section {
-            display: flex;
-            position: absolute;
-            flex-direction: column-reverse;
-            gap: 12px;
-            inset: 0;
-            border-radius: 20px;
-            padding: 12px;
-            color: $text-primary-inverted;
-
-            h3 {
-              margin: 0;
-              font-size: 1.375rem;
-              line-height: 1.375rem;
-              overflow-wrap: break-word;
-            }
-
-            p {
-              font-size: 0.75rem;
-            }
-          }
-        }
-
-        li:last-of-type a {
-          margin-right: 24px;
-        }
-      }
-    }
-
-    #genres {
-      ul {
-        @include hidden-list-marks;
-        display: flex;
-        flex-wrap: wrap;
+        position: absolute;
+        flex-direction: column-reverse;
         gap: 12px;
-        margin-bottom: 24px;
+        inset: 0;
+        border-radius: 20px;
+        padding: 12px;
+        color: $text-primary-inverted;
 
-        li {
-          flex: 1 1 auto;
-          @include blurred-bg($color-element);
-          border: 1px solid $color-border-primary;
-          border-radius: 20px;
-
-          a {
-            display: block;
-            padding: 16px 32px;
-            width: 100%;
-            text-align: center;
-          }
+        h3 {
+          margin: 0;
+          font-size: 1.375rem;
+          line-height: 1.375rem;
+          overflow-wrap: break-word;
         }
-      }
-      > a {
-        @include btn-secondary;
-        text-transform: capitalize;
+
+        p {
+          font-size: 0.75rem;
+        }
       }
     }
 
-    #your-playlists {
-      width: calc(100% + 24px);
-
-      ul {
-        @include hidden-list-marks;
-        display: flex;
-        gap: 12px;
-        margin-bottom: 24px;
-        overflow: hidden;
-
-        a {
-          display: block;
-          .aurora-gradient {
-            margin-bottom: 8px;
-            width: 200px;
-            height: 200px;
-          }
-        }
-      }
-
-      > a {
-        @include btn-secondary;
-        margin-right: 24px;
-        text-transform: capitalize;
-      }
+    li:last-of-type a {
+      margin-right: 24px;
     }
   }
+}
 
-  @media (min-width: $lg) {
-    #app {
-      #content {
-        display: grid;
-        grid-template-columns: 412px auto;
-      }
+#genres {
+  ul {
+    @include hidden-list-marks;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
 
-      #latest-albums {
-        grid-column: 1/3;
-        ul .album {
-          width: 550px;
-          height: 372px;
+    li {
+      flex: 1 1 auto;
+      @include blurred-bg($color-element);
+      border: 1px solid $color-border-primary;
+      border-radius: 20px;
 
-          section {
-            gap: 24px;
-            padding: 24px;
-
-            h3 {
-              font-size: 3rem;
-              line-height: 3rem;
-            }
-            p {
-              font-size: 1rem;
-            }
-          }
-        }
-      }
-
-      #genres,
-      #your-playlists {
-        grid-column: 1;
-      }
-
-      #your-playlists {
+      a {
+        display: block;
+        padding: 16px 32px;
         width: 100%;
-
-        > a {
-          margin-right: 0;
-        }
-      }
-
-      #newest-songs {
-        grid-row: 2/4;
-        grid-column: 2;
+        text-align: center;
       }
     }
   }
 
-  @media (min-width: $xl) {
-    #app {
-      #content {
-        grid-template-columns: 552px auto;
-      }
+  > a {
+    @include btn-secondary;
+    text-transform: capitalize;
+  }
+}
 
-      #your-playlists ul a .aurora-gradient {
-        width: 270px;
-        height: 270px;
+#your-playlists {
+  width: calc(100% + 24px);
+
+  ul {
+    @include hidden-list-marks;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    overflow: hidden;
+
+    a {
+      display: block;
+
+      .aurora-gradient {
+        margin-bottom: 8px;
+        width: 200px;
+        height: 200px;
       }
     }
+  }
+
+  > a {
+    @include btn-secondary;
+    margin-right: 24px;
+    text-transform: capitalize;
+  }
+}
+
+@media (min-width: $lg) {
+  #content {
+    display: grid;
+    grid-template-columns: 412px auto;
+  }
+
+  #latest-albums {
+    grid-column: 1/3;
+
+    ul .album {
+      width: 550px;
+      height: 372px;
+
+      section {
+        gap: 24px;
+        padding: 24px;
+
+        h3 {
+          font-size: 3rem;
+          line-height: 3rem;
+        }
+
+        p {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+
+  #genres,
+  #your-playlists {
+    grid-column: 1;
+  }
+
+  #your-playlists {
+    width: 100%;
+
+    > a {
+      margin-right: 0;
+    }
+  }
+
+  #newest-songs {
+    grid-row: 2/4;
+    grid-column: 2;
+  }
+}
+
+@media (min-width: $xl) {
+  #content {
+    grid-template-columns: 552px auto;
+  }
+
+  #your-playlists ul a .aurora-gradient {
+    width: 270px;
+    height: 270px;
   }
 }
 </style>

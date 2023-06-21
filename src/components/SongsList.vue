@@ -96,6 +96,8 @@ export default {
 </script>
 
 <style lang="scss">
+@use '@/assets/scss/mixins.scss' as *;
+
 .songs {
   @include songs-list;
 

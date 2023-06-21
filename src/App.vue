@@ -44,6 +44,8 @@ export default {
 }
 </script>
 <style lang="scss">
+@use '@/assets/scss/styles.scss' as *;
+
 // Override Eva icons pause-circle styles
 svg {
   g[data-name='pause-circle'] {

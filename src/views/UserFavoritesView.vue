@@ -102,6 +102,8 @@ export default {
 </script>
 
 <style lang="scss">
+@use '@/assets/scss/mixins.scss' as *;
+
 #favorites {
   display: flex;
   flex-direction: column;
