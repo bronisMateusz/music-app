@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
 
 /cypress/videos/
 /cypress/screenshots/
@@ -34,3 +35,4 @@ dist-ssr
 !.yarn/releases
 !.yarn/plugins
 .pnp.*
+

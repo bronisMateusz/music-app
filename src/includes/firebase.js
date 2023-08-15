@@ -4,11 +4,11 @@ import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDXBZJoWyFfNBm7Xfz15YBgmF5A3jyB6eE',
-  authDomain: 'music-app-11ce6.firebaseapp.com',
-  projectId: 'music-app-11ce6',
-  storageBucket: 'music-app-11ce6.appspot.com',
-  appId: '1:754991169134:web:b8fde588bcbeec8f1df07f'
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  appId: process.env.APP_ID
 }
 
 const app = initializeApp(firebaseConfig)
