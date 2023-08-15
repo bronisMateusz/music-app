@@ -36,10 +36,10 @@ jobs:
         uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
-          apiKey: ${{ secrets.API_KEY }}
-          authDomain: ${{ secrets.AUTH_DOMAIN }}
-          projectId: ${{ secrets.PROJECT_ID }}
-          storageBucket: ${{ secrets.STORAGE_BUCKET }}
-          appId: ${{ secrets.APP_ID }}
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          API_KEY: ${{ secrets.API_KEY }}
+          AUTH_DOMAIN: ${{ secrets.AUTH_DOMAIN }}
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+          APP_ID: ${{ secrets.APP_ID }}
