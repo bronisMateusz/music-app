@@ -105,7 +105,7 @@
   </div>
 </template>
 <script>
-// import jsmediatags from 'jsmediatags'
+import jsmediatags from 'jsmediatags'
 import { db, storage } from '@/includes/firebase'
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 import {
