@@ -83,8 +83,9 @@ export default {
   }
 
   .context-menu {
-    top: 100%;
+    top: calc(100% + 8px);
     transform: unset;
+    right: -6px;
 
     @media (min-width: $lg) {
       top: calc(100% + 12px);
