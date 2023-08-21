@@ -25,6 +25,7 @@ export default {
   align-items: center;
   border-radius: 20px;
   padding: 12px;
+  z-index: 2;
 
   .song-details {
     @include song-details;
