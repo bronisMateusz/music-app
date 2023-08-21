@@ -33,6 +33,7 @@ export default {
   top: -50%;
   right: 0;
   transform: translateY(-50%);
+  z-index: 1;
 
   &::after {
     @include blurred-bg($color-element);
