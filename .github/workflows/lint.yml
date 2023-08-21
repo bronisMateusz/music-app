@@ -12,6 +12,6 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@main
       - name: Install Dependencies
-        run: yarn
+        run: yarn && yarn postinstall
       - name: Lint
         run: yarn lint

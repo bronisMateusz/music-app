@@ -263,7 +263,9 @@ export default {
     > .song-cover {
       scale: 0.8;
       animation: zoom-out 0.3s ease-in-out;
-      box-shadow: rgba(0, 0, 0, 0.15) 0px 10px 15px -3px, rgba(0, 0, 0, 0.175) 0px 4px 6px -2px;
+      box-shadow:
+        rgba(0, 0, 0, 0.15) 0px 10px 15px -3px,
+        rgba(0, 0, 0, 0.175) 0px 4px 6px -2px;
       border-radius: 20px;
       width: 275px;
       height: 275px;
@@ -271,7 +273,9 @@ export default {
       &.playing {
         scale: 1;
         animation: zoom-in 0.5s ease-in-out;
-        box-shadow: rgba(50, 50, 93, 0.4) 0px 13px 27px -5px, rgba(0, 0, 0, 0.5) 0px 8px 16px -8px;
+        box-shadow:
+          rgba(50, 50, 93, 0.4) 0px 13px 27px -5px,
+          rgba(0, 0, 0, 0.5) 0px 8px 16px -8px;
       }
     }
   }
@@ -419,25 +423,33 @@ export default {
   @keyframes zoom-in {
     0% {
       scale: 0.8;
-      box-shadow: rgba(0, 0, 0, 0.15) 0px 10px 15px -3px, rgba(0, 0, 0, 0.175) 0px 4px 6px -2px;
+      box-shadow:
+        rgba(0, 0, 0, 0.15) 0px 10px 15px -3px,
+        rgba(0, 0, 0, 0.175) 0px 4px 6px -2px;
     }
     50% {
       scale: 1.1;
     }
     100% {
       scale: 1;
-      box-shadow: rgba(50, 50, 93, 0.4) 0px 13px 27px -5px, rgba(0, 0, 0, 0.5) 0px 8px 16px -8px;
+      box-shadow:
+        rgba(50, 50, 93, 0.4) 0px 13px 27px -5px,
+        rgba(0, 0, 0, 0.5) 0px 8px 16px -8px;
     }
   }
 
   @keyframes zoom-out {
     0% {
       scale: 1;
-      box-shadow: rgba(50, 50, 93, 0.4) 0px 13px 27px -5px, rgba(0, 0, 0, 0.5) 0px 8px 16px -8px;
+      box-shadow:
+        rgba(50, 50, 93, 0.4) 0px 13px 27px -5px,
+        rgba(0, 0, 0, 0.5) 0px 8px 16px -8px;
     }
     100% {
       scale: 0.8;
-      box-shadow: rgba(0, 0, 0, 0.15) 0px 10px 15px -3px, rgba(0, 0, 0, 0.175) 0px 4px 6px -2px;
+      box-shadow:
+        rgba(0, 0, 0, 0.15) 0px 10px 15px -3px,
+        rgba(0, 0, 0, 0.175) 0px 4px 6px -2px;
     }
   }
 }

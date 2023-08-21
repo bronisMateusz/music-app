@@ -1,7 +1,9 @@
 @font-face {
   font-style: normal;
   font-weight: 500;
-  src: local('Josefin Sans'), url('/fonts/JosefinSans-Medium.woff2') format('woff2'),
+  src:
+    local('Josefin Sans'),
+    url('/fonts/JosefinSans-Medium.woff2') format('woff2'),
     url('/fonts/JosefinSans-Medium.woff') format('woff');
   font-family: 'Josefin Sans';
   font-display: auto;
@@ -11,7 +13,9 @@
 @font-face {
   font-style: normal;
   font-weight: 700;
-  src: local('Josefin Sans'), url('/fonts/JosefinSans-Bold.woff2') format('woff2'),
+  src:
+    local('Josefin Sans'),
+    url('/fonts/JosefinSans-Bold.woff2') format('woff2'),
     url('/fonts/JosefinSans-Bold.woff') format('woff');
   font-family: 'Josefin Sans';
   font-display: auto;
